@@ -1,9 +1,11 @@
 package ch.bfh.project1.kanu.model;
 
 /**
- * Ein Benutzer ist ein registrierter Benuter des Systems. Er registriert sich mit folgenden Attributen:
- * - Emailadresse - Passwort
- * TODO: Wer bestimmt die Benutzerrolle? Turnierorganisator?
+ * Die Klasse „Benutzer“ ist ein Benutzer des Systems. Ein Benutzer hat folgende Attribute:
+ * - Eindeutige Identifikationsnummer
+ * - Email-Adresse
+ * - Passwort
+ * - Benutzerrolle
  *
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 28.03.2017
@@ -11,7 +13,7 @@ package ch.bfh.project1.kanu.model;
  *
  */
 
-public class Benutzer {
+public abstract class Benutzer {
 	private int benutzerID;
 	private String emailAdresse;
 	private String passwort;

@@ -3,16 +3,16 @@ package ch.bfh.project1.kanu.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rangliste {
-	/**
-	 * Enthält die verschiedenen Ranglisten.
-	 *
-	 * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
-	 * @date 28.03.2017
-	 * @version 1.0
-	 *
-	 */
-	
+/**
+ * Die Klasse „Rangliste“ beinhaltet alle Instanzen der Klasse „FahrerResultat“ eines Rennens.
+ *
+ * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @date 28.03.2017
+ * @version 1.0
+ *
+ */
+
+public class Rangliste {	
 	private Rennen rennen;
 	private List<FahrerResultat> resultate = new ArrayList();
 	

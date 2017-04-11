@@ -1,15 +1,14 @@
 package ch.bfh.project1.kanu.model;
+/**
+ * Die Klasse „Fahrerresultat“ beinhaltet das effektive Resultat der Läufe. 
+ *
+ * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @date 28.03.2017
+ * @version 1.0
+ *
+ */
 
 public class FahrerResultat {
-	/**
-	 * Enthält die Resultate der Fahrer.
-	 *
-	 * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
-	 * @date 28.03.2017
-	 * @version 1.0
-	 *
-	 */
-	
 	private Fahrer fahrer;
 	private double zeitErsterLauf;
 	private double zeitZweiterLauf;

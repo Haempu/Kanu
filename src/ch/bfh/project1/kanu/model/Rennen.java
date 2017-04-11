@@ -2,16 +2,17 @@ package ch.bfh.project1.kanu.model;
 
 import java.util.Date;
 
-public class Rennen {
-	/**
-	 * Enthält jeweils ein Rennen.
-	 *
-	 * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
-	 * @date 28.03.2017
-	 * @version 1.0
-	 *
-	 */
-	
+/**
+ * Die Klasse „Rennen“ wird pro Rennen generiert. Vor dem Rennen werden die Attribute Datum,
+ * Ort, Anzahl Tore und Anzahl Posten definiert.
+ *
+ * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @date 28.03.2017
+ * @version 1.0
+ *
+ */
+
+public class Rennen {	
 	private int rennenID;
 	private String name;
 	private Date datum;
