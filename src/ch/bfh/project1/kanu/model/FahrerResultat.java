@@ -15,7 +15,7 @@ public class FahrerResultat {
 	private double zeitZweiterLauf;
 	private boolean neusterEintrag;
 	private Rennen rennen;
-	private Kategorie kategorie;
+	private AltersKategorie kategorie;
 
 	public Fahrer getFahrer() {
 		return fahrer;
@@ -57,11 +57,11 @@ public class FahrerResultat {
 		this.rennen = rennen;
 	}
 
-	public Kategorie getKategorie() {
+	public AltersKategorie getKategorie() {
 		return kategorie;
 	}
 
-	public void setKategorie(Kategorie kategorie) {
+	public void setKategorie(AltersKategorie kategorie) {
 		this.kategorie = kategorie;
 	}
 }
