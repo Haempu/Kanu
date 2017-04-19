@@ -1,13 +1,24 @@
 package ch.bfh.project1.kanu.view;
 
 /**
- * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @author Aebischer Patrik, Bï¿½siger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
  */
 
+public class RechnungsView implements ViewTemplate {
 
-public class RechnungsView extends ViewTemplate{
+	@Override
+	public void viewInitialisieren() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void viewAnzeigen() {
+		// TODO Auto-generated method stub
+
+	}
 
 }
