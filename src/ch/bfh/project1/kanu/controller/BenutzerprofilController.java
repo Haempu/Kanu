@@ -3,9 +3,10 @@ package ch.bfh.project1.kanu.controller;
 import ch.bfh.project1.kanu.view.BenutzerprofilView;
 
 /**
- * Die Klasse „BenutzerprofilController“ beinhaltet die Logik der Klasse „BenutzerprofilView“.
+ * Die Klasse BenutzerprofilController beinhaltet die Logik der Klasse
+ * BenutzerprofilView.
  * 
- * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @author Aebischer Patrik, BÃ¶siger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
@@ -14,8 +15,8 @@ import ch.bfh.project1.kanu.view.BenutzerprofilView;
 public class BenutzerprofilController {
 	private DBController dbController;
 	private BenutzerprofilView benutzerProfilView;
-	
-	public void passwortAendern(String altesPasswort, String neuesPasswort){
-		
+
+	public void passwortAendern(String altesPasswort, String neuesPasswort) {
+
 	}
 }

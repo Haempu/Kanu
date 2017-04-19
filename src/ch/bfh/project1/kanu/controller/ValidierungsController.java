@@ -6,7 +6,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 /**
- * Die Klasse „ValidierungsController“ beinhaltet die Validierung aller
+ * Die Klasse ValidierungsController beinhaltet die Validierung aller
  * GUI-Komponenten.
  * 
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas

@@ -4,9 +4,10 @@ import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.view.FahreranmeldungsView;
 
 /**
- * Die Klasse „FahreranmeldungsController“ beinhaltet die Logik der Klasse „FahreranmeldungssView“.
+ * Die Klasse FahreranmeldungsController beinhaltet die Logik der Klasse
+ * FahreranmeldungssView.
  * 
- * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @author Aebischer Patrik, BÃ¶siger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
@@ -15,8 +16,8 @@ import ch.bfh.project1.kanu.view.FahreranmeldungsView;
 public class FahreranmeldungsController {
 	private DBController dbController;
 	private FahreranmeldungsView fahreranmeldungsView;
-	
-	public void fahrerAnmelden(Fahrer fahrer){
-		
+
+	public void fahrerAnmelden(Fahrer fahrer) {
+
 	}
 }

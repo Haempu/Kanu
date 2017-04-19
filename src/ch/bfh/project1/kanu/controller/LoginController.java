@@ -3,9 +3,10 @@ package ch.bfh.project1.kanu.controller;
 import ch.bfh.project1.kanu.view.LoginView;
 
 /**
- * Die Klasse „BenutzerprofilController“ beinhaltet die Logik der Klasse „BenutzerprofilView“.
+ * Die Klasse BenutzerprofilController beinhaltet die Logik der Klasse
+ * BenutzerprofilView.
  * 
- * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @author Aebischer Patrik, BÃ¶siger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
@@ -14,20 +15,20 @@ import ch.bfh.project1.kanu.view.LoginView;
 public class LoginController {
 	private DBController dbController;
 	private LoginView loginView;
-	
-	public boolean loginMitBenutzer(String email, String passwort){
+
+	public boolean loginMitBenutzer(String email, String passwort) {
 		return false;
 	}
-	
-	public boolean existiertBenutzer(String email){
+
+	public boolean existiertBenutzer(String email) {
 		return false;
 	}
-	
-	public boolean loginAufSession(){
+
+	public boolean loginAufSession() {
 		return false;
 	}
-	
-	public void abmelden(){
-		
+
+	public void abmelden() {
+
 	}
 }

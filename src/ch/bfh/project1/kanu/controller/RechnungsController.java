@@ -5,9 +5,9 @@ import ch.bfh.project1.kanu.model.Clubverantwortlicher;
 import ch.bfh.project1.kanu.view.RechnungsView;
 
 /**
- * Die Klasse „RechnungsController“ beinhaltet die Logik der Klasse „RecnungsView“. 
+ * Die Klasse RechnungsController beinhaltet die Logik der Klasse RecnungsView.
  * 
- * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
+ * @author Aebischer Patrik, BÃ¶siger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
@@ -16,16 +16,16 @@ import ch.bfh.project1.kanu.view.RechnungsView;
 public class RechnungsController {
 	private DBController dbController;
 	private RechnungsView rechnungsView;
-	
-	public void rechnungErstellen(Club club){
-		
+
+	public void rechnungErstellen(Club club) {
+
 	}
-	
-	public void rechungProClubVerschicken(Clubverantwortlicher clubverantwortlicher){
-		
+
+	public void rechungProClubVerschicken(Clubverantwortlicher clubverantwortlicher) {
+
 	}
-	
-	public void alleRechnungenVerschicken(){
-		
+
+	public void alleRechnungenVerschicken() {
+
 	}
 }
