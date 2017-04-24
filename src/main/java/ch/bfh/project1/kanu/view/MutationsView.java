@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
+import com.vaadin.ui.Component;
+
 import ch.bfh.project1.kanu.model.Benutzer;
 
 /**
@@ -22,7 +24,7 @@ public class MutationsView implements ViewTemplate {
 	}
 
 	@Override
-	public void viewAnzeigen() {
+	public void viewAnzeigen(Component inhalt) {
 		// TODO Auto-generated method stub
 
 	}

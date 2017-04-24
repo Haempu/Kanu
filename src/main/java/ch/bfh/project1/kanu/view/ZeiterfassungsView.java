@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
+import com.vaadin.ui.Component;
+
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
@@ -16,7 +18,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	}
 
 	@Override
-	public void viewAnzeigen() {
+	public void viewAnzeigen(Component inhalt) {
 		// TODO Auto-generated method stub
 
 	}

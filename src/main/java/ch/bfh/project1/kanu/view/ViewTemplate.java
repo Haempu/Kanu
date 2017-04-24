@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
+import com.vaadin.ui.Component;
+
 /**
  * Die Klasse ViewTemplate definiert die Überklasse aller grafischen
  * Benutzeroberflächen. Sie gibt folgende Funktionen vor: - viewInitialisieren:
@@ -22,5 +24,5 @@ public interface ViewTemplate {
 
 	public void viewInitialisieren();
 
-	public void viewAnzeigen();
+	public void viewAnzeigen(Component inhalt);
 }

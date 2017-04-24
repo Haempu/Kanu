@@ -35,29 +35,32 @@
 		<developer>
 			<id>aebip1</id><!-- provide BFH Kürzel -->
 			<name>Patrik Aebischer</name><!-- provide first and last name -->
-			<email>patrik.aebischer@students.bfh.ch</email><!-- provide e-mail address (optional) -->
+			<email>patrik.aebischer@students.bfh.ch</email><!-- provide e-mail address 
+				(optional) -->
 			<organization>Berner Fachhochschule / TI</organization>
 			<organizationUrl>http://www.ti.bfh.ch/</organizationUrl>
 			<roles>
 				<role>software developer</role>
 			</roles>
 		</developer>
-		
+
 		<developer>
 			<id>boesi1</id><!-- provide BFH Kürzel -->
 			<name>Elia Boesiger</name><!-- provide first and last name -->
-			<email>elia.boesiger@students.bfh.ch</email><!-- provide e-mail address (optional) -->
+			<email>elia.boesiger@students.bfh.ch</email><!-- provide e-mail address 
+				(optional) -->
 			<organization>Berner Fachhochschule / TI</organization>
 			<organizationUrl>http://www.ti.bfh.ch/</organizationUrl>
 			<roles>
 				<role>software developer</role>
 			</roles>
 		</developer>
-		
+
 		<developer>
 			<id>gestl</id><!-- provide BFH Kürzel -->
 			<name>Lukas Gestach</name><!-- provide first and last name -->
-			<email>lukas.gestach@students.bfh.ch</email><!-- provide e-mail address (optional) -->
+			<email>lukas.gestach@students.bfh.ch</email><!-- provide e-mail address 
+				(optional) -->
 			<organization>Berner Fachhochschule / TI</organization>
 			<organizationUrl>http://www.ti.bfh.ch/</organizationUrl>
 			<roles>
@@ -122,9 +125,14 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.6</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin.addon.responsive</groupId>
+			<artifactId>responsive</artifactId>
+			<version>1.0.0.alpha4</version>
 		</dependency>
 	</dependencies>
 
@@ -202,15 +210,7 @@
 				<artifactId>vaadin-maven-plugin</artifactId>
 				<version>${vaadin.plugin.version}</version>
 				<executions>
-					<execution>
-						<goals>
-							<goal>update-theme</goal>
-							<goal>update-widgetset</goal>
-							<goal>compile</goal>
-							<!-- Comment out compile-theme goal to use on-the-fly theme compilation -->
-							<goal>compile-theme</goal>
-						</goals>
-					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>
@@ -354,6 +354,10 @@
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
+				</repository>
+				<repository>
+					<id>vaadin-addons</id>
+					<url>http://maven.vaadin.com/vaadin-addons</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
