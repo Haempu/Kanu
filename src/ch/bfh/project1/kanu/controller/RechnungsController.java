@@ -1,7 +1,8 @@
 package ch.bfh.project1.kanu.controller;
 
+import java.util.List;
+
 import ch.bfh.project1.kanu.model.Club;
-import ch.bfh.project1.kanu.model.Clubverantwortlicher;
 import ch.bfh.project1.kanu.view.RechnungsView;
 
 /**
@@ -17,15 +18,15 @@ public class RechnungsController {
 	private DBController dbController;
 	private RechnungsView rechnungsView;
 
+	/**
+	 * Lädt alle Klubs, die mindestens einen Fahrer an das Rennen angemeldet haben.
+	 */
+	public List<String> ladeAngemeldeteClubs() {
+		return dbController.ladeAngemeldeteClubs();
+	}
+	
 	public void rechnungErstellen(Club club) {
-
+		
 	}
 
-	public void rechungProClubVerschicken(Clubverantwortlicher clubverantwortlicher) {
-
-	}
-
-	public void alleRechnungenVerschicken() {
-
-	}
 }

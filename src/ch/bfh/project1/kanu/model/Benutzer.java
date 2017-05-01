@@ -11,7 +11,7 @@ package ch.bfh.project1.kanu.model;
  *
  */
 
-public abstract class Benutzer {
+public class Benutzer {
 	private int benutzerID;
 	private String emailAdresse;
 	private String passwort;
