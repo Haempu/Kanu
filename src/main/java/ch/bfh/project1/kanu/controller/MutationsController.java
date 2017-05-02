@@ -1,10 +1,10 @@
 package ch.bfh.project1.kanu.controller;
 
+import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Benutzer;
 import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Strafzeit;
 import ch.bfh.project1.kanu.view.MutationsView;
 
@@ -21,6 +21,12 @@ public class MutationsController {
 	private DBController dbController;
 	private MutationsView mutationsView;
 
+	/*public List<Fahrer> ladeFahrer(Benutzer benutzer, Integer clubID) {
+		if (benutzer.getBenutzerRolle().getName() == BenutzerRolle.Rolle.ROLLE_CLUBVERANTWORTLICHER){
+			return new ArrayList<Fahrer>;
+		}
+	}*/
+	
 	public void fahrerBearbeiten(Fahrer fahrer) {
 
 	}

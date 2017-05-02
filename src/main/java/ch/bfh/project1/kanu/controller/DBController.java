@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.Benutzer;
+import ch.bfh.project1.kanu.model.BenutzerRolle;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.util.Row;
 
@@ -209,8 +210,17 @@ public class DBController {
 
 	}
 
-	public Benutzer ladeBenutzer(int benutzerID) {
-		return new Benutzer();
+	public List<Benutzer> ladeBenutzer(Integer benutzerID) {
+		String selectStmt = "SELECT * from Benutzer where benutzerID = " + benutzerID;
+		List<Benutzer> benutzer = new ArrayList<Benutzer>();
+		for (Row row : (executeSelect(selectStmt))) {
+			Integer benutzerId = (Integer) row.getRow().get(1).getKey();
+			String email = (String) row.getRow().get(2).getKey();
+			String passwort = (String) row.getRow().get(3).getKey();
+			BenutzerRolle benutzerRolle = (BenutzerRolle) row.getRow().get(4).getKey();
+			benutzer.add(new Benutzer(benutzerId, email, passwort, benutzerRolle));
+		}
+		return benutzer;
 	}
 
 	public void speichereBenutzer(Benutzer benutzerID) {
@@ -219,5 +229,13 @@ public class DBController {
 
 	public List<String> ladeAngemeldeteClubs() {
 		return new ArrayList();
+	}
+	
+	public List<String> ladeFehlererfassung(Integer rennenID){
+		return new ArrayList<String>();
+	}
+	
+	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer){
+		
 	}
 }

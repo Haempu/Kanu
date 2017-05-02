@@ -16,9 +16,9 @@ import ch.bfh.project1.kanu.view.BenutzerprofilView;
 public class BenutzerprofilController {
 	private DBController dbController;
 	private BenutzerprofilView benutzerProfilView;
-
+	
 	/**
-	 * Hier kann die E-Mailadresse und oder das Passwort geändert werden
+	 * Ändert die E-Mailadresse und/oder das Passwort des aktuell angemeldeten Benutzers
 	 * 
 	 * @param benutzerID
 	 *            - ID des aktuell angemeldeten Benutzers
@@ -30,11 +30,11 @@ public class BenutzerprofilController {
 	 *            - Neues Passwort des aktuell angemeldeten Benutzers
 	 * @param wiederholtesPW
 	 *            - Wiederhohlung des neuen Passworts
-	 * @return
+	 * @return True wenn erfolgreich, False sonst.
 	 */
-	public boolean benutzerprofilAendern(int benutzerID, String mail, String aktPW, String neuesPW,
+	public boolean benutzerprofilAendern(Integer benutzerID, String mail, String aktPW, String neuesPW,
 			String wiederholtesPW) {
-		Benutzer benutzer = dbController.ladeBenutzer(benutzerID);
+		Benutzer benutzer = dbController.ladeBenutzer(benutzerID).get(0);
 		if (benutzer.getPasswort().equals(aktPW)) {
 			// Nur E-Mail soll geändert werden
 			if (neuesPW.isEmpty() && wiederholtesPW.isEmpty()) {

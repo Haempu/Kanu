@@ -13,18 +13,18 @@ import java.util.Date;
  */
 
 public class Rennen {
-	private int rennenID;
+	private Integer rennenID;
 	private String name;
 	private Date datum;
 	private String ort;
 	private int anzTore;
 	private int anzPosten;
 
-	public int getRennenID() {
+	public Integer getRennenID() {
 		return rennenID;
 	}
 
-	public void setRennenID(int rennenID) {
+	public void setRennenID(Integer rennenID) {
 		this.rennenID = rennenID;
 	}
 

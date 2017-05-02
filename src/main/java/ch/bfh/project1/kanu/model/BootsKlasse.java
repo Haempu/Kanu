@@ -10,14 +10,14 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class BootsKlasse {
-	private int bootsKlasseID;
+	private Integer bootsKlasseID;
 	private String name;
 
-	public int getBootsKlasseID() {
+	public Integer getBootsKlasseID() {
 		return bootsKlasseID;
 	}
 
-	public void setBootsKlasseID(int bootsKlasseID) {
+	public void setBootsKlasseID(Integer bootsKlasseID) {
 		this.bootsKlasseID = bootsKlasseID;
 	}
 

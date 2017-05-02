@@ -11,7 +11,7 @@ package ch.bfh.project1.kanu.model;
 
 public class Fahrer {
 
-	private int fahrerID;
+	private Integer fahrerID;
 	private Club club;
 	private String name;
 	private String vorname;
@@ -21,11 +21,11 @@ public class Fahrer {
 	private int plz;
 	private String ort;
 
-	public int getFahrerID() {
+	public Integer getFahrerID() {
 		return fahrerID;
 	}
 
-	public void setFahrerID(int fahrerID) {
+	public void setFahrerID(Integer fahrerID) {
 		this.fahrerID = fahrerID;
 	}
 

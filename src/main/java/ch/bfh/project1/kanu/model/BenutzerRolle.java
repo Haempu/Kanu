@@ -13,9 +13,25 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class BenutzerRolle {
-	private static Rolle BENUTZER_ROLLE;
-
+	
 	public enum Rolle {
 		ROLLE_STANDARD, ROLLE_TURNIERORGANISATOR, ROLLE_TORRICHTER, ROLLE_ZEITNEHMER, ROLLE_RECHNUNG, ROLLE_CLUBVERANTWORTLICHER
 	}
+	
+	private int rolleID;
+	private String name;
+	
+	public int getRolleID() {
+		return rolleID;
+	}
+	public void setRolleID(int rolleID) {
+		this.rolleID = rolleID;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }

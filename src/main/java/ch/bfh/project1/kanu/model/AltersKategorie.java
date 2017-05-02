@@ -10,14 +10,19 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class AltersKategorie {
-	private int altersKategorieID;
+	private Integer altersKategorieID;
 	private String name;
+	
+	public AltersKategorie(int id, String name){
+		this.altersKategorieID = id;
+		this.name = name;
+	}
 
 	public int getAltersKategorieID() {
 		return altersKategorieID;
 	}
 
-	public void setAltersKategorieID(int altersKategorieID) {
+	public void setAltersKategorieID(Integer altersKategorieID) {
 		this.altersKategorieID = altersKategorieID;
 	}
 
