@@ -202,7 +202,7 @@ public class DBController {
 	}
 
 	public Fahrer ladeFahrer(int fahrerID) {
-		return new Fahrer();
+		return null;
 	}
 
 	public void speichereFahrer(Fahrer fahrer) {
@@ -210,7 +210,7 @@ public class DBController {
 	}
 
 	public Benutzer ladeBenutzer(int benutzerID) {
-		return new Benutzer();
+		return null;
 	}
 
 	public void speichereBenutzer(Benutzer benutzerID) {

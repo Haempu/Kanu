@@ -41,6 +41,10 @@ public class StrukturView extends UI {
 	private LoginController loginController = new LoginController();
 
 	private LoginView loginView = new LoginView(this, loginController);
+	private BenutzerprofilView benutzerprofilView = new BenutzerprofilView();
+	private RechnungsView rechnungsView = new RechnungsView();
+	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView();
+	private FehlererfassungsView fehlererfassungsView = new FehlererfassungsView();
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -53,6 +57,15 @@ public class StrukturView extends UI {
 
 		// TODO: init views & menu
 		// TODO: inhalt setzen login/logout
+		// this.benutzerprofilView.viewInitialisieren();
+		// this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
+		// this.rechnungsView.viewInitialisieren();
+		// this.rechnungsView.viewAnzeigen(this.inhaltPanel);
+		// this.fahreranmeldungsView.viewInitialisieren();
+		// this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
+
+		this.fehlererfassungsView.viewInitialisieren();
+		this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
 
 		this.seite.setImmediate(true);
 		this.loginView.viewInitialisieren();
