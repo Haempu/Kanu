@@ -1,6 +1,13 @@
 package ch.bfh.project1.kanu.view;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
+
+import ch.bfh.project1.kanu.controller.ValidierungsController;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -11,10 +18,36 @@ import com.vaadin.ui.Component;
 
 public class BenutzerprofilView implements ViewTemplate {
 
+	// membervariables
+	private Label titel = new Label("Benutzerprofil");
+	private TextField email = new TextField("Email-Adresse");
+	private PasswordField altesPasswort = new PasswordField("Altes Passwort");
+	private PasswordField neuesPasswort = new PasswordField("Neues Passwort");
+	private PasswordField passwortBestaetigen = new PasswordField("Passwort bestätigen");
+	private Button speichern = new Button("Speichern");
+	private FormLayout benutzerProfilLayout = new FormLayout();
+
 	@Override
 	public void viewInitialisieren() {
-		// TODO Auto-generated method stub
+		this.benutzerProfilLayout.setSpacing(true);
+		this.titel.setStyleName("h2");
 
+		this.email.setInputPrompt("Email-Adresse");
+		this.altesPasswort.setInputPrompt("Passwort");
+		this.neuesPasswort.setInputPrompt("Neues Passwort");
+		this.passwortBestaetigen.setInputPrompt("Passwort bestätigen");
+
+		// TODO: validator, passwordField if empty = ok
+		ValidierungsController.setTextFeldRequired(this.email);
+		ValidierungsController.checkIfEmail(this.email);
+		// TODO: setEventOnSave();
+
+		this.benutzerProfilLayout.addComponent(this.titel);
+		this.benutzerProfilLayout.addComponent(this.email);
+		this.benutzerProfilLayout.addComponent(this.altesPasswort);
+		this.benutzerProfilLayout.addComponent(this.neuesPasswort);
+		this.benutzerProfilLayout.addComponent(this.passwortBestaetigen);
+		this.benutzerProfilLayout.addComponent(this.speichern);
 	}
 
 	@Override

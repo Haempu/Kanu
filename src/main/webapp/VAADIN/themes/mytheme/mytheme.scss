@@ -34,12 +34,26 @@
 @mixin mytheme {
   @include valo;
   
-
-  // Insert your own theme rules here
-  .logo {
+ .logo {
   	margin:15px;
     font-size: 25px;
   }
+ 
+  // Insert your own theme rules here
+  /*.logo [width-range~="0-300px"] {
+  	margin:15px;
+    font-size: 5px;
+  }
+ 
+   .logo [width-range~="301px-600px"] {
+  	margin:15px;
+    font-size: 15px;
+  }
+ 
+    .logo [width-range~="601px-"] {
+  	margin:15px;
+    font-size: 25px;
+  }*/
 
   .inhaltPanel {
 	padding-left:15px;

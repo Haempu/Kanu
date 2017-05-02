@@ -2,9 +2,9 @@ package ch.bfh.project1.kanu.view;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.vaadin.addon.responsive.Responsive;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
@@ -74,7 +74,8 @@ public class StrukturView extends UI {
 		this.seite.setSizeFull();
 		this.setContent(this.seite);
 
-		new Responsive(this.logo);
+		Responsive.makeResponsive(this.logo);
+
 	}
 
 	/**
