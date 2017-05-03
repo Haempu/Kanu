@@ -91,4 +91,8 @@ public class Club {
 		this.bezahlt = bezahlt;
 	}
 
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

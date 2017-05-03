@@ -9,6 +9,10 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import ch.bfh.project1.kanu.model.Fahrer;
 
@@ -21,10 +25,20 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class FehlererfassungsView implements ViewTemplate {
 
-	// membervariables
+	private UI ui;
+
+	// member variabeln: Übersichtstabelle
 	private Label titel = new Label("Fehlererfassung");
 	private Table table = new Table();
 	private FormLayout fehlererfassungsLayout = new FormLayout();
+
+	// member variabel: Popup fenster
+	private Window popup;
+	private VerticalLayout popupLayout = new VerticalLayout();
+	private TextField startnummerText = new TextField("Startnummer");
+	private TextField vornameText = new TextField("Vorname");
+	private TextField nachnameText = new TextField("Nachname");
+	private TextField clubText = new TextField("Club");
 
 	private static final String COLUMN_STARTNUMMER = "Startnummer";
 	private static final String COLUMN_VORNAME = "Vorname";
@@ -32,6 +46,10 @@ public class FehlererfassungsView implements ViewTemplate {
 	private static final String COLUMN_JAHRGANG = "Jahrgang";
 	private static final String COLUMN_ORT = "Ort";
 	private static final String COLUMN_BUTTON = "Fehler erfassen";
+
+	public FehlererfassungsView(UI ui) {
+		this.ui = ui;
+	}
 
 	@Override
 	public void viewInitialisieren() {
@@ -47,8 +65,25 @@ public class FehlererfassungsView implements ViewTemplate {
 
 		tabelleAbfuellen();
 
+		this.startnummerText.setEnabled(false);
+		this.vornameText.setEnabled(false);
+		this.nachnameText.setEnabled(false);
+		this.clubText.setEnabled(false);
+
+		this.popupLayout.addComponent(this.startnummerText);
+		this.popupLayout.addComponent(this.vornameText);
+		this.popupLayout.addComponent(this.nachnameText);
+		this.popupLayout.addComponent(this.clubText);
+
+		this.popup = new Window("Fehler erfassen");
+		this.popupLayout.addStyleName("popup");
+
+		this.popup.setContent(this.popupLayout);
+		this.popup.center();
+
 		this.fehlererfassungsLayout.addComponent(this.titel);
 		this.fehlererfassungsLayout.addComponent(this.table);
+		// this.fehlererfassungsLayout.addComponent(this.popup);
 	}
 
 	@Override
@@ -74,6 +109,16 @@ public class FehlererfassungsView implements ViewTemplate {
 			Item row = this.table.getItem(newItemId);
 
 			Button fehlerErfassen = new Button("Fehler erfassen");
+
+			fehlerErfassen.addClickListener(event -> {
+				// TODO: db values
+				this.startnummerText.setValue("12");
+				this.vornameText.setValue(f.getVorname());
+				this.nachnameText.setValue(f.getName());
+				this.clubText.setValue("Kanu Club Grenchen");
+
+				this.ui.addWindow(this.popup);
+			});
 
 			// TODO: lesen von fahrerresultat
 			row.getItemProperty(COLUMN_STARTNUMMER).setValue(12);
