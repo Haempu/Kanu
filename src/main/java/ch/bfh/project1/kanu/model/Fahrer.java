@@ -11,15 +11,33 @@ package ch.bfh.project1.kanu.model;
 
 public class Fahrer {
 
-	private int fahrerID;
+	private Integer fahrerID;
 	private Club club;
 	private String name;
 	private String vorname;
-	private int jahrgang;
+	private Integer jahrgang;
 	private String telNr;
 	private String strasse;
-	private int plz;
+	private Integer plz;
 	private String ort;
+	
+	public Fahrer(Integer fahrerID, Club club, String name, String vorname, Integer jahrgang, String telNr, String strasse, Integer plz, String ort)
+	{
+		this.fahrerID = fahrerID;
+		this.club = club;
+		this.name = name;
+		this.vorname = vorname;
+		this.jahrgang = jahrgang;
+		this.telNr = telNr;
+		this.strasse = strasse;
+		this.plz = plz;
+		this.ort = ort;
+	}
+	
+	public Fahrer()
+	{
+		
+	}
 
 	public int getFahrerID() {
 		return fahrerID;

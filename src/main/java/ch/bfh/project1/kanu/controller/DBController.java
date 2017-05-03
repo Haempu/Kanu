@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.Benutzer;
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.util.Row;
 
@@ -31,12 +32,58 @@ public class DBController {
 	private Connection connection;
 
 	private static DBController instance;
+	
+	public enum Table_Club {
+		COLUMN_ID("club_id"), COLUMN_NAME("name"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_Club(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}		public enum Table_Rennen {		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ORT("ort"), CLOUMN_ALL("*");		private final String column;		Table_Rennen(String column) {			this.column = column;		}		public String getValue() {			return column;		}	}
+	
+	public enum Table_Fahrer {
+		COLUMN_ID("fahrer_id"), COLUMN_CLUB_ID("club_id"), COLUMN_NAME("name"), 
+		COLUMN_VORNAME("vorname"), COLUMN_JAHRGANG("jahrgang"), COLUMN_TELNR("telnnr"),
+		COLUMN_PLZ("plz"), COLUMN_ORT("ort"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_Fahrer(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
+	
+	public enum Table_Benutzer {
+		COLUMN_ID("user_id"), COLUMN_BENUTZERNAME("benutzername"), COLUMN_EMAIL("email"), 
+		COLUMN_NAME("name"), COLUMN_VORNAME("vorname"), COLUMN_CLUB_ID("club_id"),
+		COLUMN_RECHTE("rechte"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_Benutzer(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
 
 	private DBController() {
-		dbHost = "mysql22.webland.ch"; // TODO User und Passwort richtig setzen
-		db = "brave_res_tool";
-		dbUser = "brave_res_tool";
-		dbUserPassword = "SoED-purple1";
+		dbHost = "sds-ranking.ch";
+		db = "kanu";
+		dbUser = "kanu";
+		dbUserPassword = "!kanuPW?";
 
 		try {
 			connect();
@@ -78,6 +125,81 @@ public class DBController {
 	 */
 	public void disconnect() throws SQLException {
 		connection.close();
+	}
+		/**	 * Liest die Clubs aus der Datenbank aus	 * @param column Spalte, in der gesucht werden soll	 * @param value Wert, nach dem gesucht werden soll	 * @return Liste der Clubs, die die Suchkriterien einhalten	 */
+	public <T> List<Club> selectClubBy(Table_Club column, T value) {
+		String selectStmt = "SELECT * FROM club WHERE " + column.getValue();
+		if (value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Club.CLOUMN_ALL))
+			selectStmt = "SELECT * FROM club";
+		List<Club> clubs = new ArrayList<Club>();
+
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idClub = (Integer) row.getRow().get(0).getKey();
+			String clubKennung = (String) row.getRow().get(1).getKey();
+			String name = (String) row.getRow().get(2).getKey();
+			clubs.add(new Club(idClub, clubKennung, name));
+		}
+		return clubs;
+	}
+	
+	/**
+	 * Liest die Fahrer inkl. Club aus der Datenbank raus.
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
+	 * @return Liste der Fahrer, die die Suchkriterien erfüllen
+	 */
+	public <T> List<Fahrer> selectFahrerBy(Table_Fahrer column, T value) {
+		String selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id) WHERE " + column.getValue();
+		if (value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Club.CLOUMN_ALL))
+			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id)";
+		List<Fahrer> fahrer = new ArrayList<Fahrer>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idClub = (Integer) row.getRow().get(0).getKey();
+			Integer idFahrer = (Integer) row.getRow().get(1).getKey();
+			String name = (String) row.getRow().get(2).getKey();
+			String vorname = (String) row.getRow().get(3).getKey();
+			Integer jg = (Integer) row.getRow().get(4).getKey();
+			String telnr = (String) row.getRow().get(5).getKey();
+			String strasse = (String) row.getRow().get(6).getKey();
+			Integer plz = (Integer) row.getRow().get(7).getKey();
+			String ort = (String) row.getRow().get(8).getKey();
+			String kennung = (String) row.getRow().get(9).getKey();
+			String club_name = (String) row.getRow().get(10).getKey();
+			fahrer.add(new Fahrer(idFahrer, new Club(idClub, kennung, club_name), name, vorname, jg, telnr, strasse, plz, ort));
+		}
+		return fahrer;
+	}
+	//TODO Startliste Tabelle in DB
+	public <T> List<Benutzer> selectBenutzerBy(Table_Benutzer column, T value) {
+		String selectStmt = "SELECT * FROM user JOIN club USING(club_id) WHERE " + column.getValue();
+		if (value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Club.CLOUMN_ALL))
+			selectStmt = "SELECT * FROM user JOIN club USING(club_id)";
+		List<Benutzer> benutzer = new ArrayList<Benutzer>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idClub = (Integer) row.getRow().get(0).getKey();
+			Integer idBenutzer = (Integer) row.getRow().get(1).getKey();
+			String benutzername = (String) row.getRow().get(2).getKey();
+			String passwort = (String) row.getRow().get(3).getKey();
+			String name = (String) row.getRow().get(4).getKey();
+			String vorname = (String) row.getRow().get(5).getKey();
+			Integer rechte = (Integer) row.getRow().get(6).getKey();
+			String kennung = (String) row.getRow().get(7).getKey();
+			String club_name = (String) row.getRow().get(8).getKey();
+			benutzer.add(new Benutzer()); //TODO
+		}
+		return benutzer;
 	}
 
 	// --- UTIL METHODS ---
@@ -189,35 +311,87 @@ public class DBController {
 		}
 	}
 
-	public List<String> fahrerlisteClub(int clubID) {
-		return new ArrayList();
+	/**
+	 * Liest alle Fahrer eines Clubs aus der Datenbank und gibt sie als Liste zurück
+	 * @param clubID ID des Clubs
+	 * @return Liste der Fahrer
+	 */
+	public List<Fahrer> fahrerlisteClub(Integer clubID) {
+		return selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID);
 	}
 
-	public void fahrerAnmelden(int fahrerID) {
+	/**
+	 * Meldet einen Fahrer für ein Rennen in der gewünschten Alters- sowie Bootskategorie an.
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param bootsKlasse Die Bootkslasse
+	 * @param altersKategorie Die Alterskategorie
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasse, Integer altersKategorie) {
+		ExecuteResult res = executeUpdate("INSERT INTO fahrer_rennen (fahrer_id, rennen_id, kategorie_id, boots_kategorie) VALUES ("
+				+ fahrerID + ", " + rennenID + ", " + altersKategorie + ", " + bootsKlasse + ");");
+		return res.isSuccess();
+	}
+
+	public void fahrerAbmelden(Integer fahrerID, Integer rennenID) {
 
 	}
 
-	public void fahrerAbmelden(int fahrerID) {
-
-	}
-
+	/**
+	 * Liest zu einer gegebenen ID den Fahrer aus der Datenbank
+	 * 
+	 * @param fahrerID Die ID des gewünschten Fahrers
+	 * @return Das Fahrer Objekt, null wenn Fahrer nicht vorhanden
+	 */
 	public Fahrer ladeFahrer(int fahrerID) {
-		return new Fahrer();
+		List<Fahrer> fahrer = selectFahrerBy(Table_Fahrer.COLUMN_ID, fahrerID);
+		if(fahrer.size() > 0)
+			return fahrer.get(0);
+		else
+			return null; //TODO abzuklären
 	}
 
-	public void speichereFahrer(Fahrer fahrer) {
-
+	/**
+	 * Speichert einen Fahrer in der Datenbank. Um einen neuen Fahrer einzufügen, muss die ID kleiner als 1 sein, 
+	 * ansonsten wird ein bestehender Fahrer upgedatet (sofern vorhanden, sonst werden die Daten verworfen)
+	 * 
+	 * @param fahrer Der Fahrer mit den Infos
+	 * @return boolean true wenn erfolgreich, false sonst
+	 */
+	public boolean speichereFahrer(Fahrer fahrer) {
+		ExecuteResult res;
+		if(fahrer.getFahrerID() < 1)
+		{
+			res = executeUpdate("INSERT INTO fahrer (club_id, name, vorname, jahrgang, telnr, strasse, plz, ort) "
+					+ "VALUES (" + fahrer.getClub().getClubID() + ", '" + fahrer.getName() + "', '" + fahrer.getVorname()
+					+ "', " + fahrer.getJahrgang() + ", '" + fahrer.getTelNr() + "', '" + fahrer.getStrasse()
+					+ "', " + fahrer.getPlz() + ", '" + fahrer.getOrt() + "');");
+		}
+		else
+		{
+			res = executeUpdate("UPDATE fahrer SET club_id = " + fahrer.getClub().getClubID() 
+					+ ", name = '" + fahrer.getName() + "', vorname = '" + fahrer.getVorname()
+					+ "', jahrgang = " + fahrer.getJahrgang() + ", telnr = '" + fahrer.getTelNr() 
+					+ "', strasse = '" + fahrer.getStrasse() + "', plz = " + fahrer.getPlz() 
+					+ ", ort = '" + fahrer.getOrt() + "' WHERE fahrer_id = " + fahrer.getFahrerID() + ";");
+		}
+		return res.isSuccess();
 	}
 
 	public Benutzer ladeBenutzer(int benutzerID) {
-		return new Benutzer();
+		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
+		if(benutzer.size() > 0)
+			return benutzer.get(0);
+		else
+			return null; //TODO abzuklären
 	}
 
-	public void speichereBenutzer(Benutzer benutzerID) {
-
+	public boolean speichereBenutzer(Benutzer benutzer) {
+		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO user (passwort, email) "					+ "VALUES (" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "');");		}		else		{			res = executeUpdate("UPDATE user SET email = " + benutzer.getEmailAdresse() 					+ ", passwort = '" + benutzer.getPasswort()					+ " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
 	}
 
 	public List<String> ladeAngemeldeteClubs() {
-		return new ArrayList();
+		return new ArrayList<String>();
 	}
 }
