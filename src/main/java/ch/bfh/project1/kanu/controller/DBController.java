@@ -310,6 +310,45 @@ public class DBController {
 			return generatedIDs;
 		}
 	}
+	
+	/**
+	 * Liest alle Clubs aus der Datenbank aus
+	 * @return Die Clubs als Liste
+	 */
+	public List<Club> ladeClubs()
+	{
+		return selectClubBy(Table_Club.CLOUMN_ALL, null);
+	}
+	
+	/**
+	 * Liest einen Club nach ID aus der Datenbank aus
+	 * @param clubID Die ID des Clubs
+	 * @return Das Club Objekt
+	 */
+	public Club ladeClubByID(Integer clubID)
+	{
+		List<Club> clubs = selectClubBy(Table_Club.COLUMN_ID, clubID);
+		if(clubs.size() > 0)
+			return clubs.get(0);
+		else
+			return null;
+	}
+	
+	/**
+	 * Speichert einen Club in der Datenbank. Um einen neuen Club einzufügen, muss die ID kleiner als 1 sein, 
+	 * ansonsten wird ein bestehender Club upgedatet (sofern vorhanden, sonst werden die Daten verworfen) 
+	 * @param club Das Club Objekt
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean speichereClub(Club club)
+	{
+		ExecuteResult res;
+		if(club.getClubID() < 1)
+			res = executeUpdate("INSERT INTO club (kennung, name) VALUES ('" + club.getKennung() + "', '" + club.getName() + "');");
+		else
+			res = executeUpdate("UPDATE club SET kennung = '" + club.getKennung() + "', name = '" + club.getName() + "' WHERE club_id = " + club.getClubID() + ";");
+		return res.isSuccess();
+	}
 
 	/**
 	 * Liest alle Fahrer eines Clubs aus der Datenbank und gibt sie als Liste zurück
@@ -334,8 +373,15 @@ public class DBController {
 		return res.isSuccess();
 	}
 
-	public void fahrerAbmelden(Integer fahrerID, Integer rennenID) {
-
+	/**
+	 * Meldet einen Fahrer von einem Rennen ab (alle Kategorien!)
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean fahrerAbmelden(Integer fahrerID, Integer rennenID) {
+		ExecuteResult res = executeUpdate("DELETE FROM fahrer_rennen WHERE fahrer_id = " + fahrerID + " AND rennen_id = " + rennenID + ";");
+		return res.isSuccess();
 	}
 
 	/**
@@ -379,6 +425,11 @@ public class DBController {
 		return res.isSuccess();
 	}
 
+	/**
+	 * Lädt einen Benutzer aus der Datenbank
+	 * @param benutzerID Die Benutzer ID
+	 * @return Das Benutzer Objekt
+	 */
 	public Benutzer ladeBenutzer(int benutzerID) {
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
 		if(benutzer.size() > 0)
@@ -387,6 +438,12 @@ public class DBController {
 			return null; //TODO abzuklären
 	}
 
+	/**
+	 * Speichert einen Benutzer. Ist die ID kleiner als 1, wird ein neuer Benutzer angelegt, ansonsten ein bestehender
+	 * geupdatet. Ist kein Benutzer mit der ID vorhanden, werden die Daten verworfen.
+	 * @param benutzer Das Benutzer Objekt
+	 * @return true wenn erfolg, false sonst
+	 */
 	public boolean speichereBenutzer(Benutzer benutzer) {
 		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO user (passwort, email) "					+ "VALUES (" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "');");		}		else		{			res = executeUpdate("UPDATE user SET email = " + benutzer.getEmailAdresse() 					+ ", passwort = '" + benutzer.getPasswort()					+ " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
 	}

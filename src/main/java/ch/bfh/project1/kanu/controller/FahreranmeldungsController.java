@@ -29,7 +29,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Clubs
 	 * @return
 	 */
-	public List<String> ladeFahrerlisteClub(int clubID) {
+	public List<Fahrer> ladeFahrerlisteClub(int clubID) {
 		return dbController.fahrerlisteClub(clubID);
 	}
 
@@ -40,7 +40,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void fahrerAnmelden(int fahrerID) {
-		dbController.fahrerAnmelden(fahrerID);
+		dbController.fahrerAnmelden(fahrerID, fahrerID, fahrerID, fahrerID);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void fahrerAbmelden(int fahrerID) {
-		dbController.fahrerAbmelden(fahrerID);
+		dbController.fahrerAbmelden(fahrerID, fahrerID);
 	}
 
 	/**
