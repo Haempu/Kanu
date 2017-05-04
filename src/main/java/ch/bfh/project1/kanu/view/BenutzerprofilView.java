@@ -40,7 +40,10 @@ public class BenutzerprofilView implements ViewTemplate {
 
 		ValidierungsController.setTextFeldRequired(this.email);
 		ValidierungsController.checkIfEmail(this.email);
-		// TODO: setSpeichernEvent();
+
+		this.speichern.addClickListener(event -> {
+			// TODO: speichern button
+		});
 
 		this.benutzerProfilLayout.addComponent(this.titel);
 		this.benutzerProfilLayout.addComponent(this.email);
@@ -57,12 +60,8 @@ public class BenutzerprofilView implements ViewTemplate {
 		inhaltsPanel.setContent(this.benutzerProfilLayout);
 	}
 
-	private void setSpeichernEvent() {
-
-	}
-
 	private void formAbfuellen() {
-		// TODO
+		// TODO read current email address from logged in user
 	}
 
 }
