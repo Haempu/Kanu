@@ -11,6 +11,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 
+import ch.bfh.project1.kanu.controller.RechnungsController;
 import ch.bfh.project1.kanu.model.Club;
 
 /**
@@ -22,11 +23,15 @@ import ch.bfh.project1.kanu.model.Club;
 
 public class RechnungsView implements ViewTemplate {
 
-	// membervariables
+	// UI Komponenten
 	private Label titel = new Label("Rechnungsverwaltung");
 	private Table table = new Table();
 	private Button allePDFgenerieren = new Button("Alle PDF herunterladen");
 	private FormLayout rechnungsViewLayout = new FormLayout();
+	private ArrayList<Club> clubs;
+
+	// controller
+	private RechnungsController rController = new RechnungsController();
 
 	private static final String COLUMN_CLUB = "Club";
 	private static final String COLUMN_BEZAHLT = "bezahlt";
@@ -44,7 +49,9 @@ public class RechnungsView implements ViewTemplate {
 		tabelleAbfuellen();
 
 		this.allePDFgenerieren.addClickListener(event -> {
-			// TODO: generate PDF and download
+			for (Club club : this.clubs) {
+				this.rController.rechnungErstellen(club);
+			}
 		});
 
 		this.rechnungsViewLayout.addComponent(this.titel);
@@ -62,14 +69,9 @@ public class RechnungsView implements ViewTemplate {
 	 * Funktion füllt die Tabelle mit allen Clubs ab.
 	 */
 	private void tabelleAbfuellen() {
-		// TODO: read data out of db and remove dummies
-		ArrayList<Club> clubs = new ArrayList<Club>();
-		clubs.add(new Club(1, "Club Grenchen", true));
-		clubs.add(new Club(2, "Club Solothurn", true));
-		clubs.add(new Club(3, "Club Büren", false));
-		clubs.add(new Club(4, "Club Biel", true));
+		this.clubs = this.rController.ladeAngemeldeteClubs();
 
-		for (Club club : clubs) {
+		for (Club club : this.clubs) {
 			Object newItemId = this.table.addItem();
 			Item row = this.table.getItem(newItemId);
 
@@ -86,14 +88,14 @@ public class RechnungsView implements ViewTemplate {
 
 			bezahltCheckbox.addValueChangeListener(event -> {
 				if (bezahltCheckbox.getValue() == true) {
-					/* TODO: write to db */
+					this.rController.rechnungBezahlen(club, true);
 				} else {
-					/* TODO: write to db */
+					this.rController.rechnungBezahlen(club, false);
 				}
 			});
 
 			pdfGenerieren.addClickListener(event -> {
-				// TODO: generate PDF and download
+				this.rController.rechnungErstellen(club);
 			});
 
 			row.getItemProperty(COLUMN_CLUB).setValue(club.getName());

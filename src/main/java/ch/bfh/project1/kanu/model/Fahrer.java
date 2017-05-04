@@ -30,6 +30,17 @@ public class Fahrer {
 		this.angemeldet = angemeldet;
 	}
 
+	public Fahrer(String name, String vorname, int jahrgang, String telNr, String strasse, int plz, String ort) {
+		this.name = name;
+		this.vorname = vorname;
+		this.jahrgang = jahrgang;
+		this.telNr = telNr;
+		this.strasse = strasse;
+		this.plz = plz;
+		this.ort = ort;
+		this.club = club;
+	}
+
 	public Integer getFahrerID() {
 		return fahrerID;
 	}

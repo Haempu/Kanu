@@ -8,6 +8,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
+import ch.bfh.project1.kanu.controller.BenutzerprofilController;
+import ch.bfh.project1.kanu.controller.SessionController;
 import ch.bfh.project1.kanu.controller.ValidierungsController;
 
 /**
@@ -19,7 +21,7 @@ import ch.bfh.project1.kanu.controller.ValidierungsController;
 
 public class BenutzerprofilView implements ViewTemplate {
 
-	// membervariables
+	// UI Komponenten
 	private Label titel = new Label("Benutzerprofil");
 	private TextField email = new TextField("Email-Adresse");
 	private PasswordField altesPasswort = new PasswordField("Altes Passwort");
@@ -27,6 +29,9 @@ public class BenutzerprofilView implements ViewTemplate {
 	private PasswordField passwortBestaetigen = new PasswordField("Passwort bestätigen");
 	private Button speichern = new Button("Speichern");
 	private FormLayout benutzerProfilLayout = new FormLayout();
+
+	// Kontroller
+	private BenutzerprofilController bController = new BenutzerprofilController();
 
 	@Override
 	public void viewInitialisieren() {
@@ -40,9 +45,11 @@ public class BenutzerprofilView implements ViewTemplate {
 
 		ValidierungsController.setTextFeldRequired(this.email);
 		ValidierungsController.checkIfEmail(this.email);
+		// TODO: validation new, old pw etc.
 
 		this.speichern.addClickListener(event -> {
-			// TODO: speichern button
+			bController.benutzerprofilAendern(SessionController.getBenutzerID(), this.email.getValue(),
+					this.neuesPasswort.getValue(), this.neuesPasswort.getValue(), this.passwortBestaetigen.getValue());
 		});
 
 		this.benutzerProfilLayout.addComponent(this.titel);

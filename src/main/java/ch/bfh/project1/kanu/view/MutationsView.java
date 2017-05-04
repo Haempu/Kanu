@@ -14,6 +14,10 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
+import ch.bfh.project1.kanu.controller.MutationsController;
+import ch.bfh.project1.kanu.controller.SessionController;
+import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 
 /**
@@ -35,23 +39,18 @@ public class MutationsView implements ViewTemplate {
 	// member variabel: Popup fenster
 	private Window popup;
 	private FormLayout popupLayoutMaster = new FormLayout();
-	private FormLayout popupLayoutClubverantwortlicher = new FormLayout();
 
 	private TextField vornameText = new TextField("Vorname");
 	private TextField nachnameText = new TextField("Nachname");
 	private TextField jahrgangText = new TextField("Jahrgang");
+	private TextField strasseText = new TextField("Strasse");
 	private TextField plzText = new TextField("Postleitzahl");
 	private TextField ortText = new TextField("Ort");
 	private TextField telefonNrText = new TextField("Telefonnummer");
 	private NativeSelect clubs = new NativeSelect("Klub");
-	private Label rennenLabel = new Label("Rennen");
-
-	private NativeSelect bootsKlassen = new NativeSelect("Bootsklasse");
-	private NativeSelect altersKategorien = new NativeSelect("Alterskategorie");
-	private Label laufzeitenLabel = new Label("Laufzeiten");
-	private TextField laufzeitEins = new TextField("1. Laufzeit");
-	private TextField laufzeitZwei = new TextField("2. Laufzeit");
 	private Button speichern = new Button("Speichrn");
+
+	private MutationsController mController = new MutationsController();
 
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
@@ -67,8 +66,6 @@ public class MutationsView implements ViewTemplate {
 	public void viewInitialisieren() {
 		this.fahrerVerwaltungsLayout.setSpacing(true);
 		this.titel.setStyleName("h2");
-		this.rennenLabel.setStyleName("h2");
-		this.laufzeitenLabel.setStyleName("h3");
 
 		this.table.addContainerProperty(COLUMN_VORNAME, String.class, null);
 		this.table.addContainerProperty(COLUMN_NACHNAME, String.class, null);
@@ -78,31 +75,35 @@ public class MutationsView implements ViewTemplate {
 
 		tabelleAbfuellen();
 
-		this.laufzeitEins.setInputPrompt("mm:ss:hh");
-		this.laufzeitZwei.setInputPrompt("mm:ss:hh");
-
 		this.speichern.addClickListener(event -> {
-			// TODO: speichern button
-		});
+			// TODO: Validation
+			Fahrer fahrer = new Fahrer(this.nachnameText.getValue(), this.vornameText.getValue(),
+					Integer.parseInt(this.jahrgangText.getValue()), this.telefonNrText.getValue(),
+					this.strasseText.getValue(), Integer.parseInt(this.plzText.getValue()), this.ortText.getValue());
 
-		// TODO: master & Clubverantwortlicher
+			if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
+				fahrer.setClub((Club) this.clubs.getValue());
+				this.mController.speichereFahrerBearbeitenAlle(fahrer);
+			} else {
+				this.mController.speichereFahrerBearbeitenClub(fahrer);
+			}
+		});
 
 		this.popupLayoutMaster.addComponent(this.vornameText);
 		this.popupLayoutMaster.addComponent(this.nachnameText);
 		this.popupLayoutMaster.addComponent(this.jahrgangText);
+		this.popupLayoutMaster.addComponent(this.strasseText);
 		this.popupLayoutMaster.addComponent(this.plzText);
 		this.popupLayoutMaster.addComponent(this.ortText);
 		this.popupLayoutMaster.addComponent(this.telefonNrText);
-		this.popupLayoutMaster.addComponent(this.clubs);
-		this.popupLayoutMaster.addComponent(this.rennenLabel);
-		this.popupLayoutMaster.addComponent(this.bootsKlassen);
-		this.popupLayoutMaster.addComponent(this.altersKategorien);
-		this.popupLayoutMaster.addComponent(this.laufzeitenLabel);
-		this.popupLayoutMaster.addComponent(this.laufzeitEins);
-		this.popupLayoutMaster.addComponent(this.laufzeitZwei);
+
+		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
+			this.popupLayoutMaster.addComponent(this.clubs);
+		}
+
 		this.popupLayoutMaster.addComponent(this.speichern);
 
-		this.popup = new Window("Zeit erfassen");
+		this.popup = new Window("Fahrer verwalten");
 		this.popupLayoutMaster.addStyleName("popup");
 
 		this.popup.setContent(this.popupLayoutMaster);
@@ -122,13 +123,14 @@ public class MutationsView implements ViewTemplate {
 	 * Funktion füllt die Tabelle mit allen Clubs ab.
 	 */
 	private void tabelleAbfuellen() {
-		// TODO: read data out of db and remove dummies
-		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
-		fahrer.add(new Fahrer(1, "Hans", "Müller", 1993, true));
-		fahrer.add(new Fahrer(2, "Hans", "Müller", 1993, true));
-		fahrer.add(new Fahrer(3, "Hans", "Müller", 1993, false));
-		fahrer.add(new Fahrer(4, "Hans", "Müller", 1993, false));
-		fahrer.add(new Fahrer(5, "Hans", "Müller", 1993, true));
+		ArrayList<Fahrer> fahrer;
+
+		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
+			fahrer = this.mController.ladeFahrermutationslisteAlle();
+		} else {
+			// TODO: change club id
+			fahrer = this.mController.ladeFahrermutationslisteClub(1);
+		}
 
 		for (Fahrer f : fahrer) {
 			Object newItemId = this.table.addItem();
@@ -137,20 +139,21 @@ public class MutationsView implements ViewTemplate {
 			Button bearbeiten = new Button("Bearbeiten");
 
 			bearbeiten.addClickListener(event -> {
-				// TODO: db values
 				this.vornameText.setValue(f.getVorname());
 				this.nachnameText.setValue(f.getName());
 				this.jahrgangText.setValue(Integer.toString(f.getJahrgang()));
+				this.strasseText.setValue(f.getStrasse());
 				this.plzText.setValue(Integer.toString(f.getPlz()));
 				this.ortText.setValue(f.getOrt());
 				this.telefonNrText.setValue(f.getTelNr());
-				// TODO: clubs, bootsKlassen, altersKategorien, laufzeitEins,
-				// laufzeitZwei
+
+				if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
+					this.clubs.setValue(f.getClub());
+				}
 
 				this.ui.addWindow(this.popup);
 			});
 
-			// TODO: lesen von fahrerresultat
 			row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 			row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
 			row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());

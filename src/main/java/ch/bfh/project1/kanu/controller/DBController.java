@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.Benutzer;
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
@@ -212,71 +213,68 @@ public class DBController {
 
 	}
 
-	public Benutzer ladeBenutzer(Integer benutzerID){
+	public Benutzer ladeBenutzer(Integer benutzerID) {
 		return null;
 	}
 	/*
-	public List<Benutzer> ladeBenutzer(Integer benutzerID) {
-		String selectStmt = "SELECT * from Benutzer where benutzerID = " + benutzerID;
-		List<Benutzer> benutzer = new ArrayList<Benutzer>();
-		for (Row row : (executeSelect(selectStmt))) {
-			Integer benutzerId = (Integer) row.getRow().get(1).getKey();
-			String email = (String) row.getRow().get(2).getKey();
-			String passwort = (String) row.getRow().get(3).getKey();
-			BenutzerRolle benutzerRolle = (BenutzerRolle) row.getRow().get(4).getKey();
-			benutzer.add(new Benutzer(benutzerId, email, passwort, benutzerRolle));
-		}
-		return benutzer;
-	}*/
+	 * public List<Benutzer> ladeBenutzer(Integer benutzerID) { String
+	 * selectStmt = "SELECT * from Benutzer where benutzerID = " + benutzerID;
+	 * List<Benutzer> benutzer = new ArrayList<Benutzer>(); for (Row row :
+	 * (executeSelect(selectStmt))) { Integer benutzerId = (Integer)
+	 * row.getRow().get(1).getKey(); String email = (String)
+	 * row.getRow().get(2).getKey(); String passwort = (String)
+	 * row.getRow().get(3).getKey(); BenutzerRolle benutzerRolle =
+	 * (BenutzerRolle) row.getRow().get(4).getKey(); benutzer.add(new
+	 * Benutzer(benutzerId, email, passwort, benutzerRolle)); } return benutzer;
+	 * }
+	 */
 
 	public void speichereBenutzer(Benutzer benutzerID) {
 
 	}
 
-	public List<String> ladeAngemeldeteClubs() {
+	public ArrayList<Club> ladeAngemeldeteClubs() {
 		return new ArrayList();
 	}
-	
-	public List<String> ladeFehlererfassung(Integer rennenID){
+
+	public ArrayList<String> ladeFehlererfassung(Integer rennenID) {
 		return new ArrayList<String>();
 	}
-	
-	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer){
-		
+
+	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
+
 	}
-	
-	public List<Fahrer> ladeFahrermutationslisteAlle(){
+
+	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() {
 		return new ArrayList<Fahrer>();
 	}
-	
-	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID){
+
+	public ArrayList<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
 		return new ArrayList<Fahrer>();
 	}
-	
-	public FahrerResultat ladeFahrerresultat(Integer fahrerID){
+
+	public FahrerResultat ladeFahrerresultat(Integer fahrerID) {
 		return new FahrerResultat();
 	}
-	
-	public void speichereFahrerBearbeitenAlle(Fahrer fahrer, FahrerResultat fahrerResultat){
-		
+
+	public void speichereFahrerBearbeitenAlle(Fahrer fahrer) {
+
 	}
-	
-	public void speichereFahrerBearbeitenClub(Fahrer fahrer){
-		
+
+	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
+
 	}
-	
-	public Rangliste ladeRanglisteRennen(Rennen rennen){
+
+	public Rangliste ladeRanglisteRennen(Rennen rennen) {
 		return new Rangliste();
 	}
-	
-	public Rangliste ladeRanglisteBootsKlasseID(Integer bootsKlasseID){
+
+	public Rangliste ladeRanglisteBootsKlasseID(Integer bootsKlasseID) {
 		return new Rangliste();
 	}
-	
-	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID){
+
+	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID) {
 		return new Rangliste();
 	}
-	
-	
-	
+
 }
