@@ -12,11 +12,20 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class Benutzer {
+	public enum BenutzerRolle {
+		ROLLE_STANDARD, ROLLE_TURNIERORGANISATOR, ROLLE_TORRICHTER, ROLLE_ZEITNEHMER, ROLLE_RECHNUNG, ROLLE_CLUBVERANTWORTLICHER
+	}
+	
 	private Integer benutzerID;
 	private String emailAdresse;
 	private String passwort;
 	private BenutzerRolle benutzerRolle;
-
+	
+	//TODO: nur für Test?
+	public Benutzer(){
+		
+	}
+	
 	public Benutzer(Integer id, String email, String pw, BenutzerRolle br){
 		this.benutzerID = id;
 		this.emailAdresse = email;

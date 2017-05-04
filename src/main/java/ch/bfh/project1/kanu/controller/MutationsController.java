@@ -1,11 +1,9 @@
 package ch.bfh.project1.kanu.controller;
 
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Benutzer;
-import ch.bfh.project1.kanu.model.Club;
+import java.util.List;
+
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Strafzeit;
 import ch.bfh.project1.kanu.view.MutationsView;
 
 /**
@@ -20,34 +18,47 @@ import ch.bfh.project1.kanu.view.MutationsView;
 public class MutationsController {
 	private DBController dbController;
 	private MutationsView mutationsView;
-
-	/*public List<Fahrer> ladeFahrer(Benutzer benutzer, Integer clubID) {
-		if (benutzer.getBenutzerRolle().getName() == BenutzerRolle.Rolle.ROLLE_CLUBVERANTWORTLICHER){
-			return new ArrayList<Fahrer>;
-		}
-	}*/
 	
-	public void fahrerBearbeiten(Fahrer fahrer) {
-
+	/**
+	 * Lädt die Liste für die Fahrermutationstabelle. Lädt Fahrer von allen Clubs.
+	 * @return Liste von allen Fahrern die am Rennen teilgenommen haben.
+	 */
+	public List<Fahrer> ladeFahrermutationslisteAlle(){
+		return dbController.ladeFahrermutationslisteAlle();
 	}
-
-	public void zeitBearbeiten(FahrerResultat resultat) {
-
+	
+	/**
+	 * Lädt die Liste für die Fahrermutationstabelle. Lädt alle Fahrer des Clubs vom angemeldeten Benutzer.
+	 * @param clubID - ID des Clubs vom angemeldeten Benutzer.
+	 * @return Liste von allen Fahreren des Clubs, die am Rennen teilgenommen haben.
+	 */
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID){
+		return dbController.ladeFahrermutationslisteClub(clubID);
 	}
-
-	public void strafzeitenBearbeiten(FahrerResultat resultat, Strafzeit strafzeit) {
-
+	
+	/**
+	 * Lädt die Resultate des ausgewählten Fahrers.
+	 * @param fahrerID - ID des ausgewählten Fahrers.
+	 * @return Resultate des ausgewählten Fahrers.
+	 */
+	public FahrerResultat ladeFahrerresultat(Integer fahrerID){
+		return dbController.ladeFahrerresultat(fahrerID);
 	}
-
-	public void clubBearbeiten(Club club) {
-
+	
+	/**
+	 * Speichert die bearbeiteten Daten sowie die bearbeiteten Resultate des ausgewählten Fahrers.
+	 * @param fahrer - Ausgewählter Fahrer.
+	 * @param fahrerResultat - Resultate des ausgewählten Fahrers.
+	 */
+	public void speichereFahrerBearbeitenAlle(Fahrer fahrer, FahrerResultat fahrerResultat){
+		dbController.speichereFahrerBearbeitenAlle(fahrer, fahrerResultat);
 	}
-
-	public void kategorieBearbeiten(AltersKategorie kategorie) {
-
-	}
-
-	public void benutzerBearbeiten(Benutzer benutzer) {
-
+	
+	/**
+	 * Speichert die bearbeiteten Daten des ausgwählten Fahrers.
+	 * @param fahrer - Ausgewählter Fahrer.
+	 */
+	public void speichereFahrerBearbeitenClub(Fahrer fahrer){
+		dbController.speichereFahrerBearbeitenClub(fahrer);
 	}
 }

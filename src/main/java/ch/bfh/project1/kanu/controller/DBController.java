@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.Benutzer;
-import ch.bfh.project1.kanu.model.BenutzerRolle;
 import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rangliste;
+import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.util.Row;
 
 /**
@@ -190,19 +192,19 @@ public class DBController {
 		}
 	}
 
-	public List<String> fahrerlisteClub(int clubID) {
+	public List<String> ladeFahreranmeldungslisteClub(int clubID) {
 		return new ArrayList();
 	}
 
-	public void fahrerAnmelden(int fahrerID) {
+	public void fahrerAnmelden(Integer fahrerID, Integer RennenID, Integer bootsKlasseID, Integer alterskategorieID) {
 
 	}
 
-	public void fahrerAbmelden(int fahrerID) {
+	public void fahrerAbmelden(Integer fahrerID, Integer RennenID, Integer bootsKlasseID, Integer alterskategorieID) {
 
 	}
 
-	public Fahrer ladeFahrer(int fahrerID) {
+	public Fahrer ladeFahrer(Integer fahrerID) {
 		return new Fahrer();
 	}
 
@@ -210,6 +212,10 @@ public class DBController {
 
 	}
 
+	public Benutzer ladeBenutzer(Integer benutzerID){
+		return new Benutzer();
+	}
+	/*
 	public List<Benutzer> ladeBenutzer(Integer benutzerID) {
 		String selectStmt = "SELECT * from Benutzer where benutzerID = " + benutzerID;
 		List<Benutzer> benutzer = new ArrayList<Benutzer>();
@@ -221,7 +227,7 @@ public class DBController {
 			benutzer.add(new Benutzer(benutzerId, email, passwort, benutzerRolle));
 		}
 		return benutzer;
-	}
+	}*/
 
 	public void speichereBenutzer(Benutzer benutzerID) {
 
@@ -238,4 +244,39 @@ public class DBController {
 	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer){
 		
 	}
+	
+	public List<Fahrer> ladeFahrermutationslisteAlle(){
+		return new ArrayList<Fahrer>();
+	}
+	
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID){
+		return new ArrayList<Fahrer>();
+	}
+	
+	public FahrerResultat ladeFahrerresultat(Integer fahrerID){
+		return new FahrerResultat();
+	}
+	
+	public void speichereFahrerBearbeitenAlle(Fahrer fahrer, FahrerResultat fahrerResultat){
+		
+	}
+	
+	public void speichereFahrerBearbeitenClub(Fahrer fahrer){
+		
+	}
+	
+	public Rangliste ladeRanglisteRennen(Rennen rennen){
+		return new Rangliste();
+	}
+	
+	public Rangliste ladeRanglisteBootsKlasseID(Integer bootsKlasseID){
+		return new Rangliste();
+	}
+	
+	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID){
+		return new Rangliste();
+	}
+	
+	
+	
 }

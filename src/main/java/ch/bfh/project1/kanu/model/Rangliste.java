@@ -18,7 +18,7 @@ public class Rangliste {
 	private List<FahrerResultat> resultate = new ArrayList();
 
 	public Rennen getRennen() {
-		return rennen;
+		return this.rennen;
 	}
 
 	public void setRennen(Rennen rennen) {
@@ -26,7 +26,7 @@ public class Rangliste {
 	}
 
 	public List<FahrerResultat> getResultate() {
-		return resultate;
+		return this.resultate;
 	}
 
 	public void setResultate(List<FahrerResultat> resultate) {

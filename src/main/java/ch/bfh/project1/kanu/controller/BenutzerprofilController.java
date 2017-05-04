@@ -34,7 +34,7 @@ public class BenutzerprofilController {
 	 */
 	public boolean benutzerprofilAendern(Integer benutzerID, String mail, String aktPW, String neuesPW,
 			String wiederholtesPW) {
-		Benutzer benutzer = dbController.ladeBenutzer(benutzerID).get(0);
+		Benutzer benutzer = dbController.ladeBenutzer(benutzerID);
 		if (benutzer.getPasswort().equals(aktPW)) {
 			// Nur E-Mail soll geändert werden
 			if (neuesPW.isEmpty() && wiederholtesPW.isEmpty()) {

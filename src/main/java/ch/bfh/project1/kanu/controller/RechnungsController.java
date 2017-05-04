@@ -15,6 +15,7 @@ import ch.bfh.project1.kanu.view.RechnungsView;
  */
 
 public class RechnungsController {
+//	private static String[] HEADER {""};
 	private DBController dbController;
 	private RechnungsView rechnungsView;
 
@@ -27,7 +28,8 @@ public class RechnungsController {
 	}
 
 	public void rechnungErstellen(Club club) {
-
+	//	dbController.
+	//	PDFController.generierePDF(pfad, tabellentitel, HEADER, daten);
 	}
 
 }

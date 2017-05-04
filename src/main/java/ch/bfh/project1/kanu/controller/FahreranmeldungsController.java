@@ -29,8 +29,8 @@ public class FahreranmeldungsController {
 	 *            - ID eines Clubs
 	 * @return
 	 */
-	public List<String> ladeFahrerlisteClub(int clubID) {
-		return dbController.fahrerlisteClub(clubID);
+	public List<String> ladeFahreranmeldungslisteClub(Integer clubID) {
+		return dbController.ladeFahreranmeldungslisteClub(clubID);
 	}
 
 	/**
@@ -39,8 +39,8 @@ public class FahreranmeldungsController {
 	 * @param fahrerID
 	 *            - ID eines Fahrers.
 	 */
-	public void fahrerAnmelden(int fahrerID) {
-		dbController.fahrerAnmelden(fahrerID);
+	public void fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
+		dbController.fahrerAnmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
 	}
 
 	/**
@@ -49,8 +49,8 @@ public class FahreranmeldungsController {
 	 * @param fahrerID
 	 *            - ID eines Fahrers.
 	 */
-	public void fahrerAbmelden(int fahrerID) {
-		dbController.fahrerAbmelden(fahrerID);
+	public void fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
+		dbController.fahrerAbmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 * @return
 	 */
-	public Fahrer ladeFahrerVerwalten(int fahrerID) {
+	public Fahrer ladeFahrerVerwalten(Integer fahrerID) {
 		// TODO: Was wenn Fahrer nicht vorhanden? Exception von DBController?
 		return dbController.ladeFahrer(fahrerID);
 	}
