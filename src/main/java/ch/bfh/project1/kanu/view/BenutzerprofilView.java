@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
@@ -34,13 +35,15 @@ public class BenutzerprofilView implements ViewTemplate {
 
 		this.email.setInputPrompt("Email-Adresse");
 		this.altesPasswort.setInputPrompt("Passwort");
-		this.neuesPasswort.setInputPrompt("Neues Passwort");
-		this.passwortBestaetigen.setInputPrompt("Passwort bestätigen");
+		this.neuesPasswort.setInputPrompt("Passwort");
+		this.passwortBestaetigen.setInputPrompt("Passwort");
 
-		// TODO: validator, passwordField if empty = ok
 		ValidierungsController.setTextFeldRequired(this.email);
 		ValidierungsController.checkIfEmail(this.email);
-		// TODO: setEventOnSave();
+
+		this.speichern.addClickListener(event -> {
+			// TODO: speichern button
+		});
 
 		this.benutzerProfilLayout.addComponent(this.titel);
 		this.benutzerProfilLayout.addComponent(this.email);
@@ -52,8 +55,13 @@ public class BenutzerprofilView implements ViewTemplate {
 
 	@Override
 	public void viewAnzeigen(Component inhalt) {
-		// TODO Auto-generated method stub
+		formAbfuellen();
+		Panel inhaltsPanel = (Panel) inhalt;
+		inhaltsPanel.setContent(this.benutzerProfilLayout);
+	}
 
+	private void formAbfuellen() {
+		// TODO read current email address from logged in user
 	}
 
 }

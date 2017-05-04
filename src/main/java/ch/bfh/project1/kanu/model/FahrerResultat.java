@@ -16,6 +16,7 @@ public class FahrerResultat {
 	private boolean neusterEintrag;
 	private Rennen rennen;
 	private AltersKategorie kategorie;
+	private int startnummer;
 
 	public Fahrer getFahrer() {
 		return fahrer;
@@ -63,5 +64,13 @@ public class FahrerResultat {
 
 	public void setKategorie(AltersKategorie kategorie) {
 		this.kategorie = kategorie;
+	}
+
+	public int getStartnummer() {
+		return startnummer;
+	}
+
+	public void setStartnummer(int startnummer) {
+		this.startnummer = startnummer;
 	}
 }

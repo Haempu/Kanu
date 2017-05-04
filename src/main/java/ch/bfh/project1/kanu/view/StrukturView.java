@@ -2,16 +2,16 @@ package ch.bfh.project1.kanu.view;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.vaadin.teemusa.sidemenu.SideMenu;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.Reindeer;
@@ -30,17 +30,25 @@ import ch.bfh.project1.kanu.controller.LoginController;
 public class StrukturView extends UI {
 
 	// member variables
-	private GridLayout seite = new GridLayout(2, 3);
+	private GridLayout seite = new GridLayout(1, 1);
 	private Label logo = new Label("Kanu");
 	private HorizontalLayout header = new HorizontalLayout();
 	private HorizontalLayout mitte = new HorizontalLayout();
-	private MenuBar menu = new MenuBar();
 	private Panel inhaltPanel = new Panel();
 	private HorizontalLayout loginLogoutPart = new HorizontalLayout();
+	// private ThemeResource logoBild = new
+	// ThemeResource("images/logo.png");
+	private SideMenu sideMenu = new SideMenu();
 
 	private LoginController loginController = new LoginController();
 
 	private LoginView loginView = new LoginView(this, loginController);
+	private BenutzerprofilView benutzerprofilView = new BenutzerprofilView();
+	private RechnungsView rechnungsView = new RechnungsView();
+	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView();
+	private FehlererfassungsView fehlererfassungsView = new FehlererfassungsView(this);
+	private ZeiterfassungsView zeiterfassungsView = new ZeiterfassungsView(this);
+	private MutationsView mutationsView = new MutationsView(this);
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -58,24 +66,44 @@ public class StrukturView extends UI {
 		this.loginView.viewInitialisieren();
 		this.loginView.viewAnzeigen(this.loginLogoutPart);
 
-		this.seite.addComponent(this.logo, 0, 0);
-		this.seite.setComponentAlignment(this.logo, Alignment.MIDDLE_LEFT);
-		this.seite.addComponent(this.loginLogoutPart, 1, 0);
-		this.seite.setComponentAlignment(this.loginLogoutPart, Alignment.MIDDLE_RIGHT);
+		this.seite.addComponent(this.inhaltPanel, 0, 0);
+		this.seite.setComponentAlignment(this.inhaltPanel, Alignment.TOP_LEFT);
 		this.seite.setRowExpandRatio(0, 0);
 
-		this.seite.addComponent(this.menu, 0, 1, 1, 1);
-		this.seite.setComponentAlignment(this.menu, Alignment.TOP_LEFT);
-
-		this.seite.addComponent(this.inhaltPanel, 0, 2, 1, 2);
-		this.seite.setComponentAlignment(this.inhaltPanel, Alignment.TOP_LEFT);
-		this.seite.setRowExpandRatio(2, 10);
-
 		this.seite.setSizeFull();
-		this.setContent(this.seite);
 
-		Responsive.makeResponsive(this.logo);
+		this.sideMenu.setMenuCaption("Kanu Club Grenchen");
 
+		// TODO: menu nach benutzerrolle anzeigen
+		this.sideMenu.addMenuItem("Benutzerprofil ", () -> {
+			this.benutzerprofilView.viewInitialisieren();
+			this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.addMenuItem("Fahrer verwalten ", () -> {
+			this.mutationsView.viewInitialisieren();
+			this.mutationsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.addMenuItem("Fehler erfassen", () -> {
+			this.fehlererfassungsView.viewInitialisieren();
+			this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.addMenuItem("Fahrer anmelden ", () -> {
+			this.fahreranmeldungsView.viewInitialisieren();
+			this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.addMenuItem("Rechnungen verwalten ", () -> {
+			this.rechnungsView.viewInitialisieren();
+			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.setContent(this.seite);
+		this.setContent(this.sideMenu);
+
+		// Responsive.makeResponsive(this.logo);
 	}
 
 	/**

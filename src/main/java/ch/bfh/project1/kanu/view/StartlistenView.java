@@ -1,5 +1,6 @@
 package ch.bfh.project1.kanu.view;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 
 /**
@@ -10,6 +11,8 @@ import com.vaadin.ui.Component;
  */
 
 public class StartlistenView implements ViewTemplate {
+
+	private Button gesamteStartlisteAlsPDF = new Button("Gesamte Startliste als PDF herunterladen");
 
 	@Override
 	public void viewInitialisieren() {

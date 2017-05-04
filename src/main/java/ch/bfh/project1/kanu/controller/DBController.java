@@ -205,7 +205,7 @@ public class DBController {
 	}
 
 	public Fahrer ladeFahrer(Integer fahrerID) {
-		return new Fahrer();
+		return null;
 	}
 
 	public void speichereFahrer(Fahrer fahrer) {
@@ -213,7 +213,7 @@ public class DBController {
 	}
 
 	public Benutzer ladeBenutzer(Integer benutzerID){
-		return new Benutzer();
+		return null;
 	}
 	/*
 	public List<Benutzer> ladeBenutzer(Integer benutzerID) {

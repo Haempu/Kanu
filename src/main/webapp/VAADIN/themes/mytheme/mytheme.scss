@@ -39,6 +39,14 @@
     font-size: 25px;
   }
  
+ .popup {
+  	margin:15px;
+  }
+ 
+ .v-textfield.v-disabled {
+ 	opacity: 1;	
+ }	
+ 
   // Insert your own theme rules here
   /*.logo [width-range~="0-300px"] {
   	margin:15px;

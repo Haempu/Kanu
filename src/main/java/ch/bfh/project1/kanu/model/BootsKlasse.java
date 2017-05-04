@@ -10,8 +10,15 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class BootsKlasse {
+
 	private Integer bootsKlasseID;
 	private String name;
+
+	public BootsKlasse(int bootsKlasseID, String name) {
+		super();
+		this.bootsKlasseID = bootsKlasseID;
+		this.name = name;
+	}
 
 	public Integer getBootsKlasseID() {
 		return bootsKlasseID;
@@ -29,4 +36,8 @@ public class BootsKlasse {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

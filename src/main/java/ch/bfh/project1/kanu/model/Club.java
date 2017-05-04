@@ -19,6 +19,13 @@ public class Club {
 	private String strasse;
 	private int plz;
 	private String ort;
+	private boolean bezahlt;
+
+	public Club(int clubID, String name, boolean bezahlt) {
+		this.clubID = clubID;
+		this.name = name;
+		this.bezahlt = bezahlt;
+	}
 
 	public int getClubID() {
 		return clubID;
@@ -76,4 +83,16 @@ public class Club {
 		this.ort = ort;
 	}
 
+	public boolean isBezahlt() {
+		return bezahlt;
+	}
+
+	public void setBezahlt(boolean bezahlt) {
+		this.bezahlt = bezahlt;
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

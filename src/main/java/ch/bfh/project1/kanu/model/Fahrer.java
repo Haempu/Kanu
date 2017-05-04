@@ -20,6 +20,15 @@ public class Fahrer {
 	private String strasse;
 	private int plz;
 	private String ort;
+	private boolean angemeldet;
+
+	public Fahrer(int fahrerID, String name, String vorname, int jahrgang, boolean angemeldet) {
+		this.fahrerID = fahrerID;
+		this.name = name;
+		this.vorname = vorname;
+		this.jahrgang = jahrgang;
+		this.angemeldet = angemeldet;
+	}
 
 	public Integer getFahrerID() {
 		return fahrerID;
@@ -91,6 +100,14 @@ public class Fahrer {
 
 	public void setOrt(String ort) {
 		this.ort = ort;
+	}
+
+	public boolean isAngemeldet() {
+		return angemeldet;
+	}
+
+	public void setAngemeldet(boolean angemeldet) {
+		this.angemeldet = angemeldet;
 	}
 
 }
