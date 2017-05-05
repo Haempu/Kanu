@@ -60,7 +60,36 @@
  	background-image: none;
  	color: white;
  	border: none
+  }
+ 
+   .valo-menu: hoover {
+	background-color: #016074;
+  }
+
+  .v-window-header {
+  	background-color: #016074;
+  	color: white
+  }
+ 
+ .v-window-outerheader {
+  	background-color: #016074;
+  	color: white
+  }
+ 
+ .v-window-closebox {
+ 	background-color: #016074;
+  	color: white
  }
+
+ .v-window-maximizebox {
+	background-color: #016074;
+  	color: white
+ }
+
+ /*.v-table-header-wrap {
+	background: #016074;
+	color: white
+ }*/
 
   [class*="margin-top"] > tbody > [class*="firstrow"] > td {
     padding-top: 0px;
@@ -83,10 +112,6 @@
 
   .inhaltPanel {
 	padding-left:15px;
-  }
-
-  .login {
-	padding: 15px;
   }
   
   .errorTextFeld {

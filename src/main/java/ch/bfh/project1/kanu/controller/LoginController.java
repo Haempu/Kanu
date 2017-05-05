@@ -13,7 +13,7 @@ import ch.bfh.project1.kanu.view.LoginView;
  */
 
 public class LoginController {
-	private DBController dbController;
+	// private DBController dbController;
 	private LoginView loginView;
 
 	public boolean loginMitBenutzer(String email, String passwort) {

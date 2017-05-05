@@ -24,8 +24,8 @@ public class LoginView implements ViewTemplate {
 	// UI Komponenten
 	private FormLayout loginLayout = new FormLayout();
 	private Label titel = new Label("Login");
-	private TextField email = new TextField();
-	private PasswordField password = new PasswordField();
+	private TextField email = new TextField("E-Mail Adresse");
+	private PasswordField password = new PasswordField("Passwort");
 	private Button loginButton = new Button("Anmelden");
 
 	// Controller
@@ -59,8 +59,6 @@ public class LoginView implements ViewTemplate {
 		this.loginLayout.setSpacing(true);
 
 		setEventOnLogin();
-
-		this.loginLayout.setStyleName("login");
 
 		this.email.setImmediate(true);
 		this.password.setImmediate(true);

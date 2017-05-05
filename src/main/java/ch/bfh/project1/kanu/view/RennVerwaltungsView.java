@@ -14,7 +14,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-import ch.bfh.project1.kanu.controller.MutationsController;
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
 import ch.bfh.project1.kanu.controller.SessionController;
 import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
 import ch.bfh.project1.kanu.model.Fahrer;
@@ -45,7 +45,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private TextField jahrgangText = new TextField("Jahrgang");
 	private TextField plzText = new TextField("Postleitzahl");
 	private TextField ortText = new TextField("Ort");
-	private TextField telefonNrText = new TextField("Telefonnummer");
 	private NativeSelect clubs = new NativeSelect("Klub");
 	private Label rennenLabel = new Label("Rennen");
 	private NativeSelect bootsKlassen = new NativeSelect("Bootsklasse");
@@ -56,7 +55,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private Button speichern = new Button("Speichrn");
 
 	// Controller
-	private MutationsController mController = new MutationsController();
+	private RennverwaltungsController rController = new RennverwaltungsController();
 
 	// Konstanten
 	private static final String COLUMN_VORNAME = "Vorname";
@@ -97,17 +96,22 @@ public class RennVerwaltungsView implements ViewTemplate {
 
 		this.speichern.addClickListener(event -> {
 			// TODO: speichern button
-			// mController.
+			// rController.
 		});
 
 		// TODO: master & Clubverantwortlicher
+		this.vornameText.setEnabled(false);
+		this.nachnameText.setEnabled(false);
+		this.jahrgangText.setEnabled(false);
+		this.plzText.setEnabled(false);
+		this.ortText.setEnabled(false);
+		this.clubs.setEnabled(false);
 
 		this.popupLayoutMaster.addComponent(this.vornameText);
 		this.popupLayoutMaster.addComponent(this.nachnameText);
 		this.popupLayoutMaster.addComponent(this.jahrgangText);
 		this.popupLayoutMaster.addComponent(this.plzText);
 		this.popupLayoutMaster.addComponent(this.ortText);
-		this.popupLayoutMaster.addComponent(this.telefonNrText);
 		this.popupLayoutMaster.addComponent(this.clubs);
 		this.popupLayoutMaster.addComponent(this.rennenLabel);
 		this.popupLayoutMaster.addComponent(this.bootsKlassen);
@@ -140,13 +144,14 @@ public class RennVerwaltungsView implements ViewTemplate {
 	 * Funktion füllt die Tabelle mit allen Clubs ab.
 	 */
 	private void tabelleAbfuellen() {
-		ArrayList<Fahrer> fahrer;
+		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
 
 		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
-			fahrer = this.mController.ladeFahrermutationslisteAlle();
+			// TODO: fahrerladen
+			// fahrer = this.rController.ladeFahrermutationslisteAlle();
 		} else {
 			// TODO: change club id
-			fahrer = this.mController.ladeFahrermutationslisteClub(1);
+			// fahrer = this.rController.ladeFahrermutationslisteClub(1);
 		}
 
 		for (Fahrer f : fahrer) {
@@ -161,7 +166,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 				this.jahrgangText.setValue(Integer.toString(f.getJahrgang()));
 				this.plzText.setValue(Integer.toString(f.getPlz()));
 				this.ortText.setValue(f.getOrt());
-				this.telefonNrText.setValue(f.getTelNr());
 
 				this.ui.addWindow(this.popup);
 			});

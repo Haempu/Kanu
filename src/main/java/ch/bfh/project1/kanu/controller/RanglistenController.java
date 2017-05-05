@@ -21,49 +21,59 @@ import ch.bfh.project1.kanu.view.RanglistenView;
  */
 
 public class RanglistenController {
-	private static String[] HEADER = {"Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt"};
+	private static String[] HEADER = { "Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt" };
 	private DBController dbController;
 	private RanglistenView ranglistenView;
 
 	/**
 	 * Gibt die Gesamtrangliste des Rennens zurück.
-	 * @param rennen - ID des Rennens.
+	 * 
+	 * @param rennen
+	 *            - ID des Rennens.
 	 * @return Rangliste
 	 */
-	public Rangliste ladeRanglisteRennen(Rennen rennen){
-		return dbController.ladeRanglisteRennen(rennen);
+	public Rangliste ladeRanglisteRennen(Rennen rennen) {
+		return this.dbController.ladeRanglisteRennen(rennen);
 	}
-	
+
 	/**
 	 * Gibt die Rangliste der Bootsklasse zurück.
-	 * @param bootsKlasseID - ID der Bootsklasse.
+	 * 
+	 * @param bootsKlasseID
+	 *            - ID der Bootsklasse.
 	 * @return Rangliste
 	 */
-	public Rangliste ladeRanglisteBootsKlasse(Integer bootsKlasseID){
-		return dbController.ladeRanglisteBootsKlasseID(bootsKlasseID);
+	public Rangliste ladeRanglisteBootsKlasse(Integer bootsKlasseID) {
+		return this.dbController.ladeRanglisteBootsKlasseID(bootsKlasseID);
 	}
-	
+
 	/**
 	 * Gibt die Rangliste der Alterskategorie zurück.
-	 * @param altersKategorieID - ID der Alterskategorie.
+	 * 
+	 * @param altersKategorieID
+	 *            - ID der Alterskategorie.
 	 * @return Rangliste
 	 */
-	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID){
-		return dbController.ladeRanglisteAltersKategorie(altersKategorieID);
+	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID) {
+		return this.dbController.ladeRanglisteAltersKategorie(altersKategorieID);
 	}
-	
+
 	/**
-	 * Generiert ein PDF-Dokument mit einer oder mehrerern Tabellen vom Typ "Rangliste".
-	 * @param pfad - Speicherort des Dokuments.
-	 * @param rangliste -  Liste vom Typ "Rangliste".
+	 * Generiert ein PDF-Dokument mit einer oder mehrerern Tabellen vom Typ
+	 * "Rangliste".
+	 * 
+	 * @param pfad
+	 *            - Speicherort des Dokuments.
+	 * @param rangliste
+	 *            - Liste vom Typ "Rangliste".
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public void generierePDF(String pfad, List<Rangliste> rangliste) throws IOException, DocumentException{
+	public void generierePDF(String pfad, List<Rangliste> rangliste) throws IOException, DocumentException {
 		List<String> tabellentitel = new ArrayList<>();
 		List<List<String>> tabelle = new ArrayList<>();
 		List<List<List<String>>> daten = new ArrayList<>();
-		
+
 		// Ebene "Daten"
 		for (int i = 0; i < rangliste.size(); i++) {
 			// Ebene "Tabelle"
@@ -74,7 +84,8 @@ public class RanglistenController {
 				// Ebene "Zeile"
 				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k) + 1);
 				tabellenzeile.add("TODO: nr");
-				tabellenzeile.add(rangliste.get(i).getResultate().get(k).getFahrer().getVorname() + rangliste.get(i).getResultate().get(k).getFahrer().getName());
+				tabellenzeile.add(rangliste.get(i).getResultate().get(k).getFahrer().getVorname()
+						+ rangliste.get(i).getResultate().get(k).getFahrer().getName());
 				tabellenzeile.add(rangliste.get(i).getResultate().get(k).getFahrer().getClub().getName());
 				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k).getZeitErsterLauf());
 				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k).getZeitZweiterLauf());
@@ -86,5 +97,5 @@ public class RanglistenController {
 		// TODO: Exceptionhandling
 		PDFController.generierePDF(pfad, tabellentitel, HEADER, daten);
 	}
-	
+
 }

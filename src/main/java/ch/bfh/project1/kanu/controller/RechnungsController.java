@@ -24,7 +24,7 @@ public class RechnungsController {
 	 * haben.
 	 */
 	public ArrayList<Club> ladeAngemeldeteClubs() {
-		return dbController.ladeAngemeldeteClubs();
+		return this.dbController.ladeAngemeldeteClubs();
 	}
 
 	public void rechnungErstellen(Club club) {

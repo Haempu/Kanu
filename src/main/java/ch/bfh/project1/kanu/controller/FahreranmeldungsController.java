@@ -30,7 +30,7 @@ public class FahreranmeldungsController {
 	 * @return
 	 */
 	public List<String> ladeFahreranmeldungslisteClub(Integer clubID) {
-		return dbController.ladeFahreranmeldungslisteClub(clubID);
+		return this.dbController.ladeFahreranmeldungslisteClub(clubID);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
-		dbController.fahrerAnmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
+		this.dbController.fahrerAnmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
 	}
 
 	/**

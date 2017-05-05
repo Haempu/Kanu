@@ -11,7 +11,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import ch.bfh.project1.kanu.model.Fahrer;
@@ -34,7 +33,7 @@ public class FehlererfassungsView implements ViewTemplate {
 
 	// member variabel: Popup fenster
 	private Window popup;
-	private VerticalLayout popupLayout = new VerticalLayout();
+	private FormLayout popupLayout = new FormLayout();
 	private TextField startnummerText = new TextField("Startnummer");
 	private TextField vornameText = new TextField("Vorname");
 	private TextField nachnameText = new TextField("Nachname");
@@ -92,7 +91,6 @@ public class FehlererfassungsView implements ViewTemplate {
 
 		this.fehlererfassungsLayout.addComponent(this.titel);
 		this.fehlererfassungsLayout.addComponent(this.table);
-		// this.fehlererfassungsLayout.addComponent(this.popup);
 	}
 
 	/**

@@ -35,7 +35,7 @@ public class StrukturView extends UI {
 	private GridLayout seite = new GridLayout(1, 1);
 	private Label logo = new Label("Kanu");
 	private Panel inhaltPanel = new Panel();
-	private SideMenu sideMenu = new SideMenu();
+	private SideMenu menu = new SideMenu();
 
 	private LoginController loginController = new LoginController();
 
@@ -62,49 +62,49 @@ public class StrukturView extends UI {
 		// TODO: inhalt setzen login/logout
 
 		this.seite.setImmediate(true);
-		// this.loginView.viewInitialisieren();
-		// this.loginView.viewAnzeigen(this.loginLogoutPart);
-
 		this.seite.addComponent(this.inhaltPanel, 0, 0);
 		this.seite.setComponentAlignment(this.inhaltPanel, Alignment.TOP_LEFT);
 		this.seite.setRowExpandRatio(0, 0);
 
 		this.seite.setSizeFull();
 
-		this.sideMenu.setMenuCaption("Kanu Club Grenchen");
+		// default view
+		this.loginView.viewInitialisieren();
+		this.loginView.viewAnzeigen(this.inhaltPanel);
+
+		this.menu.setMenuCaption("Kanu Club Grenchen");
 
 		// TODO: change elia.b@gawnet.ch to SessionController.getBenutzername();
 		setEingeloggterBenutzer("elia.b@gawnet.ch");
 
-		// TODO: menu nach benutzerrolle anzeigen
-
-		this.sideMenu.addMenuItem("Fahrer verwalten ", () -> {
+		// TODO: menu nach benutzerrolle anzeigen und login/logout
+		this.menu.addMenuItem("Fahrer verwalten ", () -> {
 			this.mutationsView.viewInitialisieren();
 			this.mutationsView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.addMenuItem("Fehler erfassen", () -> {
+		this.menu.addMenuItem("Fehler erfassen", () -> {
 			this.fehlererfassungsView.viewInitialisieren();
 			this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.addMenuItem("Fahrer anmelden ", () -> {
+		this.menu.addMenuItem("Fahrer anmelden ", () -> {
 			this.fahreranmeldungsView.viewInitialisieren();
 			this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.addMenuItem("Rechnungen verwalten ", () -> {
+		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
 			this.rechnungsView.viewInitialisieren();
 			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.addMenuItem("Login", () -> {
+		this.menu.addMenuItem("Login", () -> {
 			this.loginView.viewInitialisieren();
 			this.loginView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.setContent(this.seite);
-		this.setContent(this.sideMenu);
+		this.menu.setContent(this.seite);
+		this.setContent(this.menu);
 	}
 
 	/**
@@ -114,16 +114,16 @@ public class StrukturView extends UI {
 	 * @param bild
 	 */
 	public void setEingeloggterBenutzer(String benutzername) {
-		this.sideMenu.setUserName(benutzername);
-		this.sideMenu.setUserIcon(FontAwesome.MALE);
+		this.menu.setUserName(benutzername);
+		this.menu.setUserIcon(FontAwesome.MALE);
 
-		this.sideMenu.clearUserMenu();
-		this.sideMenu.addUserMenuItem("Benutzerprofil", FontAwesome.WRENCH, () -> {
+		this.menu.clearUserMenu();
+		this.menu.addUserMenuItem("Benutzerprofil", FontAwesome.WRENCH, () -> {
 			this.benutzerprofilView.viewInitialisieren();
 			this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
 		});
 
-		this.sideMenu.addUserMenuItem("Abmelden", () -> {
+		this.menu.addUserMenuItem("Abmelden", () -> {
 			// TODO: abmelden
 			Notification.show("Abmelden..", Type.TRAY_NOTIFICATION);
 		});
