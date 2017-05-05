@@ -14,12 +14,18 @@ public class StartlistenView implements ViewTemplate {
 
 	private Button gesamteStartlisteAlsPDF = new Button("Gesamte Startliste als PDF herunterladen");
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		// TODO Auto-generated method stub

@@ -22,7 +22,13 @@ import com.vaadin.ui.Component;
 
 public interface ViewTemplate {
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	public void viewInitialisieren();
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	public void viewAnzeigen(Component inhalt);
 }

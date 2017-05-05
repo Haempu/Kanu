@@ -25,7 +25,7 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class FehlererfassungsView implements ViewTemplate {
 
-	private UI ui;
+	private UI ui; // Haupt GUI
 
 	// member variabeln: Übersichtstabelle
 	private Label titel = new Label("Fehlererfassung");
@@ -40,6 +40,7 @@ public class FehlererfassungsView implements ViewTemplate {
 	private TextField nachnameText = new TextField("Nachname");
 	private TextField clubText = new TextField("Club");
 
+	// Konstanten
 	private static final String COLUMN_STARTNUMMER = "Startnummer";
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
@@ -47,10 +48,18 @@ public class FehlererfassungsView implements ViewTemplate {
 	private static final String COLUMN_ORT = "Ort";
 	private static final String COLUMN_BUTTON = "Fehler erfassen";
 
+	/**
+	 * Konstruktor: FehlererfassungsView
+	 * 
+	 * @param ui
+	 */
 	public FehlererfassungsView(UI ui) {
 		this.ui = ui;
 	}
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.fehlererfassungsLayout.setSpacing(true);
@@ -86,6 +95,9 @@ public class FehlererfassungsView implements ViewTemplate {
 		// this.fehlererfassungsLayout.addComponent(this.popup);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

@@ -33,10 +33,14 @@ public class RechnungsView implements ViewTemplate {
 	// controller
 	private RechnungsController rController = new RechnungsController();
 
+	// Konstanten
 	private static final String COLUMN_CLUB = "Club";
 	private static final String COLUMN_BEZAHLT = "bezahlt";
 	private static final String COLUMN_PDF = "Rechnung";
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.rechnungsViewLayout.setSpacing(true);
@@ -59,6 +63,9 @@ public class RechnungsView implements ViewTemplate {
 		this.rechnungsViewLayout.addComponent(this.allePDFgenerieren);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

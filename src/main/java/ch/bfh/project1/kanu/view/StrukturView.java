@@ -6,12 +6,14 @@ import org.vaadin.teemusa.sidemenu.SideMenu;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.Reindeer;
@@ -32,17 +34,12 @@ public class StrukturView extends UI {
 	// member variables
 	private GridLayout seite = new GridLayout(1, 1);
 	private Label logo = new Label("Kanu");
-	private HorizontalLayout header = new HorizontalLayout();
-	private HorizontalLayout mitte = new HorizontalLayout();
 	private Panel inhaltPanel = new Panel();
-	private HorizontalLayout loginLogoutPart = new HorizontalLayout();
-	// private ThemeResource logoBild = new
-	// ThemeResource("images/logo.png");
 	private SideMenu sideMenu = new SideMenu();
 
 	private LoginController loginController = new LoginController();
 
-	private LoginView loginView = new LoginView(this, loginController);
+	private LoginView loginView = new LoginView(this.loginController);
 	private BenutzerprofilView benutzerprofilView = new BenutzerprofilView();
 	private RechnungsView rechnungsView = new RechnungsView();
 	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView();
@@ -52,6 +49,8 @@ public class StrukturView extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
+
+		this.getPage().setTitle("Kanu Club Grenchen");
 
 		this.inhaltPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		this.inhaltPanel.setSizeFull();
@@ -63,8 +62,8 @@ public class StrukturView extends UI {
 		// TODO: inhalt setzen login/logout
 
 		this.seite.setImmediate(true);
-		this.loginView.viewInitialisieren();
-		this.loginView.viewAnzeigen(this.loginLogoutPart);
+		// this.loginView.viewInitialisieren();
+		// this.loginView.viewAnzeigen(this.loginLogoutPart);
 
 		this.seite.addComponent(this.inhaltPanel, 0, 0);
 		this.seite.setComponentAlignment(this.inhaltPanel, Alignment.TOP_LEFT);
@@ -74,11 +73,10 @@ public class StrukturView extends UI {
 
 		this.sideMenu.setMenuCaption("Kanu Club Grenchen");
 
+		// TODO: change elia.b@gawnet.ch to SessionController.getBenutzername();
+		setEingeloggterBenutzer("elia.b@gawnet.ch");
+
 		// TODO: menu nach benutzerrolle anzeigen
-		this.sideMenu.addMenuItem("Benutzerprofil ", () -> {
-			this.benutzerprofilView.viewInitialisieren();
-			this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
-		});
 
 		this.sideMenu.addMenuItem("Fahrer verwalten ", () -> {
 			this.mutationsView.viewInitialisieren();
@@ -100,10 +98,35 @@ public class StrukturView extends UI {
 			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
+		this.sideMenu.addMenuItem("Login", () -> {
+			this.loginView.viewInitialisieren();
+			this.loginView.viewAnzeigen(this.inhaltPanel);
+		});
+
 		this.sideMenu.setContent(this.seite);
 		this.setContent(this.sideMenu);
+	}
 
-		// Responsive.makeResponsive(this.logo);
+	/**
+	 * Funktion setzt das Menu für den eingeloggten Benutzer
+	 * 
+	 * @param benutzername
+	 * @param bild
+	 */
+	public void setEingeloggterBenutzer(String benutzername) {
+		this.sideMenu.setUserName(benutzername);
+		this.sideMenu.setUserIcon(FontAwesome.MALE);
+
+		this.sideMenu.clearUserMenu();
+		this.sideMenu.addUserMenuItem("Benutzerprofil", FontAwesome.WRENCH, () -> {
+			this.benutzerprofilView.viewInitialisieren();
+			this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.sideMenu.addUserMenuItem("Abmelden", () -> {
+			// TODO: abmelden
+			Notification.show("Abmelden..", Type.TRAY_NOTIFICATION);
+		});
 	}
 
 	/**

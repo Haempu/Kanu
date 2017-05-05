@@ -43,6 +43,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	private TextField laufzeitZwei = new TextField("2. Laufzeit");
 	private Button speichern = new Button("Speichrn");
 
+	// Konstanten
 	private static final String COLUMN_STARTNUMMER = "Startnummer";
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
@@ -50,10 +51,18 @@ public class ZeiterfassungsView implements ViewTemplate {
 	private static final String COLUMN_ORT = "Ort";
 	private static final String COLUMN_BUTTON = "Zeit erfassen";
 
+	/**
+	 * Konstruktor: ZeiterfassungsView
+	 * 
+	 * @param ui
+	 */
 	public ZeiterfassungsView(UI ui) {
 		this.ui = ui;
 	}
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.zeiterfassungsLayout.setSpacing(true);
@@ -99,6 +108,9 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.zeiterfassungsLayout.addComponent(this.table);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

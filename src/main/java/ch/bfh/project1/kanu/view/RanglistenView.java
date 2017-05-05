@@ -11,12 +11,18 @@ import com.vaadin.ui.Component;
 
 public class RanglistenView implements ViewTemplate {
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		// TODO Auto-generated method stub

@@ -28,7 +28,7 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class RennVerwaltungsView implements ViewTemplate {
 
-	private UI ui;
+	private UI ui; // Haupt GUI
 
 	// member variabeln: Übersichtstabelle
 	private Label titel = new Label("Fahrerverwaltung");
@@ -55,18 +55,28 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private TextField laufzeitZwei = new TextField("2. Laufzeit");
 	private Button speichern = new Button("Speichrn");
 
+	// Controller
 	private MutationsController mController = new MutationsController();
 
+	// Konstanten
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
 	private static final String COLUMN_JAHRGANG = "Jahrgang";
 	private static final String COLUMN_ORT = "Ort";
 	private static final String COLUMN_BUTTON = "Bearbeiten";
 
+	/**
+	 * Konstruktor: RennVerwaltungsView
+	 * 
+	 * @param ui
+	 */
 	public RennVerwaltungsView(UI ui) {
 		this.ui = ui;
 	}
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.fahrerVerwaltungsLayout.setSpacing(true);
@@ -117,6 +127,9 @@ public class RennVerwaltungsView implements ViewTemplate {
 		this.fahrerVerwaltungsLayout.addComponent(this.table);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

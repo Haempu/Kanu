@@ -29,7 +29,7 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class MutationsView implements ViewTemplate {
 
-	private UI ui;
+	private UI ui; // Haupt GUI
 
 	// member variabeln: Übersichtstabelle
 	private Label titel = new Label("Fahrerverwaltung");
@@ -39,7 +39,6 @@ public class MutationsView implements ViewTemplate {
 	// member variabel: Popup fenster
 	private Window popup;
 	private FormLayout popupLayoutMaster = new FormLayout();
-
 	private TextField vornameText = new TextField("Vorname");
 	private TextField nachnameText = new TextField("Nachname");
 	private TextField jahrgangText = new TextField("Jahrgang");
@@ -50,18 +49,28 @@ public class MutationsView implements ViewTemplate {
 	private NativeSelect clubs = new NativeSelect("Klub");
 	private Button speichern = new Button("Speichrn");
 
+	// Controller
 	private MutationsController mController = new MutationsController();
 
+	// Konstanten
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
 	private static final String COLUMN_JAHRGANG = "Jahrgang";
 	private static final String COLUMN_ORT = "Ort";
 	private static final String COLUMN_BUTTON = "Bearbeiten";
 
+	/**
+	 * Konstruktor: MutationsView
+	 * 
+	 * @param ui
+	 */
 	public MutationsView(UI ui) {
 		this.ui = ui;
 	}
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.fahrerVerwaltungsLayout.setSpacing(true);
@@ -113,6 +122,9 @@ public class MutationsView implements ViewTemplate {
 		this.fahrerVerwaltungsLayout.addComponent(this.table);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

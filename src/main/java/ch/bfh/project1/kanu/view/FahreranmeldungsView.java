@@ -25,13 +25,16 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class FahreranmeldungsView implements ViewTemplate {
 
-	// membervariables
+	// UI Komponenten
 	private Label titel = new Label("Fahreranmeldung");
 	private Table table = new Table();
 	private FormLayout fahreranmeldungsLayout = new FormLayout();
-	List<BootsKlasse> bootsKlassenListe;
-	List<AltersKategorie> altersKategorienListe;
 
+	// Membervariablen
+	private List<BootsKlasse> bootsKlassenListe;
+	private List<AltersKategorie> altersKategorienListe;
+
+	// Statische Variablen
 	private static final String COLUMN_ANGEMELDET = "Angemeldet";
 	private static final String COLUMN_VORNAME = "Vorname";
 	private static final String COLUMN_NACHNAME = "Nachname";
@@ -39,6 +42,9 @@ public class FahreranmeldungsView implements ViewTemplate {
 	private static final String COLUMN_BOOTSKLASSE = "Bootsklasse";
 	private static final String COLUMN_ALTERSKATEGORIE = "Alterskategorie";
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.fahreranmeldungsLayout.setSpacing(true);
@@ -71,6 +77,9 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.fahreranmeldungsLayout.addComponent(this.table);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;

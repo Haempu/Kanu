@@ -33,6 +33,9 @@ public class BenutzerprofilView implements ViewTemplate {
 	// Kontroller
 	private BenutzerprofilController bController = new BenutzerprofilController();
 
+	/**
+	 * Die Funktion initialisiert die View
+	 */
 	@Override
 	public void viewInitialisieren() {
 		this.benutzerProfilLayout.setSpacing(true);
@@ -60,6 +63,9 @@ public class BenutzerprofilView implements ViewTemplate {
 		this.benutzerProfilLayout.addComponent(this.speichern);
 	}
 
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		formAbfuellen();
@@ -70,5 +76,4 @@ public class BenutzerprofilView implements ViewTemplate {
 	private void formAbfuellen() {
 		// TODO read current email address from logged in user
 	}
-
 }

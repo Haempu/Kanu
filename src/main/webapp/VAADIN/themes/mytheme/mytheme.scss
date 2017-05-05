@@ -45,8 +45,26 @@
  
  .v-textfield.v-disabled {
  	opacity: 1;	
- }	
- 
+  }	
+
+ .valo-menu-title {
+ 	background-color: #016074;
+ 	background-image: none;
+ 	border: 1px solid #016074;
+ 	/*padding-top: 15px;
+ 	padding-bottom: 15px;*/
+ }
+
+  .valo-menu {
+	background-color: #8DB9B0;
+ 	background-image: none;
+ 	color: white;
+ 	border: none
+ }
+
+  [class*="margin-top"] > tbody > [class*="firstrow"] > td {
+    padding-top: 0px;
+  }
   // Insert your own theme rules here
   /*.logo [width-range~="0-300px"] {
   	margin:15px;
