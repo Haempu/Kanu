@@ -21,6 +21,7 @@ import ch.bfh.project1.kanu.view.RanglistenView;
  */
 
 public class RanglistenController {
+	private static String DOKUMENTTITEL_STARTLISTE = "Startliste";
 	private static String[] HEADER = { "Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt" };
 	private DBController dbController;
 	private RanglistenView ranglistenView;
@@ -69,7 +70,7 @@ public class RanglistenController {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public void generierePDF(String pfad, List<Rangliste> rangliste) throws IOException, DocumentException {
+	public void generierePDF(String pfad, Rennen rennen, List<Rangliste> rangliste) throws IOException, DocumentException {
 		List<String> tabellentitel = new ArrayList<>();
 		List<List<String>> tabelle = new ArrayList<>();
 		List<List<List<String>>> daten = new ArrayList<>();
@@ -95,7 +96,7 @@ public class RanglistenController {
 			daten.add(tabelle);
 		}
 		// TODO: Exceptionhandling
-		PDFController.generierePDF(pfad, tabellentitel, HEADER, daten);
+		PDFController.generierePDF(pfad, rennen, DOKUMENTTITEL_STARTLISTE, tabellentitel, HEADER, daten);
 	}
 
 }
