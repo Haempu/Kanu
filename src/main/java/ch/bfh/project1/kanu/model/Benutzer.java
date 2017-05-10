@@ -12,10 +12,23 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class Benutzer {
-	private int benutzerID;
+	private Integer benutzerID;
 	private String emailAdresse;
 	private String passwort;
-	private BenutzerRolle benutzerRolle;
+	private Integer benutzerRechte;
+	private Integer clubID;
+	
+	public Benutzer(Integer benutzerID, Integer clubID, String emailAdresse, String passwort, Integer benutzerRechte)
+	{
+		this.benutzerID = benutzerID;
+		this.emailAdresse = emailAdresse;
+		this.passwort = passwort;
+	}
+	
+	public Benutzer()
+	{
+		
+	}
 
 	public int getBenutzerID() {
 		return benutzerID;
@@ -39,13 +52,5 @@ public class Benutzer {
 
 	public void setPasswort(String passwort) {
 		this.passwort = passwort;
-	}
-
-	public BenutzerRolle getBenutzerRolle() {
-		return benutzerRolle;
-	}
-
-	public void setBenutzerRolle(BenutzerRolle benutzerRolle) {
-		this.benutzerRolle = benutzerRolle;
 	}
 }
