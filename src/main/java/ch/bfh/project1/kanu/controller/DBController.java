@@ -88,7 +88,7 @@ public class DBController {
 		try {
 			connect();
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO: log exceptions
+			// TODO_1: log exceptions
 		}
 	}
 
@@ -234,7 +234,7 @@ public class DBController {
 			}
 			result.setSuccess(true);
 		} catch (SQLException e) {
-			// TODO: log exceptions
+			// TODO_1: log exceptions
 			System.out.println("SQlException: " + e.getMessage());
 		} finally {
 			try {
@@ -242,7 +242,7 @@ public class DBController {
 				if (updateStmt != null)
 					updateStmt.close();
 			} catch (SQLException e) {
-				// TODO: log exceptions
+				// TODO_1: log exceptions
 				System.out.println("SQlException: " + e.getMessage());
 			}
 		}
@@ -268,7 +268,7 @@ public class DBController {
 			// Fetch rows
 			results = Row.formTable(result);
 		} catch (SQLException e) {
-			// TODO: log exceptions
+			// TODO_1: log exceptions
 		} finally {
 			try {
 				// Release resources
@@ -277,7 +277,7 @@ public class DBController {
 				if (result != null)
 					result.close();
 			} catch (SQLException e) {
-				// TODO: log exceptions
+				// TODO_1: log exceptions
 			}
 		}
 		return results;
@@ -323,7 +323,7 @@ public class DBController {
 	/**
 	 * Liest einen Club nach ID aus der Datenbank aus
 	 * @param clubID Die ID des Clubs
-	 * @return Das Club Objekt
+	 * @return Das Club Objekt; null wenns keinen Club mit der ID gibt
 	 */
 	public Club ladeClubByID(Integer clubID)
 	{
@@ -331,7 +331,7 @@ public class DBController {
 		if(clubs.size() > 0)
 			return clubs.get(0);
 		else
-			return null;
+			return null; //TODO abklären
 	}
 	
 	/**
@@ -347,6 +347,19 @@ public class DBController {
 			res = executeUpdate("INSERT INTO club (kennung, name) VALUES ('" + club.getKennung() + "', '" + club.getName() + "');");
 		else
 			res = executeUpdate("UPDATE club SET kennung = '" + club.getKennung() + "', name = '" + club.getName() + "' WHERE club_id = " + club.getClubID() + ";");
+		return res.isSuccess();
+	}
+	
+	/**
+	 * Führt ein SQL Query aus. Da SELECT querys etwas schwieriger sind als UPDATE und INSERT querys, werden nur letztgenannte unterstützt (respektive es wird schlicht nichts zurückgegeben).
+	 * @param query Das SQL Query als solches, muss mit einem ";" abgeschlossen werden
+	 * @return true wenn das Query erfolgreich ausgeführt wurde, false sonst
+	 */
+	public boolean runQuery(String query)
+	{
+		if(query.matches("(?i)DROP.*")) //DROP wird nicht erlaubt!
+			return false;
+		ExecuteResult res = executeUpdate(query);
 		return res.isSuccess();
 	}
 
@@ -428,7 +441,7 @@ public class DBController {
 	/**
 	 * Lädt einen Benutzer aus der Datenbank
 	 * @param benutzerID Die Benutzer ID
-	 * @return Das Benutzer Objekt
+	 * @return Das Benutzer Objekt, null wenn Benutzer nicht vorhanden
 	 */
 	public Benutzer ladeBenutzer(int benutzerID) {
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
