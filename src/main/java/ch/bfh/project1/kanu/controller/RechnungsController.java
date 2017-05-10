@@ -19,6 +19,10 @@ public class RechnungsController {
 	private DBController dbController;
 	private RechnungsView rechnungsView;
 
+	public RechnungsController() {
+		this.dbController = DBController.getInstance();
+	}
+
 	/**
 	 * Lädt alle Klubs, die mindestens einen Fahrer an das Rennen angemeldet
 	 * haben.

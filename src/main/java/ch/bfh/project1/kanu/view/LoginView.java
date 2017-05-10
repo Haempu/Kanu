@@ -1,11 +1,14 @@
 package ch.bfh.project1.kanu.view;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -25,8 +28,9 @@ public class LoginView implements ViewTemplate {
 	private FormLayout loginLayout = new FormLayout();
 	private Label titel = new Label("Login");
 	private TextField email = new TextField("E-Mail Adresse");
-	private PasswordField password = new PasswordField("Passwort");
+	private PasswordField passwort = new PasswordField("Passwort");
 	private Button loginButton = new Button("Anmelden");
+	private StrukturView strukturView;
 
 	// Controller
 	private LoginController loginController;
@@ -37,8 +41,9 @@ public class LoginView implements ViewTemplate {
 	 * @param strukturView
 	 * @param loginController
 	 */
-	public LoginView(LoginController loginController) {
+	public LoginView(LoginController loginController, StrukturView strukturView) {
 		this.loginController = loginController;
+		this.strukturView = strukturView;
 	}
 
 	/**
@@ -50,18 +55,18 @@ public class LoginView implements ViewTemplate {
 		this.titel.setStyleName("h2");
 
 		this.email.setInputPrompt("E-Mail");
-		this.password.setInputPrompt("Passwort");
+		this.passwort.setInputPrompt("Passwort");
 
 		this.loginLayout.addComponent(this.titel);
 		this.loginLayout.addComponent(this.email);
-		this.loginLayout.addComponent(this.password);
+		this.loginLayout.addComponent(this.passwort);
 		this.loginLayout.addComponent(this.loginButton);
 		this.loginLayout.setSpacing(true);
 
 		setEventOnLogin();
 
 		this.email.setImmediate(true);
-		this.password.setImmediate(true);
+		this.passwort.setImmediate(true);
 	}
 
 	/**
@@ -82,7 +87,12 @@ public class LoginView implements ViewTemplate {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO: loginButton logik
+				if (LoginView.this.loginController.loginMitBenutzer(email.getValue(), passwort.getValue())) {
+					Page.getCurrent().reload();
+				} else {
+					// TODO: anders ausgeben
+					Notification.show("Login failed..", Type.ERROR_MESSAGE);
+				}
 			}
 		});
 	}

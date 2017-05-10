@@ -50,8 +50,7 @@ public class BenutzerprofilView implements ViewTemplate {
 		ValidierungsController.checkIfEmail(this.email);
 		// TODO: validation new, old pw etc.
 
-		// TODO: remove this
-		this.email.setValue("elia.b@gawnet.ch");
+		this.email.setValue(SessionController.getBenutzerEmail());
 
 		this.speichern.addClickListener(event -> {
 			bController.benutzerprofilAendern(SessionController.getBenutzerID(), this.email.getValue(),

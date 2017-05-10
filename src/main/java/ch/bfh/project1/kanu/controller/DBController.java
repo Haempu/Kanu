@@ -37,10 +37,10 @@ public class DBController {
 	private static DBController instance;
 
 	private DBController() {
-		dbHost = "mysql22.webland.ch"; // TODO User und Passwort richtig setzen
-		db = "brave_res_tool";
-		dbUser = "brave_res_tool";
-		dbUserPassword = "SoED-purple1";
+		dbHost = "sds-ranking.ch"; // TODO User und Passwort richtig setzen
+		db = "kanu";
+		dbUser = "kanu";
+		dbUserPassword = "!kanuPW?";
 
 		try {
 			connect();
@@ -216,10 +216,32 @@ public class DBController {
 	public Benutzer ladeBenutzer(Integer benutzerID) {
 		return null;
 	}
+
+	/**
+	 * Funktion lädt einen Benutzer mit der Email Adresse
+	 * 
+	 * @param emailAdresse
+	 * @return
+	 */
+	public Benutzer ladeBenutzerMitEmail(String emailAdresse) {
+		String selectStmt = "SELECT benutzer_id, email, passwort from benutzer where email = '" + emailAdresse + "';";
+
+		Benutzer benutzer = null;
+		for (Row row : (executeSelect(selectStmt))) {
+			Integer benutzerId = (Integer) row.getRow().get(0).getKey();
+			String email = (String) row.getRow().get(1).getKey();
+			String passwort = (String) row.getRow().get(2).getKey();
+			// BenutzerRolle benutzerRolle = (BenutzerRolle)
+			// row.getRow().get(3).getKey();
+			benutzer = new Benutzer(benutzerId, email, passwort, null);
+		}
+
+		return benutzer;
+	}
+
 	/*
-	 * public List<Benutzer> ladeBenutzer(Integer benutzerID) { String
-	 * selectStmt = "SELECT * from Benutzer where benutzerID = " + benutzerID;
-	 * List<Benutzer> benutzer = new ArrayList<Benutzer>(); for (Row row :
+	 * public List<Benutzer> ladeBenutzer(Integer benutzerID) { List<Benutzer>
+	 * benutzer = new ArrayList<Benutzer>(); for (Row row :
 	 * (executeSelect(selectStmt))) { Integer benutzerId = (Integer)
 	 * row.getRow().get(1).getKey(); String email = (String)
 	 * row.getRow().get(2).getKey(); String passwort = (String)
@@ -246,7 +268,13 @@ public class DBController {
 	}
 
 	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() {
-		return new ArrayList<Fahrer>();
+
+		ArrayList<Fahrer> fahrer = new ArrayList<>();
+		// TODO: change this
+		for (int i = 0; i < 5; i++) {
+			fahrer.add(new Fahrer("Bösiger", "Fritz", (1993 + i), "+41799457709", "Weg 5", 4500, "Solothrun"));
+		}
+		return fahrer;
 	}
 
 	public ArrayList<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {

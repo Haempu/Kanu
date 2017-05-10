@@ -7,18 +7,19 @@ import org.vaadin.teemusa.sidemenu.SideMenu;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.Reindeer;
 
 import ch.bfh.project1.kanu.controller.LoginController;
+import ch.bfh.project1.kanu.controller.SessionController;
+import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
 
 /**
  * 
@@ -31,15 +32,17 @@ import ch.bfh.project1.kanu.controller.LoginController;
 @Theme("mytheme")
 public class StrukturView extends UI {
 
-	// member variables
+	// UI Komponenten
 	private GridLayout seite = new GridLayout(1, 1);
 	private Label logo = new Label("Kanu");
 	private Panel inhaltPanel = new Panel();
 	private SideMenu menu = new SideMenu();
 
+	// Controller
 	private LoginController loginController = new LoginController();
 
-	private LoginView loginView = new LoginView(this.loginController);
+	// Alle Views
+	private LoginView loginView = new LoginView(this.loginController, this);
 	private BenutzerprofilView benutzerprofilView = new BenutzerprofilView();
 	private RechnungsView rechnungsView = new RechnungsView();
 	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView();
@@ -58,8 +61,11 @@ public class StrukturView extends UI {
 		this.inhaltPanel.setImmediate(true);
 		this.logo.addStyleName("logo");
 
-		// TODO: init views & menu
-		// TODO: inhalt setzen login/logout
+		if (this.loginController.loginAufSession()) {
+			zeigeEingeloggtesMenu(null); // TODO: add benutzerrolle
+		} else {
+			zeigeAusgeloggtesMenu();
+		}
 
 		this.seite.setImmediate(true);
 		this.seite.addComponent(this.inhaltPanel, 0, 0);
@@ -67,43 +73,7 @@ public class StrukturView extends UI {
 		this.seite.setRowExpandRatio(0, 0);
 
 		this.seite.setSizeFull();
-
-		// default view
-		this.loginView.viewInitialisieren();
-		this.loginView.viewAnzeigen(this.inhaltPanel);
-
-		this.menu.setMenuCaption("Kanu Club Grenchen");
-
-		// TODO: change elia.b@gawnet.ch to SessionController.getBenutzername();
-		setEingeloggterBenutzer("elia.b@gawnet.ch");
-
-		// TODO: menu nach benutzerrolle anzeigen und login/logout
-		this.menu.addMenuItem("Fahrer verwalten ", () -> {
-			this.mutationsView.viewInitialisieren();
-			this.mutationsView.viewAnzeigen(this.inhaltPanel);
-		});
-
-		this.menu.addMenuItem("Fehler erfassen", () -> {
-			this.fehlererfassungsView.viewInitialisieren();
-			this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
-		});
-
-		this.menu.addMenuItem("Fahrer anmelden ", () -> {
-			this.fahreranmeldungsView.viewInitialisieren();
-			this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
-		});
-
-		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
-			this.rechnungsView.viewInitialisieren();
-			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
-		});
-
-		this.menu.addMenuItem("Login", () -> {
-			this.loginView.viewInitialisieren();
-			this.loginView.viewAnzeigen(this.inhaltPanel);
-		});
-
-		this.menu.setContent(this.seite);
+		this.menu.setImmediate(true);
 		this.setContent(this.menu);
 	}
 
@@ -113,20 +83,80 @@ public class StrukturView extends UI {
 	 * @param benutzername
 	 * @param bild
 	 */
-	public void setEingeloggterBenutzer(String benutzername) {
+	private void setEingeloggterBenutzer(String benutzername) {
 		this.menu.setUserName(benutzername);
 		this.menu.setUserIcon(FontAwesome.MALE);
 
+		this.benutzerprofilView.viewInitialisieren();
+
 		this.menu.clearUserMenu();
 		this.menu.addUserMenuItem("Benutzerprofil", FontAwesome.WRENCH, () -> {
-			this.benutzerprofilView.viewInitialisieren();
 			this.benutzerprofilView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addUserMenuItem("Abmelden", () -> {
-			// TODO: abmelden
-			Notification.show("Abmelden..", Type.TRAY_NOTIFICATION);
+			this.loginController.abmelden();
+			// zeigeAusgeloggtesMenu();
+			Page.getCurrent().reload();
 		});
+	}
+
+	/**
+	 * Funktion zeigt das ausgeloggte Menu
+	 */
+	public void zeigeAusgeloggtesMenu() {
+		this.menu.removeAllComponents();
+		this.menu.setMenuCaption("Kanu Club Grenchen");
+
+		this.loginView.viewInitialisieren();
+		this.loginView.viewInitialisieren();
+
+		this.menu.addMenuItem("Login", () -> {
+			this.loginView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		// default view
+		this.loginView.viewAnzeigen(this.inhaltPanel);
+		this.menu.setContent(this.seite);
+	}
+
+	/**
+	 * Funktion zeigt das für die Benutzerrolle entsprechende Menu.
+	 * 
+	 * @param benutzerRolle
+	 */
+	public void zeigeEingeloggtesMenu(BenutzerRolle benutzerRolle) {
+		this.menu.removeAllComponents();
+		this.menu.setMenuCaption("Kanu Club Grenchen");
+
+		setEingeloggterBenutzer(SessionController.getBenutzerEmail());
+
+		// TODO: alle views einbeziehen
+		this.mutationsView.viewInitialisieren();
+		this.fehlererfassungsView.viewInitialisieren();
+		this.fahreranmeldungsView.viewInitialisieren();
+		this.rechnungsView.viewInitialisieren();
+
+		// TODO: menu nach benutzerrolle anzeigen
+		this.menu.addMenuItem("Fahrer verwalten ", () -> {
+			this.mutationsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.menu.addMenuItem("Fehler erfassen", () -> {
+			this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.menu.addMenuItem("Fahrer anmelden ", () -> {
+			this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
+			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
+		});
+
+		// default view
+		this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
+		this.menu.setContent(this.seite);
 	}
 
 	/**

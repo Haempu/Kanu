@@ -61,10 +61,6 @@
  	color: white;
  	border: none
   }
- 
-   .valo-menu: hoover {
-	background-color: #016074;
-  }
 
   .v-window-header {
   	background-color: #016074;
@@ -86,14 +82,10 @@
   	color: white
  }
 
- /*.v-table-header-wrap {
-	background: #016074;
-	color: white
- }*/
-
   [class*="margin-top"] > tbody > [class*="firstrow"] > td {
     padding-top: 0px;
   }
+ 
   // Insert your own theme rules here
   /*.logo [width-range~="0-300px"] {
   	margin:15px;

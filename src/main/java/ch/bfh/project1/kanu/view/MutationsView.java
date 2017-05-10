@@ -15,9 +15,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 import ch.bfh.project1.kanu.controller.MutationsController;
-import ch.bfh.project1.kanu.controller.SessionController;
-import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
-import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 
 /**
@@ -90,12 +87,14 @@ public class MutationsView implements ViewTemplate {
 					Integer.parseInt(this.jahrgangText.getValue()), this.telefonNrText.getValue(),
 					this.strasseText.getValue(), Integer.parseInt(this.plzText.getValue()), this.ortText.getValue());
 
-			if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
-				fahrer.setClub((Club) this.clubs.getValue());
-				this.mController.speichereFahrerBearbeitenAlle(fahrer);
-			} else {
-				this.mController.speichereFahrerBearbeitenClub(fahrer);
-			}
+			this.popup.close();
+			// TODO: add this
+			/*
+			 * if (SessionController.getBenutzerRolle().equals(BenutzerRolle.
+			 * ROLLE_RECHNUNG)) { fahrer.setClub((Club) this.clubs.getValue());
+			 * this.mController.speichereFahrerBearbeitenAlle(fahrer); } else {
+			 * this.mController.speichereFahrerBearbeitenClub(fahrer); }
+			 */
 		});
 
 		this.popupLayoutMaster.addComponent(this.vornameText);
@@ -106,9 +105,13 @@ public class MutationsView implements ViewTemplate {
 		this.popupLayoutMaster.addComponent(this.ortText);
 		this.popupLayoutMaster.addComponent(this.telefonNrText);
 
-		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
-			this.popupLayoutMaster.addComponent(this.clubs);
-		}
+		// TODO: add benutzerrolle
+
+		// if
+		// (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG))
+		// {
+		// this.popupLayoutMaster.addComponent(this.clubs);
+		// }
 
 		this.popupLayoutMaster.addComponent(this.speichern);
 
@@ -137,12 +140,14 @@ public class MutationsView implements ViewTemplate {
 	private void tabelleAbfuellen() {
 		ArrayList<Fahrer> fahrer;
 
-		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
-			fahrer = this.mController.ladeFahrermutationslisteAlle();
-		} else {
-			// TODO: change club id
-			fahrer = this.mController.ladeFahrermutationslisteClub(1);
-		}
+		// if
+		// (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG))
+		// {
+		fahrer = this.mController.ladeFahrermutationslisteAlle();
+		// } else {
+		// TODO: change club id
+		// fahrer = this.mController.ladeFahrermutationslisteClub(1);
+		// }
 
 		for (Fahrer f : fahrer) {
 			Object newItemId = this.table.addItem();
@@ -159,9 +164,12 @@ public class MutationsView implements ViewTemplate {
 				this.ortText.setValue(f.getOrt());
 				this.telefonNrText.setValue(f.getTelNr());
 
-				if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
-					this.clubs.setValue(f.getClub());
-				}
+				// TODO: add benutzerrolle
+				/*
+				 * if
+				 * (SessionController.getBenutzerRolle().equals(BenutzerRolle.
+				 * ROLLE_RECHNUNG)) { this.clubs.setValue(f.getClub()); }
+				 */
 
 				this.ui.addWindow(this.popup);
 			});

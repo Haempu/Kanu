@@ -19,6 +19,10 @@ public class MutationsController {
 	private DBController dbController;
 	private MutationsView mutationsView;
 
+	public MutationsController() {
+		this.dbController = DBController.getInstance();
+	}
+
 	/**
 	 * Lädt die Liste für die Fahrermutationstabelle. Lädt Fahrer von allen
 	 * Clubs.
