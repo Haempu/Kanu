@@ -11,6 +11,9 @@ import java.util.List;
 import ch.bfh.project1.kanu.model.Benutzer;
 import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rangliste;
+import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.util.Row;
 
 /**
@@ -397,6 +400,10 @@ public class DBController {
 		ExecuteResult res = executeUpdate("DELETE FROM fahrer_rennen WHERE fahrer_id = " + fahrerID + " AND rennen_id = " + rennenID + ";");
 		return res.isSuccess();
 	}
+	
+	public void fahrerAbmelden(Integer fahrerID, Integer RennenID, Integer bootsKlasseID, Integer alterskategorieID) {
+		//TODO
+	}
 
 	/**
 	 * Liest zu einer gegebenen ID den Fahrer aus der Datenbank
@@ -404,7 +411,7 @@ public class DBController {
 	 * @param fahrerID Die ID des gewünschten Fahrers
 	 * @return Das Fahrer Objekt, null wenn Fahrer nicht vorhanden
 	 */
-	public Fahrer ladeFahrer(int fahrerID) {
+	public Fahrer ladeFahrer(Integer fahrerID) {
 		List<Fahrer> fahrer = selectFahrerBy(Table_Fahrer.COLUMN_ID, fahrerID);
 		if(fahrer.size() > 0)
 			return fahrer.get(0);
@@ -444,8 +451,23 @@ public class DBController {
 	 * @param benutzerID Die Benutzer ID
 	 * @return Das Benutzer Objekt, null wenn Benutzer nicht vorhanden
 	 */
-	public Benutzer ladeBenutzer(int benutzerID) {
+	public Benutzer ladeBenutzer(Integer benutzerID) {
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
+		if(benutzer.size() > 0)
+			return benutzer.get(0);
+		else
+			return null; //TODO abzuklären
+	}
+	
+	/**
+	 * Funktion lädt einen Benutzer mit der Email Adresse
+	 * 
+	 * @param emailAdresse
+	 * @return
+	 */
+	public Benutzer ladeBenutzerMitEmail(String emailAdresse) {
+		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_EMAIL, emailAdresse);
+		
 		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else
@@ -464,5 +486,55 @@ public class DBController {
 
 	public List<String> ladeAngemeldeteClubs() {
 		return new ArrayList<String>();
+	}
+	
+	public List<String> ladeFahreranmeldungslisteClub(int clubID) {
+		return new ArrayList<String>();
+	}
+
+	public ArrayList<String> ladeFehlererfassung(Integer rennenID) {
+		return new ArrayList<String>();
+	}
+
+	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
+
+	}
+
+	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() {
+
+		ArrayList<Fahrer> fahrer = new ArrayList<>();
+		// TODO: change this
+		for (int i = 0; i < 5; i++) {
+			fahrer.add(new Fahrer());//"Bösiger", "Fritz", (1993 + i), "+41799457709", "Weg 5", 4500, "Solothrun"));
+		}
+		return fahrer;
+	}
+
+	public ArrayList<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
+		return new ArrayList<Fahrer>();
+	}
+
+	public FahrerResultat ladeFahrerresultat(Integer fahrerID) {
+		return new FahrerResultat();
+	}
+
+	public void speichereFahrerBearbeitenAlle(Fahrer fahrer) {
+
+	}
+
+	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
+
+	}
+
+	public Rangliste ladeRanglisteRennen(Rennen rennen) {
+		return new Rangliste();
+	}
+
+	public Rangliste ladeRanglisteBootsKlasseID(Integer bootsKlasseID) {
+		return new Rangliste();
+	}
+
+	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID) {
+		return new Rangliste();
 	}
 }

@@ -18,13 +18,32 @@ public class Benutzer {
 	private Integer benutzerRechte;
 	private Integer clubID;
 	
+	public enum BenutzerRolle {
+		ROLLE_STANDARD(0),
+		ROLLE_TURNIERORGANISATOR(1),
+		ROLLE_TORRICHTER(2),
+		ROLLE_ZEITNEHMER(4),
+		ROLLE_RECHNUNG(8),
+		ROLLE_CLUBVERANTWORTLICHER(16);
+		
+		private final Integer value;
+		
+		BenutzerRolle(Integer value) {
+			this.value = value;
+		}
+		
+		public Integer value() {
+			return value;
+		}
+	}
+	
 	public Benutzer(Integer benutzerID, Integer clubID, String emailAdresse, String passwort, Integer benutzerRechte)
 	{
 		this.benutzerID = benutzerID;
 		this.emailAdresse = emailAdresse;
 		this.passwort = passwort;
 		this.benutzerRechte = benutzerRechte;
-		this.clubID = clubID;
+		this.setClubID(clubID);
 	}
 	
 	public Benutzer()
@@ -37,7 +56,7 @@ public class Benutzer {
 	}
 
 	public void setBenutzerID(int benutzerID) {
-		benutzerID = benutzerID;
+		this.benutzerID = benutzerID;
 	}
 
 	public String getEmailAdresse() {
@@ -54,5 +73,49 @@ public class Benutzer {
 
 	public void setPasswort(String passwort) {
 		this.passwort = passwort;
+	}
+	
+	public Integer getClubID() {
+		return clubID;
+	}
+
+	public void setClubID(Integer clubID) {
+		this.clubID = clubID;
+	}
+
+	/**
+	 * Überprüft den Benutzer auf das angegebene Recht. Verschiedene Rechte können mit einer Oder-Maskierung kombiniert werden.
+	 * @param br Die zu überprüfenden Rechte
+	 * @return true wenn der Benutzer das Recht hat, false sonst
+	 */
+	public boolean hatRechte(BenutzerRolle br)
+	{
+		return (benutzerRechte & br.value()) == br.value();
+	}
+	
+	/**
+	 * Fügt ein Recht zu den bestehenden Rechten hinzu
+	 * @param br Das hinzuzufügende Recht
+	 */
+	public void setzeRechte(BenutzerRolle br)
+	{
+		this.benutzerRechte |= br.value();
+	}
+	
+	/**
+	 * Löscht ein angegebenes Recht des Benutzers
+	 * @param br Das Recht, welches zu löschen ist
+	 */
+	public void loescheRechte(BenutzerRolle br)
+	{
+		this.benutzerRechte &= ~br.value();
+	}
+	
+	/**
+	 * Löscht alle Rechte des Benutzers
+	 */
+	public void loescheRechte()
+	{
+		this.benutzerRechte = 0;
 	}
 }
