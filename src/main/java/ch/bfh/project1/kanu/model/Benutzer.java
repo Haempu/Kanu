@@ -23,6 +23,8 @@ public class Benutzer {
 		this.benutzerID = benutzerID;
 		this.emailAdresse = emailAdresse;
 		this.passwort = passwort;
+		this.benutzerRechte = benutzerRechte;
+		this.clubID = clubID;
 	}
 	
 	public Benutzer()
