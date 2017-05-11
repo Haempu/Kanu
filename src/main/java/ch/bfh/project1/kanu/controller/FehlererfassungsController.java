@@ -2,6 +2,7 @@ package ch.bfh.project1.kanu.controller;
 
 import java.util.List;
 
+import ch.bfh.project1.kanu.model.FahrerRennen;
 import ch.bfh.project1.kanu.view.FehlererfassungsView;
 
 /**
@@ -25,7 +26,7 @@ public class FehlererfassungsController {
 	 *            - ID des Rennens
 	 * @return Liste von allen Fahrern eines Rennens.
 	 */
-	public List<String> ladeFehlererfassung(Integer rennenID) {
+	public List<FahrerRennen> ladeFehlererfassung(Integer rennenID) {
 		return this.dbController.ladeFehlererfassung(rennenID);
 	}
 
@@ -40,6 +41,6 @@ public class FehlererfassungsController {
 	 *            - Tornummer, bei welchem der Fehler gemacht wurde.
 	 */
 	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
-		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer);
+		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer, tornummer); //TODO
 	}
 }

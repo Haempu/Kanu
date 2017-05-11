@@ -45,7 +45,7 @@ public class RanglistenController {
 	 * @return Rangliste
 	 */
 	public Rangliste ladeRanglisteBootsKlasse(Integer bootsKlasseID) {
-		return this.dbController.ladeRanglisteBootsKlasseID(bootsKlasseID);
+		return this.dbController.ladeRanglisteBootsKlasseID(null, bootsKlasseID); //TODO
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class RanglistenController {
 	 * @return Rangliste
 	 */
 	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID) {
-		return this.dbController.ladeRanglisteAltersKategorie(altersKategorieID);
+		return this.dbController.ladeRanglisteAltersKategorie(null, altersKategorieID); //TODO
 	}
 
 	/**

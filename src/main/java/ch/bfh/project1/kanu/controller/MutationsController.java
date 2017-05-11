@@ -1,6 +1,7 @@
 package ch.bfh.project1.kanu.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
@@ -30,7 +31,7 @@ public class MutationsController {
 	 * @return Liste von allen Fahrern die am Rennen teilgenommen haben.
 	 */
 	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() {
-		return this.dbController.ladeFahrermutationslisteAlle();
+		return (ArrayList<Fahrer>) this.dbController.ladeFahrermutationslisteAlle();
 	}
 
 	/**
@@ -42,7 +43,7 @@ public class MutationsController {
 	 * @return Liste von allen Fahreren des Clubs, die am Rennen teilgenommen
 	 *         haben.
 	 */
-	public ArrayList<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
 		return this.dbController.ladeFahrermutationslisteClub(clubID);
 	}
 
@@ -53,7 +54,7 @@ public class MutationsController {
 	 *            - ID des ausgewählten Fahrers.
 	 * @return Resultate des ausgewählten Fahrers.
 	 */
-	public FahrerResultat ladeFahrerresultat(Integer fahrerID) {
+	public List<FahrerResultat> ladeFahrerresultat(Integer fahrerID) {
 		return this.dbController.ladeFahrerresultat(fahrerID);
 	}
 

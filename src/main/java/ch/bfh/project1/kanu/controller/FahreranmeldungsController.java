@@ -29,8 +29,8 @@ public class FahreranmeldungsController {
 	 *            - ID eines Clubs
 	 * @return
 	 */
-	public List<String> ladeFahreranmeldungslisteClub(Integer clubID) {
-		return this.dbController.ladeFahreranmeldungslisteClub(clubID);
+	public List<Fahrer> ladeFahrerlisteClub(int clubID) {
+		return dbController.fahrerlisteClub(clubID);
 	}
 
 	/**

@@ -12,33 +12,59 @@ package ch.bfh.project1.kanu.model;
  */
 
 public class Benutzer {
-	public enum BenutzerRolle {
-		ROLLE_STANDARD, ROLLE_TURNIERORGANISATOR, ROLLE_TORRICHTER, ROLLE_ZEITNEHMER, ROLLE_RECHNUNG, ROLLE_CLUBVERANTWORTLICHER
-	}
-	
+
 	private Integer benutzerID;
 	private String emailAdresse;
 	private String passwort;
-	private BenutzerRolle benutzerRolle;
+	private Integer benutzerRechte;
+	private Integer clubID;
+	
+	public enum BenutzerRolle {
+		ROLLE_STANDARD(0),
+		ROLLE_TURNIERORGANISATOR(1),
+		ROLLE_TORRICHTER(2),
+		ROLLE_ZEITNEHMER(4),
+		ROLLE_RECHNUNG(8),
+		ROLLE_CLUBVERANTWORTLICHER(16);
+		
+		private final Integer value;
+		
+		BenutzerRolle(Integer value) {
+			this.value = value;
+		}
+		
+		public Integer value() {
+			return value;
+		}
+	}
 	
 	//TODO: nur für Test?
 	public Benutzer(){
 		
 	}
 	
+	@Deprecated
 	public Benutzer(Integer id, String email, String pw, BenutzerRolle br){
 		this.benutzerID = id;
 		this.emailAdresse = email;
 		this.passwort = pw;
-		this.benutzerRolle = br;
 	}
 	
-	public Integer getBenutzerID() {
+	public Benutzer(Integer benutzerID, Integer clubID, String emailAdresse, String passwort, Integer benutzerRechte)
+	{
+		this.benutzerID = benutzerID;
+		this.emailAdresse = emailAdresse;
+		this.passwort = passwort;
+		this.benutzerRechte = benutzerRechte;
+		this.setClubID(clubID);
+	}
+
+	public int getBenutzerID() {
 		return benutzerID;
 	}
 
-	public void setBenutzerID(Integer benutzerID) {
-		benutzerID = benutzerID;
+	public void setBenutzerID(int benutzerID) {
+		this.benutzerID = benutzerID;
 	}
 
 	public String getEmailAdresse() {
@@ -56,12 +82,48 @@ public class Benutzer {
 	public void setPasswort(String passwort) {
 		this.passwort = passwort;
 	}
-
-	public BenutzerRolle getBenutzerRolle() {
-		return benutzerRolle;
+	
+	public Integer getClubID() {
+		return clubID;
 	}
 
-	public void setBenutzerRolle(BenutzerRolle benutzerRolle) {
-		this.benutzerRolle = benutzerRolle;
+	public void setClubID(Integer clubID) {
+		this.clubID = clubID;
+	}
+
+	/**
+	 * Überprüft den Benutzer auf das angegebene Recht.
+	 * @param br Das zu überprüfende Recht
+	 * @return true wenn der Benutzer das Recht hat, false sonst
+	 */
+	public boolean hatRechte(BenutzerRolle br)
+	{
+		return (benutzerRechte & br.value()) == br.value();
+	}
+	
+	/**
+	 * Fügt ein Recht zu den bestehenden Rechten hinzu
+	 * @param br Das hinzuzufügende Recht
+	 */
+	public void setzeRechte(BenutzerRolle br)
+	{
+		this.benutzerRechte |= br.value();
+	}
+	
+	/**
+	 * Löscht ein angegebenes Recht des Benutzers
+	 * @param br Das Recht, welches zu löschen ist
+	 */
+	public void loescheRechte(BenutzerRolle br)
+	{
+		this.benutzerRechte &= ~br.value();
+	}
+	
+	/**
+	 * Löscht alle Rechte des Benutzers
+	 */
+	public void loescheRechte()
+	{
+		this.benutzerRechte = 0;
 	}
 }

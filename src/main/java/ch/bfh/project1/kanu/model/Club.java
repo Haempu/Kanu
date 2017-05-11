@@ -12,7 +12,7 @@ package ch.bfh.project1.kanu.model;
 
 public class Club {
 
-	private int clubID;
+	private Integer clubID;
 	private String kennung;
 	private String name;
 	private Clubverantwortlicher clubverantwortlicher;
@@ -25,6 +25,18 @@ public class Club {
 		this.clubID = clubID;
 		this.name = name;
 		this.bezahlt = bezahlt;
+	}
+	
+	public Club (Integer clubID, String kennung, String name)
+	{
+		this.clubID = clubID;
+		this.kennung = kennung;
+		this.name = name;
+	}
+	
+	public Club()
+	{
+		
 	}
 
 	public int getClubID() {
