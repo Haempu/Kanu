@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Rangliste {
 	private Rennen rennen;
-	private List<FahrerResultat> resultate = new ArrayList();
+	private List<FahrerResultat> resultate = new ArrayList<FahrerResultat>();
 
 	public Rennen getRennen() {
 		return this.rennen;

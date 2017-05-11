@@ -39,7 +39,7 @@ public class LoginController {
 	public boolean loginMitBenutzer(String email, String passwort) {
 		if (existiertBenutzer(email, passwort)) {
 			SessionController.setBenutzerID(this.aktuellerBenutzer.getBenutzerID());
-			SessionController.setBenuterEmail(this.aktuellerBenutzer.getEmailAdresse());
+			SessionController.setBenuterEmail(this.aktuellerBenutzer.getEmailAdresse()); //TODO (siehe SessionController)
 			SessionController.setBenutzer(aktuellerBenutzer);
 			return true;
 		}

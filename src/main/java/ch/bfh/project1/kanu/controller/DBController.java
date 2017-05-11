@@ -252,11 +252,11 @@ public class DBController {
 		for (Row row : executeSelect(selectStmt)) {
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
 			Integer idBenutzer = (Integer) row.getRow().get(1).getKey();
-			String benutzername = (String) row.getRow().get(2).getKey();
+			//String benutzername = (String) row.getRow().get(2).getKey();
 			String passwort = (String) row.getRow().get(3).getKey();
 			String email = (String) row.getRow().get(4).getKey();
-			String name = (String) row.getRow().get(5).getKey();
-			String vorname = (String) row.getRow().get(6).getKey();
+			//String name = (String) row.getRow().get(5).getKey();
+			//String vorname = (String) row.getRow().get(6).getKey();
 			Integer rechte = (Integer) row.getRow().get(7).getKey();
 			//String kennung = (String) row.getRow().get(8).getKey();
 			//String club_name = (String) row.getRow().get(9).getKey();

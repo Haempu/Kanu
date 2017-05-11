@@ -16,7 +16,7 @@ public class FahrerResultat {
 	private boolean neusterEintrag;
 	private Rennen rennen;
 	private AltersKategorie kategorie;
-	private int startnummer;
+	private Integer startnummer;
 	private BootsKlasse bootKategorie;
 	
 	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kategorie, BootsKlasse bootKategorie)
@@ -26,12 +26,12 @@ public class FahrerResultat {
 		zeitZweiterLauf = zeit2;
 		this.rennen = rennen;
 		this.kategorie = kategorie;
-		this.bootKategorie = bootKategorie;
+		this.setBootKategorie(bootKategorie);
 	}
 	
 	public FahrerResultat()
 	{
-		
+		//TODO Im Moment nicht gebraucht --> löschen?
 	}
 
 	public Fahrer getFahrer() {
@@ -88,5 +88,13 @@ public class FahrerResultat {
 
 	public void setStartnummer(int startnummer) {
 		this.startnummer = startnummer;
+	}
+
+	public BootsKlasse getBootKategorie() {
+		return bootKategorie;
+	}
+
+	public void setBootKategorie(BootsKlasse bootKategorie) {
+		this.bootKategorie = bootKategorie;
 	}
 }

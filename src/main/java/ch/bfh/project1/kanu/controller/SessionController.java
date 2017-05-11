@@ -16,10 +16,12 @@ public class SessionController {
 
 	/**
 	 * gestl: Brauchen wir nicht mehr, oder?
+	 * Ich würde hier einfach das Benutzer Objekt speichern, geht im gleichen Zug und man hat direkt alle Daten, die man braucht.
+	 * //TODO
 	 * @param benutzeremail
 	 */
 	@Deprecated
-	public static void setBenuterEmail(String benutzeremail) { //TODO löschen? Benutzer als Objekt speichern!
+	public static void setBenuterEmail(String benutzeremail) {
 		VaadinSession.getCurrent().setAttribute(SESSION_EMAIL, benutzeremail);
 	}
 	
