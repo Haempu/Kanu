@@ -146,7 +146,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private void tabelleAbfuellen() {
 		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
 
-		if (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG)) {
+		if (SessionController.getBenutzer().hatRechte(BenutzerRolle.ROLLE_RECHNUNG)) {
 			// TODO: fahrerladen
 			// fahrer = this.rController.ladeFahrermutationslisteAlle();
 		} else {

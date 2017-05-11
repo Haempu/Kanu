@@ -40,9 +40,7 @@ public class LoginController {
 		if (existiertBenutzer(email, passwort)) {
 			SessionController.setBenutzerID(this.aktuellerBenutzer.getBenutzerID());
 			SessionController.setBenuterEmail(this.aktuellerBenutzer.getEmailAdresse());
-			// TODO: set benutzerrolle
-			// SessionController.setBenutzerRolle(this.aktuellerBenutzer.getBenutzerRolle().toString());
-
+			SessionController.setBenutzer(aktuellerBenutzer);
 			return true;
 		}
 		return false;

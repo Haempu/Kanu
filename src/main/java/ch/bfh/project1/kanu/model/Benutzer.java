@@ -40,18 +40,6 @@ public class Benutzer {
 		}
 	}
 	
-	//TODO: nur für Test?
-	public Benutzer(){
-		
-	}
-	
-	@Deprecated
-	public Benutzer(Integer id, String email, String pw, BenutzerRolle br){
-		this.benutzerID = id;
-		this.emailAdresse = email;
-		this.passwort = pw;
-	}
-	
 	public Benutzer(Integer benutzerID, Integer clubID, String emailAdresse, String passwort, Integer benutzerRechte)
 	{
 		this.benutzerID = benutzerID;
@@ -86,8 +74,8 @@ public class Benutzer {
 	}
 
 	/**
-	 * <strong>Plaintext</strong> Passwort, das Passwort wird hier gehasht! Um den Hash beim Benutzer zu speichern, den Konstruktor benutzen!
-	 * @param passwort
+	 * <strong>Plaintext</strong> Passwort, das Passwort wird hier gehasht! Um den Hash beim Benutzer zu speichern den Konstruktor benutzen!
+	 * @param passwort <strong>Plaintext</strong> Passwort
 	 */
 	public void setPasswort(String passwort) {
 		PasswordAuthentication pa = new PasswordAuthentication();
