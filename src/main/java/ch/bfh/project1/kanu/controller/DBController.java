@@ -26,7 +26,6 @@ import ch.bfh.project1.kanu.util.Row;
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
- * @param <T>
  *
  */
 
@@ -87,7 +86,7 @@ public class DBController {
 	
 	public enum Table_FahrerRennen {
 		COLUMN_FAHRER_ID("fahrer_id"), COLUMN_RENNEN_ID("rennen_id"), COLUMN_KATEGORIE("kategorie_id"), 
-		COLUMN_BOOTKLASSE("boots_kategorie"), COLUMN_BEZAHLT("bezahlt"), CLOUMN_ALL("*");
+		COLUMN_BOOTKLASSE("boots_kategorie"), COLUMN_BEZAHLT("bezahlt"), COLUMN_CLUB_ID("club_id"), CLOUMN_ALL("*");
 
 		private final String column;
 
@@ -213,13 +212,13 @@ public class DBController {
 			fahrer.add(new Fahrer(idFahrer, new Club(idClub, kennung, club_name), name, vorname, jg, telnr, strasse, plz, ort));
 		}
 		return fahrer;
-	} //TODO Startliste Tabelle in DB
+	}
 	
 	public <T> List<FahrerRennen> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) {
 		String where = makeWhere(column, value);
-		String selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) " + where;
+		String selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id) " + where;
 		if (column.equals(Table_Club.CLOUMN_ALL))
-			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id)";
+			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
 		List<FahrerRennen> fahrer = new ArrayList<FahrerRennen>();
 		for (Row row : executeSelect(selectStmt)) {
 			Integer idFahrer = (Integer) row.getRow().get(0).getKey();
@@ -623,12 +622,58 @@ public class DBController {
 		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO user (passwort, email) "					+ "VALUES (" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "');");		}		else		{			res = executeUpdate("UPDATE user SET email = " + benutzer.getEmailAdresse() 					+ ", passwort = '" + benutzer.getPasswort()					+ " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
 	}
 
-	public List<String> ladeAngemeldeteClubs() {
+	/**
+	 * Welches Rennen denn? Die ID als Argument fehlt...
+	 * @return
+	 */
+	@Deprecated
+	public List<String> ladeAngemeldeteClubs() { //TODO löschen, nicht brauchbar
 		return new ArrayList<String>();
 	}
 	
-	public List<String> ladeFahreranmeldungslisteClub(int clubID) {
-		return new ArrayList<String>();
+	/**
+	 * Gibt alle Clubs für ein gegebenes Rennen zurück
+	 * @param rennenID Die ID des Rennens
+	 * @return Eine Liste von Clubs
+	 */
+	public List<Club> ladeAngemeldeteClubs(Integer rennenID) {
+		String selectStmt = "SELECT DISTINCT club_id, kennung, club_name FROM fahrer_rennen NATURAL JOIN fahrer NATURAL JOIN club WHERE rennen_id = " + rennenID;
+		List<Club> clubs = new ArrayList<Club>();
+
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idClub = (Integer) row.getRow().get(0).getKey();
+			String clubKennung = (String) row.getRow().get(1).getKey();
+			String name = (String) row.getRow().get(2).getKey();
+			clubs.add(new Club(idClub, clubKennung, name));
+		}
+		return clubs;
+	}
+	
+	/**
+	 * Liste mit allen Fahrer vom Club
+	 * Sollte ein Fahrer für mehrere Kategorien im gleichen Rennen angemeldet sein, kommt dieser Fahrer mehrfach vor!
+	 * @param clubID Die ID des Clubs
+	 * @return Eine Liste mit Fahrer. Fahrer, welche angemeldet sind, haben den Typ "FahrerRennen", die andern nur "Fahrer"
+	 */
+	public List<Fahrer> ladeFahreranmeldungslisteClub(int clubID) {
+		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
+		fahrer.addAll(selectStartlisteBy(new Table_FahrerRennen[] {Table_FahrerRennen.COLUMN_CLUB_ID}, new Integer[] {clubID}));
+		//Nur Fahrer hinzufügen, welche noch nicht vorhanden sind
+		for(Fahrer f : selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID))
+		{
+			boolean vorhanden = false;
+			for(Fahrer x : fahrer)
+			{
+				if(x.getFahrerID() == f.getFahrerID())
+				{
+					vorhanden = true;
+					break;
+				}
+			}
+			if(!vorhanden)
+				fahrer.add(f);
+		}
+		return fahrer;
 	}
 
 	/**
@@ -688,18 +733,22 @@ public class DBController {
 		return res.isSuccess();
 	}
 	
-	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() { //Was für Mutatione?
-
-		ArrayList<Fahrer> fahrer = new ArrayList<>();
-		// TODO: change this
-		for (int i = 0; i < 5; i++) {
-			fahrer.add(new Fahrer());//"Bösiger", "Fritz", (1993 + i), "+41799457709", "Weg 5", 4500, "Solothrun"));
-		}
-		return fahrer;
+	/**
+	 * Lädt alle Fahrer aus der Datenbank
+	 * @return Eine Liste mit allen Fahrern
+	 */
+	public List<Fahrer> ladeFahrermutationslisteAlle() {
+		return selectFahrerBy(Table_Fahrer.CLOUMN_ALL, null);
 	}
 
-	public ArrayList<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
-		return new ArrayList<Fahrer>();
+	/**
+	 * fahrerlisteClub() benutzen!
+	 * @param clubID
+	 * @return
+	 */
+	@Deprecated
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) { //TODO löschen, doppelt
+		return selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID);
 	}
 
 	/**
