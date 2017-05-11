@@ -27,6 +27,7 @@ public class Row {
 		TYPE.put("TINYINT", Boolean.class);
 		TYPE.put("VARCHAR", String.class);
 		TYPE.put("TIMESTAMP", Timestamp.class);
+		TYPE.put("DOUBLE", Double.class);
 	}
 
 	public Row() {

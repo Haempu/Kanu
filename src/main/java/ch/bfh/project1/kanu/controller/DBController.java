@@ -292,8 +292,8 @@ public class DBController {
 				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) " + where + ";";
 		List<FahrerResultat> resultat = new ArrayList<FahrerResultat>();
 		for (Row row : executeSelect(selectStmt)) {
-			double zeit1 = (Integer) row.getRow().get(0).getKey();
-			double zeit2 = (Integer) row.getRow().get(1).getKey();
+			double zeit1 = row.getRow().get(0).getKey() == null ? (double) 0 : (double) row.getRow().get(0).getKey();
+			double zeit2 = row.getRow().get(1).getKey() == null ? (double) 0 : (double) row.getRow().get(1).getKey();
 			Integer idFahrer = (Integer) row.getRow().get(2).getKey();
 			Integer rennenID = (Integer) row.getRow().get(3).getKey();
 			Integer kategorieID = (Integer) row.getRow().get(4).getKey();
