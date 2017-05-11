@@ -16,6 +16,22 @@ public class FahrerResultat {
 	private boolean neusterEintrag;
 	private Rennen rennen;
 	private AltersKategorie kategorie;
+	private BootsKlasse bootKategorie;
+	
+	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kategorie, BootsKlasse bootKategorie)
+	{
+		this.fahrer = fahrer;
+		zeitErsterLauf = zeit1;
+		zeitZweiterLauf = zeit2;
+		this.rennen = rennen;
+		this.kategorie = kategorie;
+		this.bootKategorie = bootKategorie;
+	}
+	
+	public FahrerResultat()
+	{
+		
+	}
 
 	public Fahrer getFahrer() {
 		return fahrer;

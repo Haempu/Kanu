@@ -84,8 +84,8 @@ public class Benutzer {
 	}
 
 	/**
-	 * Überprüft den Benutzer auf das angegebene Recht. Verschiedene Rechte können mit einer Oder-Maskierung kombiniert werden.
-	 * @param br Die zu überprüfenden Rechte
+	 * Überprüft den Benutzer auf das angegebene Recht.
+	 * @param br Das zu überprüfende Recht
 	 * @return true wenn der Benutzer das Recht hat, false sonst
 	 */
 	public boolean hatRechte(BenutzerRolle br)
