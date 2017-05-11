@@ -298,8 +298,8 @@ public class DBController {
 			Integer rennenID = (Integer) row.getRow().get(3).getKey();
 			Integer kategorieID = (Integer) row.getRow().get(4).getKey();
 			Integer bootID = (Integer) row.getRow().get(5).getKey();
-			String name = (String) row.getRow().get(6).getKey();
-			String vorname = (String) row.getRow().get(7).getKey();
+			String vorname = (String) row.getRow().get(6).getKey();
+			String name = (String) row.getRow().get(7).getKey();
 			String clubname = (String) row.getRow().get(8).getKey();
 			Integer clubID = (Integer) row.getRow().get(9).getKey();
 			Club club = new Club(clubID, "", clubname);

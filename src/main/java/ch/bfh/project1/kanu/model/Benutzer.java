@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.model;
 
+import ch.bfh.project1.kanu.util.PasswordAuthentication;
+
 /**
  * Die Klasse Benutzer ist ein Benutzer des Systems. Ein Benutzer hat folgende
  * Attribute: - Eindeutige Identifikationsnummer - Email-Adresse - Passwort -
@@ -75,12 +77,21 @@ public class Benutzer {
 		this.emailAdresse = emailAdresse;
 	}
 
+	/**
+	 * Gibt das gehashte Passwort zurück
+	 * @return
+	 */
 	public String getPasswort() {
 		return passwort;
 	}
 
+	/**
+	 * <strong>Plaintext</strong> Passwort, das Passwort wird hier gehasht! Um den Hash beim Benutzer zu speichern, den Konstruktor benutzen!
+	 * @param passwort
+	 */
 	public void setPasswort(String passwort) {
-		this.passwort = passwort;
+		PasswordAuthentication pa = new PasswordAuthentication();
+		this.passwort = pa.hash(passwort.toCharArray());
 	}
 	
 	public Integer getClubID() {
@@ -89,6 +100,17 @@ public class Benutzer {
 
 	public void setClubID(Integer clubID) {
 		this.clubID = clubID;
+	}
+	
+	/**
+	 * Vergleicht das Passwort mit dem Hash
+	 * @param hash Der Hash des Passworts (von der db)
+	 * @return true wenn richtiges Passwort, false sonst
+	 */
+	public boolean passwortVergleichen(String hash)
+	{
+		PasswordAuthentication pa = new PasswordAuthentication();
+		return pa.authenticate(passwort.toCharArray(), hash);
 	}
 
 	/**

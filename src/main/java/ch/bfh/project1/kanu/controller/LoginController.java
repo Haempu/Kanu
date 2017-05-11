@@ -58,12 +58,10 @@ public class LoginController {
 	 */
 	public boolean existiertBenutzer(String email, String passwort) {
 
-		this.aktuellerBenutzer = this.dbController.ladeBenutzerMitEmail(email);
+		aktuellerBenutzer = dbController.ladeBenutzerMitEmail(email);
 
-		if (this.aktuellerBenutzer != null) {
-			if (this.aktuellerBenutzer.getPasswort().equals(passwort)) {
-				return true;
-			}
+		if (aktuellerBenutzer != null) {
+			return aktuellerBenutzer.passwortVergleichen(passwort);
 		}
 		return false;
 	}
