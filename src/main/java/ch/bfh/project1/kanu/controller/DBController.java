@@ -13,6 +13,7 @@ import ch.bfh.project1.kanu.model.Benutzer;
 import ch.bfh.project1.kanu.model.BootsKlasse;
 import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerRennen;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
@@ -25,6 +26,7 @@ import ch.bfh.project1.kanu.util.Row;
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
+ * @param <T>
  *
  */
 
@@ -53,7 +55,8 @@ public class DBController {
 	}		public enum Table_Rennen {		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ORT("ort"), CLOUMN_ALL("*");		private final String column;		Table_Rennen(String column) {			this.column = column;		}		public String getValue() {			return column;		}	}
 	
 	public enum Table_Rangliste {
-		COLUMN_ID("rennen_id"), COLUMN_KATEGORIE("kategorie_id"), COLUMN_BOOTKLASSE("boot_id"), CLOUMN_ALL("*");
+		COLUMN_RENNEN_ID("rennen_id"), COLUMN_FAHRER_ID("fahrer_id"), COLUMN_KATEGORIE("kategorie_id"), 
+		COLUMN_BOOTKLASSE("boot_id"), CLOUMN_ALL("*");
 
 		private final String column;
 
@@ -74,6 +77,21 @@ public class DBController {
 		private final String column;
 
 		Table_Fahrer(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
+	
+	public enum Table_FahrerRennen {
+		COLUMN_FAHRER_ID("fahrer_id"), COLUMN_RENNEN_ID("rennen_id"), COLUMN_KATEGORIE("kategorie_id"), 
+		COLUMN_BOOTKLASSE("boots_kategorie"), COLUMN_BEZAHLT("bezahlt"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_FahrerRennen(String column) {
 			this.column = column;
 		}
 
@@ -197,6 +215,26 @@ public class DBController {
 		return fahrer;
 	} //TODO Startliste Tabelle in DB
 	
+	public <T> List<FahrerRennen> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) {
+		String where = makeWhere(column, value);
+		String selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) " + where;
+		if (column.equals(Table_Club.CLOUMN_ALL))
+			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id)";
+		List<FahrerRennen> fahrer = new ArrayList<FahrerRennen>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idFahrer = (Integer) row.getRow().get(0).getKey();
+			Integer rennenID = (Integer) row.getRow().get(1).getKey();
+			Integer kategorieID = (Integer) row.getRow().get(2).getKey();
+			Integer bootID = (Integer) row.getRow().get(3).getKey();
+			Integer startplatz = (Integer) row.getRow().get(4).getKey();
+			String startzeit = (String) row.getRow().get(5).getKey();
+			String name = (String) row.getRow().get(10).getKey();
+			String vorname = (String) row.getRow().get(11).getKey();
+			fahrer.add(new FahrerRennen(idFahrer, name, vorname, rennenID, kategorieID, bootID, startplatz, startzeit));
+		}
+		return fahrer;
+	}
+	
 	/**
 	 * Liest die Benutzer aus der Datenbank
 	 * @param column Spalte, in der gesucht werden soll
@@ -243,22 +281,7 @@ public class DBController {
 				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2) as b JOIN fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) GROUP BY fahrer_id, rennen_id, "
 				+ "kategorie_id, boot_id WHERE rennen_id = " + rennen.getRennenID() + ";"; //ORDER BY min(ges_zeit) */
 		//Gibt die Zeiten beider Läufe aus
-		String where = "WHERE ";
-		int x = 0;
-		for(Table_Rangliste tr : column)
-		{
-			if(value.length > x)
-			{
-				if(x > 0)
-					where += ", ";
-				where += tr.getValue();
-				if(value[x] != null)
-					where += " = " + value[x];
-				else
-					where += " IS NULL";
-			}
-			x++;
-		}
+		String where = makeWhere(column, value);
 		selectStmt = "SELECT ges_zeit1, ges_zeit2, fahrer_id, rennen_id, kategorie_id, boot_id, f.name, vorname, c.club_name, "
 				+ "c.club_id FROM (SELECT zeit1 + t.strafzeit AS ges_zeit1, fahrer_id, rennen_id, kategorie_id, boot_id "
 				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, boot_id, lauf, SUM(strafzeit) AS strafzeit FROM strafzeiten "
@@ -303,6 +326,25 @@ public class DBController {
 	// https://en.wikipedia.org/wiki/Isolation_(database_systems)#Read_uncommitted
 	// and JAVA Monitoring and synchronizing.
 
+	private <T> String makeWhere(T[] column, T[] value)
+	{
+		String where = "WHERE ";
+		for(int x = 0;x < column.length;x++)
+		{
+			if(value.length > x)
+			{
+				if(x > 0)
+					where += ", ";
+				where += ((Table_Rangliste) column[x]).getValue();
+				if(value[x] != null)
+					where += " = " + value[x];
+				else
+					where += " IS NULL";
+			}
+		}
+		return where;
+	}
+	
 	/**
 	 * Performs an INSERT, UPDATE, or DELETE statement on the database.
 	 *
@@ -589,8 +631,25 @@ public class DBController {
 		return new ArrayList<String>();
 	}
 
-	public ArrayList<String> ladeFehlererfassung(Integer rennenID) {
-		return new ArrayList<String>();
+	/**
+	 * Lädt die Startliste eines Rennens und gibt eine Liste von FahrerRennen Objekten zurück
+	 * @param rennenID Die ID des Rennens
+	 * @return Eine Liste von Fahrern
+	 */
+	public List<FahrerRennen> ladeFehlererfassung(Integer rennenID) {
+		return selectStartlisteBy(new Table_FahrerRennen[] {Table_FahrerRennen.COLUMN_RENNEN_ID}, new Integer[] {rennenID});
+	}
+	
+	/**
+	 * Liest zu einer bestimmten Kategorie von einem Rennen die Startliste aus
+	 * @param rennenID Die ID des Rennens
+	 * @param kategorieID Die ID der Kategorie
+	 * @param bootID Die ID der Bootsklasse
+	 * @return Eine Liste von Fahrern
+	 */
+	public List<FahrerRennen> ladeFehlererfassung(Integer rennenID, Integer kategorieID, Integer bootID) {
+		return selectStartlisteBy(new Table_FahrerRennen[] {Table_FahrerRennen.COLUMN_RENNEN_ID, Table_FahrerRennen.COLUMN_KATEGORIE,
+				Table_FahrerRennen.COLUMN_BOOTKLASSE}, new Integer[] {rennenID, kategorieID, bootID});
 	}
 
 	/**
@@ -643,17 +702,31 @@ public class DBController {
 		return new ArrayList<Fahrer>();
 	}
 
-	public FahrerResultat ladeFahrerresultat(Integer fahrerID) {
-		
-		return new FahrerResultat();
+	/**
+	 * Liest zu einem Fahrer alle(!) Resultate aus
+	 * @param fahrerID Die Fahrer ID
+	 * @return Eine Liste von FahrerResultaten
+	 */
+	public List<FahrerResultat> ladeFahrerresultat(Integer fahrerID) {
+		return selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_FAHRER_ID}, new Integer[]{fahrerID});
 	}
 
+	/**
+	 * speichereFahrer() benutzen!
+	 * @param fahrer
+	 */
+	@Deprecated
 	public void speichereFahrerBearbeitenAlle(Fahrer fahrer) {
-
+		speichereFahrer(fahrer);
 	}
 
+	/**
+	 * speichereFahrer() benutzen!
+	 * @param fahrer
+	 */
+	@Deprecated
 	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
-
+		speichereFahrer(fahrer);
 	}
 	
 	/**
@@ -662,7 +735,7 @@ public class DBController {
 	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) {
-		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_ID}, new Integer[]{rennen.getRennenID()});
+		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_RENNEN_ID}, new Integer[]{rennen.getRennenID()});
 		Rangliste rl = new Rangliste();
 		rl.setRennen(rennen);
 		rl.setResultate(resultat);
@@ -676,7 +749,7 @@ public class DBController {
 	 * @return Ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
 	 */
 	public Rangliste ladeRanglisteBootsKlasseID(Rennen rennen, Integer bootsKlasseID) {
-		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_ID, Table_Rangliste.COLUMN_BOOTKLASSE}, 
+		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_BOOTKLASSE}, 
 				new Integer[]{rennen.getRennenID(), bootsKlasseID});
 		Rangliste rl = new Rangliste();
 		rl.setRennen(rennen);
@@ -691,7 +764,7 @@ public class DBController {
 	 * @return Ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
 	 */
 	public Rangliste ladeRanglisteAltersKategorie(Rennen rennen, Integer altersKategorieID) {
-		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_ID, Table_Rangliste.COLUMN_KATEGORIE}, 
+		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_KATEGORIE}, 
 				new Integer[]{rennen.getRennenID(), altersKategorieID});
 		Rangliste rl = new Rangliste();
 		rl.setRennen(rennen);
@@ -707,8 +780,8 @@ public class DBController {
 	 * @return Ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
 	 */
 	public Rangliste ladeRanglisteAltersKategorie(Rennen rennen, Integer altersKategorieID, Integer bootID) {
-		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_ID, Table_Rangliste.COLUMN_KATEGORIE, Table_Rangliste.COLUMN_BOOTKLASSE}, 
-				new Integer[]{rennen.getRennenID(), altersKategorieID, bootID});
+		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[]{Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_KATEGORIE, 
+				Table_Rangliste.COLUMN_BOOTKLASSE}, new Integer[]{rennen.getRennenID(), altersKategorieID, bootID});
 		Rangliste rl = new Rangliste();
 		rl.setRennen(rennen);
 		rl.setResultate(resultat);
