@@ -112,6 +112,15 @@ public class Benutzer {
 	}
 	
 	/**
+	 * Gibt die Rechte als Zahl zurück (zB. zum Speichern in die db)
+	 * @return Die Rechte als Integer Zahl
+	 */
+	public Integer getRechte()
+	{
+		return benutzerRechte;
+	}
+	
+	/**
 	 * Fügt ein Recht zu den bestehenden Rechten hinzu
 	 * @param br Das hinzuzufügende Recht
 	 */

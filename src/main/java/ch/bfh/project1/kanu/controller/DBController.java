@@ -241,13 +241,13 @@ public class DBController {
 	 * @return
 	 */
 	public <T> List<Benutzer> selectBenutzerBy(Table_Benutzer column, T value) {
-		String selectStmt = "SELECT * FROM user JOIN club USING(club_id) WHERE " + column.getValue();
+		String selectStmt = "SELECT * FROM benutzer JOIN club USING(club_id) WHERE " + column.getValue();
 		if (value != null)
 			selectStmt += " = '" + value + "'";
 		else
 			selectStmt += " IS NULL";
 		if (column.equals(Table_Club.CLOUMN_ALL))
-			selectStmt = "SELECT * FROM user JOIN club USING(club_id)";
+			selectStmt = "SELECT * FROM benutzer JOIN club USING(club_id)";
 		List<Benutzer> benutzer = new ArrayList<Benutzer>();
 		for (Row row : executeSelect(selectStmt)) {
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
@@ -614,7 +614,7 @@ public class DBController {
 	 * @return true wenn erfolg, false sonst
 	 */
 	public boolean speichereBenutzer(Benutzer benutzer) {
-		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO user (passwort, email) "					+ "VALUES (" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "');");		}		else		{			res = executeUpdate("UPDATE user SET email = " + benutzer.getEmailAdresse() 					+ ", passwort = '" + benutzer.getPasswort()					+ " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
+		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO benutzer (passwort, email, rechte) "					+ "VALUES ('" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "', " + benutzer.getRechte() + ");");		}		else		{			res = executeUpdate("UPDATE benutzer SET email = '" + benutzer.getEmailAdresse() 					+ "', passwort = '" + benutzer.getPasswort()					+ "', rechte = " + benutzer.getRechte() + " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
 	}
 
 	/**
