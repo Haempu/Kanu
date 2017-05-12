@@ -241,25 +241,25 @@ public class DBController {
 	 * @return
 	 */
 	public <T> List<Benutzer> selectBenutzerBy(Table_Benutzer column, T value) {
-		String selectStmt = "SELECT * FROM benutzer JOIN club USING(club_id) WHERE " + column.getValue();
+		String selectStmt = "SELECT * FROM benutzer LEFT JOIN club USING(club_id) WHERE " + column.getValue();
 		if (value != null)
 			selectStmt += " = '" + value + "'";
 		else
 			selectStmt += " IS NULL";
 		if (column.equals(Table_Club.CLOUMN_ALL))
-			selectStmt = "SELECT * FROM benutzer JOIN club USING(club_id)";
+			selectStmt = "SELECT * FROM benutzer LEFT JOIN club USING(club_id)";
 		List<Benutzer> benutzer = new ArrayList<Benutzer>();
 		for (Row row : executeSelect(selectStmt)) {
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
 			Integer idBenutzer = (Integer) row.getRow().get(1).getKey();
 			//String benutzername = (String) row.getRow().get(2).getKey();
-			String passwort = (String) row.getRow().get(3).getKey();
-			String email = (String) row.getRow().get(4).getKey();
-			//String name = (String) row.getRow().get(5).getKey();
-			//String vorname = (String) row.getRow().get(6).getKey();
-			Integer rechte = (Integer) row.getRow().get(7).getKey();
-			//String kennung = (String) row.getRow().get(8).getKey();
-			//String club_name = (String) row.getRow().get(9).getKey();
+			String passwort = (String) row.getRow().get(2).getKey();
+			String email = (String) row.getRow().get(3).getKey();
+			//String name = (String) row.getRow().get(4).getKey();
+			//String vorname = (String) row.getRow().get(5).getKey();
+			Integer rechte = (Integer) row.getRow().get(6).getKey();
+			//String kennung = (String) row.getRow().get(7).getKey();
+			//String club_name = (String) row.getRow().get(8).getKey();
 			benutzer.add(new Benutzer(idBenutzer, idClub, email, passwort, rechte)); //TODO
 		}
 		return benutzer;
@@ -600,7 +600,6 @@ public class DBController {
 	 */
 	public Benutzer ladeBenutzerMitEmail(String emailAdresse) {
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_EMAIL, emailAdresse);
-		
 		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else

@@ -95,10 +95,10 @@ public class Benutzer {
 	 * @param hash Der Hash des Passworts (von der db)
 	 * @return true wenn richtiges Passwort, false sonst
 	 */
-	public boolean passwortVergleichen(String hash)
+	public boolean passwortVergleichen(String passwort)
 	{
 		PasswordAuthentication pa = new PasswordAuthentication();
-		return pa.authenticate(passwort.toCharArray(), hash);
+		return pa.authenticate(passwort.toCharArray(), this.passwort);
 	}
 
 	/**
