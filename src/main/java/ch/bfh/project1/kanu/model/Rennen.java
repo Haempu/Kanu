@@ -23,7 +23,20 @@ public class Rennen {
 	private int anzTore;
 	private int anzPosten;
 	private List<AltersKategorie> kategorien;
-
+	
+	public Rennen() {
+		
+	}
+	
+	public Rennen(Integer rennenID, String name, Date datum, String ort, Integer anzTore, Integer anzPosten, List<AltersKategorie> kategorien) {
+		this.rennenID = rennenID;
+		this.name = name;
+		this.datum = datum;
+		this.ort = ort;
+		this.anzPosten = anzPosten;
+		this.anzTore = anzTore;
+		this.kategorien = kategorien;
+	}
 
 	public Integer getRennenID() {
 		return rennenID;

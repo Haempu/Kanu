@@ -1,11 +1,14 @@
 package ch.bfh.project1.kanu.controller;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.AltersKategorie;
@@ -51,7 +54,21 @@ public class DBController {
 		public String getValue() {
 			return column;
 		}
-	}		public enum Table_Rennen {		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ORT("ort"), CLOUMN_ALL("*");		private final String column;		Table_Rennen(String column) {			this.column = column;		}		public String getValue() {			return column;		}	}
+	}		public enum Table_Rennen {		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ZEIT("zeit"), COLUMN_ORT("ort"), COLUMN_ALL("*");		private final String column;		Table_Rennen(String column) {			this.column = column;		}		public String getValue() {			return column;		}	}
+	
+	public enum Table_Kat_Rennen {
+		COLUMN_RENNEN_ID("rennen_id"), COLUMN_KATEGORIE_ID("kategorie_id"), COLUMN_GEBUEHR("gebuehr"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_Kat_Rennen(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
 	
 	public enum Table_Rangliste {
 		COLUMN_RENNEN_ID("rennen_id"), COLUMN_FAHRER_ID("fahrer_id"), COLUMN_KATEGORIE("kategorie_id"), 
@@ -228,6 +245,12 @@ public class DBController {
 		return fahrer;
 	}
 	
+	/**
+	 * Liest die angemeldeten Fahrer zu einem Rennen aus
+	 * @param column Array von Spalten, in denen gesucht werden soll
+	 * @param value Array von Werten, nach denen gesucht werden soll
+	 * @return
+	 */
 	public <T> List<FahrerRennen> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) {
 		String where = makeWhere(column, value);
 		String selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id) " + where;
@@ -246,6 +269,42 @@ public class DBController {
 			fahrer.add(new FahrerRennen(idFahrer, name, vorname, rennenID, kategorieID, bootID, startplatz, startzeit));
 		}
 		return fahrer;
+	}
+	
+	/**
+	 * Liest die Rennen aus der Datenbank
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
+	 * @return
+	 */
+	public <T> List<Rennen> selectRennenBy(Table_Rennen column, T value) {
+		String selectStmt = "SELECT * FROM rennen where " + column.getValue();
+		if(value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Rennen.COLUMN_ALL))
+			selectStmt = "SELECT * FROM rennen";
+		List<Rennen> rennen = new ArrayList<Rennen>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer rennenID = (Integer) row.getRow().get(0).getKey();
+			String name = (String) row.getRow().get(1).getKey();
+			Date datum = (Date) row.getRow().get(2).getKey();
+			Time zeit = (Time) row.getRow().get(3).getKey();
+			String ort = (String) row.getRow().get(4).getKey();
+			Integer anzTore = (Integer) row.getRow().get(5).getKey();
+			Integer anzPosten = (Integer) row.getRow().get(6).getKey();
+			//Zeit berechnen
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(datum);
+			Calendar temp = Calendar.getInstance();
+			temp.setTime(zeit);
+			cal.set(Calendar.HOUR_OF_DAY, temp.get(Calendar.HOUR_OF_DAY));
+			cal.set(Calendar.MINUTE, temp.get(Calendar.MINUTE));
+			cal.set(Calendar.SECOND, temp.get(Calendar.SECOND));
+			rennen.add(new Rennen(rennenID, name, cal.getTime(), ort, anzTore, anzPosten, selectKategorieRennenBy(rennenID)));
+		}
+		return rennen;
 	}
 	
 	/**
@@ -298,6 +357,25 @@ public class DBController {
 			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
 			String name = (String) row.getRow().get(1).getKey();
 			kategorie.add(new AltersKategorie(kategorieID, name));
+		}
+		return kategorie;
+	}
+	
+	/**
+	 * Liest für ein Rennen die zugelassenen Kategorien aus
+	 * @param rennenID Die ID des Rennens
+	 * @return eine Liste der zugelassenen Kategorien
+	 */
+	public <T> List<AltersKategorie> selectKategorieRennenBy(Integer rennenID) {
+		String selectStmt = "SELECT * FROM kategorien JOIN kat_rennen USING(" + Table_Kat_Rennen.COLUMN_KATEGORIE_ID + ") WHERE " + Table_Kat_Rennen.COLUMN_RENNEN_ID;
+		if (rennenID != null)
+			selectStmt += " = '" + rennenID + "'";
+		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
+			String name = (String) row.getRow().get(1).getKey();
+			Integer gebuehr = (Integer) row.getRow().get(3).getKey();
+			kategorie.add(new AltersKategorie(kategorieID, name, gebuehr));
 		}
 		return kategorie;
 	}
@@ -825,6 +903,15 @@ public class DBController {
 	@Deprecated
 	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
 		speichereFahrer(fahrer);
+	}
+	
+	/**
+	 * Liest die Renne aus der Datenbank
+	 * @return Eine Liste mit Rennen
+	 */
+	public List<Rennen> ladeRennen()
+	{
+		return selectRennenBy(Table_Rennen.COLUMN_ALL, null);
 	}
 	
 	/**

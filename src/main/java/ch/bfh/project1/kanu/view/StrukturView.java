@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
+import java.sql.SQLException;
+
 import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.teemusa.sidemenu.SideMenu;
@@ -17,6 +19,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.Reindeer;
 
+import ch.bfh.project1.kanu.controller.DBController;
 import ch.bfh.project1.kanu.controller.LoginController;
 import ch.bfh.project1.kanu.controller.SessionController;
 import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
@@ -49,11 +52,22 @@ public class StrukturView extends UI {
 	private FehlererfassungsView fehlererfassungsView = new FehlererfassungsView(this);
 	private ZeiterfassungsView zeiterfassungsView = new ZeiterfassungsView(this);
 	private MutationsView mutationsView = new MutationsView(this);
+	private RennVerwaltungsView rennverwaltungsView = new RennVerwaltungsView(this);
 
 	@Override
 	protected void init(VaadinRequest request) {
 
 		this.getPage().setTitle("Kanu Club Grenchen");
+		
+		DBController db = DBController.getInstance();
+		try {
+			db.connect();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 		this.inhaltPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		this.inhaltPanel.setSizeFull();
@@ -136,6 +150,7 @@ public class StrukturView extends UI {
 		this.fehlererfassungsView.viewInitialisieren();
 		this.fahreranmeldungsView.viewInitialisieren();
 		this.rechnungsView.viewInitialisieren();
+		this.rennverwaltungsView.viewInitialisieren();
 
 		// TODO: menu nach benutzerrolle anzeigen
 		this.menu.addMenuItem("Fahrer verwalten ", () -> {
@@ -152,6 +167,10 @@ public class StrukturView extends UI {
 
 		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
 			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
+		});
+		
+		this.menu.addMenuItem("Rennen verwalten ", () -> {
+			this.rennverwaltungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		// default view

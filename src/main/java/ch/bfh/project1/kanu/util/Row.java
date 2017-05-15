@@ -1,8 +1,10 @@
 package ch.bfh.project1.kanu.util;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class Row {
 		TYPE.put("VARCHAR", String.class);
 		TYPE.put("TIMESTAMP", Timestamp.class);
 		TYPE.put("DOUBLE", Double.class);
+		TYPE.put("DATE", Date.class);
+		TYPE.put("TIME", Time.class);
 	}
 
 	public Row() {

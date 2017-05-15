@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import ch.bfh.project1.kanu.controller.RennverwaltungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Rennen;
-
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
@@ -19,6 +15,10 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -78,7 +78,23 @@ public class RennVerwaltungsView implements ViewTemplate {
 	@Override
 	public void viewInitialisieren() {
 		titel.setStyleName("h2");
-		//TODO: Alle erfassten Rennen anzeigen und Button für neues Rennen machen
+		rennenLayout.addComponent(titel);
+	}
+
+	/**
+	 * Die Funktion zeigt die View an.
+	 */
+	@Override
+	public void viewAnzeigen(Component inhalt) {
+		List<Rennen> lrennen = rController.ladeRennen();
+		System.out.println(lrennen.size());
+		for(Rennen r : lrennen)
+		{
+			//TODO: Rennen ausgeben
+			//Wenn auf Rennen geklickt wird, showPopup mit dem Rennen Objekt aufrufen (Popup zum Rennen bearbeiten)
+			Label name = new Label(r.getName());
+			rennenLayout.addComponent(name);
+		}
 		
 		Button bneu = new Button("Rennen erfassen");
 		bneu.addClickListener(event -> {
@@ -87,15 +103,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 			showPopup(rennen);
 		});
 		
-		rennenLayout.addComponent(titel);
 		rennenLayout.addComponent(bneu);
-	}
-
-	/**
-	 * Die Funktion zeigt die View an.
-	 */
-	@Override
-	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(rennenLayout);
 	}

@@ -13,10 +13,17 @@ public class AltersKategorie {
 
 	private Integer altersKategorieID;
 	private String name;
+	private Integer gebuehr;
 
 	public AltersKategorie(Integer altersKategorieID, String name) {
 		this.altersKategorieID = altersKategorieID;
 		this.name = name;
+	}
+	
+	public AltersKategorie(Integer altersKategorieID, String name, Integer gebuehr) {
+		this.altersKategorieID = altersKategorieID;
+		this.name = name;
+		this.gebuehr = gebuehr;
 	}
 
 	public int getAltersKategorieID() {
@@ -38,5 +45,13 @@ public class AltersKategorie {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	public Integer getGebuehr() {
+		return gebuehr;
+	}
+
+	public void setGebuehr(Integer gebuehr) {
+		this.gebuehr = gebuehr;
 	}
 }

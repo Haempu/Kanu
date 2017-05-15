@@ -23,12 +23,22 @@ public class RennverwaltungsController {
 	}
 	
 	/**
+	 * Lädt die Rennen, welche schon erfasst worden sind
+	 * @return Eine Liste mit Rennen
+	 */
+	public List<Rennen> ladeRennen()
+	{
+		return db.ladeRennen();
+	}
+	
+	/**
 	 * Speichert das Rennen in der Datenbank
 	 * @param rennen Das Rennen Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
 	public boolean speichereRennen(Rennen rennen)
 	{
+		//TODO
 		return false;
 	}
 }
