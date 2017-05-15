@@ -1,23 +1,24 @@
 package ch.bfh.project1.kanu.view;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-import com.vaadin.data.Item;
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.RennverwaltungsController;
-import ch.bfh.project1.kanu.controller.SessionController;
-import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
-import ch.bfh.project1.kanu.model.Fahrer;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -29,40 +30,38 @@ import ch.bfh.project1.kanu.model.Fahrer;
 public class RennVerwaltungsView implements ViewTemplate {
 
 	private UI ui; // Haupt GUI
+	
+	private FormLayout rennenLayout = new FormLayout();
+	
+	private Window popUpWindow;
 
-	// member variabeln: Übersichtstabelle
-	private Label titel = new Label("Fahrerverwaltung");
-	private Table table = new Table();
-	private FormLayout fahrerVerwaltungsLayout = new FormLayout();
+	// member variabeln
+	private Label titel = new Label("Rennen Verwaltung");
+	private Label lname = new Label("Name");
+	private Label lort = new Label("Ort");
+	private Label ldatum = new Label("Datum");
+	private Label lzeit = new Label("Zeit");
+	private Label ltore = new Label("Anzahl Tore");
+	private Label lkategorie = new Label("Kategorien");
+	private Label lposten = new Label("Anzahl Posten");
+	
+	private TextField tname = new TextField();
+	private TextField tort = new TextField();
+	private DateField ddatum = new DateField();
+	private DateField dzeit = new DateField();
+	private TextField ttore = new TextField();
+	private TextField tposten = new TextField();
+	
+	private ListSelect likategorie = new ListSelect();
 
 	// member variabel: Popup fenster
-	private Window popup;
-	private FormLayout popupLayoutMaster = new FormLayout();
-	private FormLayout popupLayoutClubverantwortlicher = new FormLayout();
-
-	private TextField vornameText = new TextField("Vorname");
-	private TextField nachnameText = new TextField("Nachname");
-	private TextField jahrgangText = new TextField("Jahrgang");
-	private TextField plzText = new TextField("Postleitzahl");
-	private TextField ortText = new TextField("Ort");
-	private NativeSelect clubs = new NativeSelect("Klub");
-	private Label rennenLabel = new Label("Rennen");
-	private NativeSelect bootsKlassen = new NativeSelect("Bootsklasse");
-	private NativeSelect altersKategorien = new NativeSelect("Alterskategorie");
-	private Label laufzeitenLabel = new Label("Laufzeiten");
-	private TextField laufzeitEins = new TextField("1. Laufzeit");
-	private TextField laufzeitZwei = new TextField("2. Laufzeit");
-	private Button speichern = new Button("Speichrn");
+	private Rennen rennen;
+	private Button speichern = new Button("Speichern");
 
 	// Controller
 	private RennverwaltungsController rController = new RennverwaltungsController();
 
 	// Konstanten
-	private static final String COLUMN_VORNAME = "Vorname";
-	private static final String COLUMN_NACHNAME = "Nachname";
-	private static final String COLUMN_JAHRGANG = "Jahrgang";
-	private static final String COLUMN_ORT = "Ort";
-	private static final String COLUMN_BUTTON = "Bearbeiten";
 
 	/**
 	 * Konstruktor: RennVerwaltungsView
@@ -78,57 +77,18 @@ public class RennVerwaltungsView implements ViewTemplate {
 	 */
 	@Override
 	public void viewInitialisieren() {
-		this.fahrerVerwaltungsLayout.setSpacing(true);
-		this.titel.setStyleName("h2");
-		this.rennenLabel.setStyleName("h2");
-		this.laufzeitenLabel.setStyleName("h3");
-
-		this.table.addContainerProperty(COLUMN_VORNAME, String.class, null);
-		this.table.addContainerProperty(COLUMN_NACHNAME, String.class, null);
-		this.table.addContainerProperty(COLUMN_JAHRGANG, Integer.class, null);
-		this.table.addContainerProperty(COLUMN_ORT, String.class, null);
-		this.table.addContainerProperty(COLUMN_BUTTON, Button.class, null);
-
-		tabelleAbfuellen();
-
-		this.laufzeitEins.setInputPrompt("mm:ss:hh");
-		this.laufzeitZwei.setInputPrompt("mm:ss:hh");
-
-		this.speichern.addClickListener(event -> {
-			// TODO: speichern button
-			// rController.
+		titel.setStyleName("h2");
+		//TODO: Alle erfassten Rennen anzeigen und Button für neues Rennen machen
+		
+		Button bneu = new Button("Rennen erfassen");
+		bneu.addClickListener(event -> {
+			Rennen rennen = new Rennen();
+			rennen.setRennenID(0);
+			showPopup(rennen);
 		});
-
-		// TODO: master & Clubverantwortlicher
-		this.vornameText.setEnabled(false);
-		this.nachnameText.setEnabled(false);
-		this.jahrgangText.setEnabled(false);
-		this.plzText.setEnabled(false);
-		this.ortText.setEnabled(false);
-		this.clubs.setEnabled(false);
-
-		this.popupLayoutMaster.addComponent(this.vornameText);
-		this.popupLayoutMaster.addComponent(this.nachnameText);
-		this.popupLayoutMaster.addComponent(this.jahrgangText);
-		this.popupLayoutMaster.addComponent(this.plzText);
-		this.popupLayoutMaster.addComponent(this.ortText);
-		this.popupLayoutMaster.addComponent(this.clubs);
-		this.popupLayoutMaster.addComponent(this.rennenLabel);
-		this.popupLayoutMaster.addComponent(this.bootsKlassen);
-		this.popupLayoutMaster.addComponent(this.altersKategorien);
-		this.popupLayoutMaster.addComponent(this.laufzeitenLabel);
-		this.popupLayoutMaster.addComponent(this.laufzeitEins);
-		this.popupLayoutMaster.addComponent(this.laufzeitZwei);
-		this.popupLayoutMaster.addComponent(this.speichern);
-
-		this.popup = new Window("Zeit erfassen");
-		this.popupLayoutMaster.addStyleName("popup");
-
-		this.popup.setContent(this.popupLayoutMaster);
-		this.popup.center();
-
-		this.fahrerVerwaltungsLayout.addComponent(this.titel);
-		this.fahrerVerwaltungsLayout.addComponent(this.table);
+		
+		rennenLayout.addComponent(titel);
+		rennenLayout.addComponent(bneu);
 	}
 
 	/**
@@ -137,48 +97,87 @@ public class RennVerwaltungsView implements ViewTemplate {
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;
-		inhaltsPanel.setContent(this.fahrerVerwaltungsLayout);
+		inhaltsPanel.setContent(rennenLayout);
 	}
-
-	/**
-	 * Funktion füllt die Tabelle mit allen Clubs ab.
-	 */
-	private void tabelleAbfuellen() {
-		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
-
-		if (SessionController.getBenutzer().hatRechte(BenutzerRolle.ROLLE_RECHNUNG)) {
-			// TODO: fahrerladen
-			// fahrer = this.rController.ladeFahrermutationslisteAlle();
-		} else {
-			// TODO: change club id
-			// fahrer = this.rController.ladeFahrermutationslisteClub(1);
+	
+	@SuppressWarnings("unchecked")
+	private void showPopup(Rennen rennen)
+	{
+		this.rennen = rennen;
+		boolean neu = rennen.getRennenID() < 1 ? true : false;
+		
+		final GridLayout layout = new GridLayout(2, 8);
+		
+		popUpWindow = new Window();
+		popUpWindow.center();
+		popUpWindow.setModal(true);
+		
+		speichern.addClickListener(event -> {
+			rennen.setAnzPosten(Integer.parseInt(tposten.getValue()));
+			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
+			rennen.setOrt(tort.getValue());
+			rennen.setName(tname.getValue());
+			rennen.setDatum(ddatum.getValue());
+			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
+			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
+			for(int id : temp)
+			{
+				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
+			}
+			rennen.setKategorien(kategorien);
+			rController.speichereRennen(rennen);
+		});
+		
+		ddatum.setDateFormat("dd.mm.yyyy");
+		dzeit.setDateFormat("HH:mm");
+		
+		for(AltersKategorie kat : rController.ladeKategorien())
+		{
+			likategorie.addItem(kat.getAltersKategorieID());
+			likategorie.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 		}
-
-		for (Fahrer f : fahrer) {
-			Object newItemId = this.table.addItem();
-			Item row = this.table.getItem(newItemId);
-
-			Button bearbeiten = new Button("Bearbeiten");
-
-			bearbeiten.addClickListener(event -> {
-				this.vornameText.setValue(f.getVorname());
-				this.nachnameText.setValue(f.getName());
-				this.jahrgangText.setValue(Integer.toString(f.getJahrgang()));
-				this.plzText.setValue(Integer.toString(f.getPlz()));
-				this.ortText.setValue(f.getOrt());
-
-				this.ui.addWindow(this.popup);
-			});
-
-			// TODO: lesen von fahrerresultat
-			row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
-			row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
-			row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());
-			row.getItemProperty(COLUMN_ORT).setValue(f.getOrt());
-			row.getItemProperty(COLUMN_BUTTON).setValue(bearbeiten);
+		likategorie.setMultiSelect(true);
+		likategorie.setRows(10);
+		if(likategorie.size() == 0)
+		{
+			likategorie.setEnabled(false);
+			likategorie.addItem(-1);
+			likategorie.setItemCaption(-1, "Keine Kategorien");
+			likategorie.setRows(1);
+			speichern.setEnabled(false);
 		}
-
-		this.table.setPageLength(fahrer.size());
+		else if(!neu)
+		{
+			for(AltersKategorie ak : rennen.getKategorien())
+			{
+				likategorie.select(ak.getAltersKategorieID());
+			}
+		}
+		
+		layout.addComponent(lname, 0, 0);
+		layout.addComponent(tname, 1, 0);
+		layout.addComponent(ldatum, 0, 1);
+		layout.addComponent(ddatum, 1, 1);
+		layout.addComponent(lzeit, 0, 2);
+		layout.addComponent(dzeit, 1, 2);
+		layout.addComponent(lort, 0, 3);
+		layout.addComponent(tort, 1, 3);
+		layout.addComponent(ltore, 0, 4);
+		layout.addComponent(ttore, 1, 4);
+		layout.addComponent(lposten, 0, 5);
+		layout.addComponent(tposten, 1, 5);
+		layout.addComponent(lkategorie, 0, 6);
+		layout.addComponent(likategorie, 1, 6);
+		layout.addComponent(speichern, 0, 7);
+		
+		layout.setSpacing(true);
+		layout.setMargin(true);
+		
+		popUpWindow.setContent(layout);
+		popUpWindow.setWidth("600px");
+		popUpWindow.setHeight("450px");
+		popUpWindow.setCaption(!neu ? "Renndetails" : "Neues Rennen");
+		UI.getCurrent().addWindow(popUpWindow);
 	}
 
 }

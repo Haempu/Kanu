@@ -68,6 +68,20 @@ public class DBController {
 		}
 	}
 	
+	public enum Table_Kategorien {
+		COLUMN_ID("kategorie_id"), COLUMN_NAME("name"), COLUMN_ALL("*");
+		
+		private final String column;
+		
+		Table_Kategorien(String column) {
+			this.column = column;
+		}
+		
+		public String getValue() {
+			return column;
+		}
+	}
+	
 	public enum Table_Fahrer {
 		COLUMN_ID("fahrer_id"), COLUMN_CLUB_ID("club_id"), COLUMN_NAME("name"), 
 		COLUMN_VORNAME("vorname"), COLUMN_JAHRGANG("jahrgang"), COLUMN_TELNR("telnnr"),
@@ -263,6 +277,29 @@ public class DBController {
 			benutzer.add(new Benutzer(idBenutzer, idClub, email, passwort, rechte)); //TODO
 		}
 		return benutzer;
+	}
+	
+	/**
+	 * Liest die Kategorien aus der Datenbank
+	 * @param column Die Spalte, in der gesucht werden soll
+	 * @param value Der Wert, nach dem gesucht werden soll
+	 * @return Eine Liste mit den Kategorien
+	 */
+	public <T> List<AltersKategorie> selectKategorieBy(Table_Kategorien column, T value) {
+		String selectStmt = "SELECT * FROM kategorien WHERE " + column.getValue();
+		if (value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Club.CLOUMN_ALL))
+			selectStmt = "SELECT * FROM kategorien;";
+		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
+			String name = (String) row.getRow().get(1).getKey();
+			kategorie.add(new AltersKategorie(kategorieID, name));
+		}
+		return kategorie;
 	}
 	
 	public <T> List<FahrerResultat> selectRanglisteBy(Table_Rangliste[] column, T[] value)
@@ -578,6 +615,24 @@ public class DBController {
 		}
 		return res.isSuccess();
 	}
+	
+	/**
+	 * Speichert einen Fahrer inklusive Rennergebnis.
+	 * @param fahrer Das Fahrer Objekt
+	 * @param resultat Das FahrerResultat Objekt
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean speichereFahrer(Fahrer fahrer, FahrerResultat resultat)
+	{
+		ExecuteResult res;
+		res = executeUpdate("INSERT INTO fahrer_rennen (fahrer_id, rennen_id, kategorie_id, boots_kategorie, startplatz, zeit1, zeit2)"
+				+ " VALUES (" + fahrer.getFahrerID() + ", " + resultat.getRennen().getRennenID() + ", " + resultat.getKategorie().getAltersKategorieID()
+				+ ", " + resultat.getBootKategorie().getBootsKlasseID() + ", " + resultat.getStartnummer() + ", "
+				+ resultat.getZeitErsterLauf() + ", " + resultat.getZeitZweiterLauf() + ") ON DUPLICATE KEY UPDATE "
+				+ "startplatz = " + resultat.getStartnummer() + ", zeit1 = " + resultat.getZeitErsterLauf() + ", "
+				+ "zeit2 = " + resultat.getZeitZweiterLauf() + ";");
+		return speichereFahrer(fahrer) && res.isSuccess();
+	}
 
 	/**
 	 * Lädt einen Benutzer aus der Datenbank
@@ -770,6 +825,15 @@ public class DBController {
 	@Deprecated
 	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
 		speichereFahrer(fahrer);
+	}
+	
+	/**
+	 * Gibt alle Kategorien zurück, die in der db gespeichert sind
+	 * @return Eine Liste mit Kategorien
+	 */
+	public List<AltersKategorie> ladeKategorien()
+	{
+		return selectKategorieBy(Table_Kategorien.COLUMN_ALL, null);
 	}
 	
 	/**

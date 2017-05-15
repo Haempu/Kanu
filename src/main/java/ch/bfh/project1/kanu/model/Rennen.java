@@ -1,6 +1,7 @@
 package ch.bfh.project1.kanu.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Die Klasse Rennen wird pro Rennen generiert. Vor dem Rennen werden die
@@ -16,12 +17,12 @@ public class Rennen {
 	private Integer rennenID;
 	private String titel;
 	private String name;
-	private Date datumVon;
-	private Date datumBis;
-	private String veranstalter;
+	private Date datum;
+	private String veranstalter; //Kann auch Integer sein (Club ID); falls überhaupt benötigt
 	private String ort;
 	private int anzTore;
 	private int anzPosten;
+	private List<AltersKategorie> kategorien;
 
 
 	public Integer getRennenID() {
@@ -42,17 +43,13 @@ public class Rennen {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getDatumVon() {
-		return datumVon;
+	public Date getDatum()
+	{
+		return datum;
 	}
-	public void setDatumVon(Date datumVon) {
-		this.datumVon = datumVon;
-	}
-	public Date getDatumBis() {
-		return datumBis;
-	}
-	public void setDatumBis(Date datumBis) {
-		this.datumBis = datumBis;
+	public void setDatum(Date datum)
+	{
+		this.datum = datum;
 	}
 	public String getVeranstalter() {
 		return veranstalter;
@@ -77,5 +74,23 @@ public class Rennen {
 	}
 	public void setAnzPosten(int anzPosten) {
 		this.anzPosten = anzPosten;
+	}
+	public List<AltersKategorie> getKategorien()
+	{
+		return kategorien;
+	}
+	public void setKategorien(List<AltersKategorie> kategorien)
+	{
+		this.kategorien = kategorien;
+	}
+	
+	@Deprecated
+	public Date getDatumVon() {
+		return datum;
+	}
+	
+	@Deprecated
+	public Date getDatumBis() {
+		return datum;
 	}
 }
