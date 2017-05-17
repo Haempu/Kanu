@@ -906,12 +906,26 @@ public class DBController {
 	}
 	
 	/**
-	 * Liest die Renne aus der Datenbank
+	 * Liest die Rennen aus der Datenbank
 	 * @return Eine Liste mit Rennen
 	 */
 	public List<Rennen> ladeRennen()
 	{
 		return selectRennenBy(Table_Rennen.COLUMN_ALL, null);
+	}
+	
+	/**
+	 * Liest ein Rennen aus der Datenbank
+	 * @param rennenID Die ID des Rennens
+	 * @return Das Rennen
+	 */
+	public Rennen ladeRennen(Integer rennenID)
+	{
+		List<Rennen> rennen = selectRennenBy(Table_Rennen.COLUMN_ID, rennenID);
+		if(rennen.size() > 0)
+			return rennen.get(0);
+		else
+			return null; //TODO abzuklären
 	}
 	
 	/**
