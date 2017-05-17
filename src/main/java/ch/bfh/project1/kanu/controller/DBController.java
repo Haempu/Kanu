@@ -350,7 +350,7 @@ public class DBController {
 			selectStmt += " = '" + value + "'";
 		else
 			selectStmt += " IS NULL";
-		if (column.equals(Table_Club.CLOUMN_ALL))
+		if (column.equals(Table_Kategorien.COLUMN_ALL))
 			selectStmt = "SELECT * FROM kategorien;";
 		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
 		for (Row row : executeSelect(selectStmt)) {
@@ -367,7 +367,7 @@ public class DBController {
 	 * @return eine Liste der zugelassenen Kategorien
 	 */
 	public <T> List<AltersKategorie> selectKategorieRennenBy(Integer rennenID) {
-		String selectStmt = "SELECT * FROM kategorien JOIN kat_rennen USING(" + Table_Kat_Rennen.COLUMN_KATEGORIE_ID + ") WHERE " + Table_Kat_Rennen.COLUMN_RENNEN_ID;
+		String selectStmt = "SELECT * FROM kategorien JOIN kat_rennen USING(" + Table_Kat_Rennen.COLUMN_KATEGORIE_ID.getValue() + ") WHERE " + Table_Kat_Rennen.COLUMN_RENNEN_ID.getValue();
 		if (rennenID != null)
 			selectStmt += " = '" + rennenID + "'";
 		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
@@ -912,6 +912,45 @@ public class DBController {
 	public List<Rennen> ladeRennen()
 	{
 		return selectRennenBy(Table_Rennen.COLUMN_ALL, null);
+	}
+	
+	/**
+	 * Speichert ein Rennen in der Datenbank. Ist die ID des Rennens kleiner als 1, wird ein neues Rennen gespeichert, ist die ID grösser als 1, wird ein bestehendes
+	 * Rennen geupdatet. Ist die ID nicht vorhanden, werden die Daten verworfen.
+	 * @param rennen Das Rennen Objekt
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean speichereRennen(Rennen rennen)
+	{
+		ExecuteResult res;
+		if(rennen.getRennenID() < 1)
+		{
+			res = executeUpdate("INSERT INTO rennen (name, datum, zeit, ort, anz_tore, anz_posten) VALUES "
+					+ "('" + rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), "
+					+ "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten() + ");");
+			if(res.isSuccess())
+				rennen.setRennenID(res.generatedIDs.get(0)); //TODO Zeit vom Rennen richtig machen!
+		}
+		else
+		{
+			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', datum = FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), "
+					+ "zeit = FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), ort = '" + rennen.getOrt() + "', anz_tore = " + rennen.getAnzTore() + ", "
+					+ "anz_posten = " + rennen.getAnzPosten() + " WHERE rennen_id = " + rennen.getRennenID() + ";");
+			if(res.isSuccess())
+				res = executeUpdate("DELETE FROM kat_rennen WHERE rennen_id = " + rennen.getRennenID());
+		}
+		String sql = "INSERT INTO kat_rennen (rennen_id, kategorie_id, gebuehr) VALUES ";
+		int x = 0;
+		for(AltersKategorie kat : rennen.getKategorien())
+		{
+			if(x > 0)
+				sql += ", ";
+			x++;
+			sql += "(" + rennen.getRennenID() + ", " + kat.getAltersKategorieID() + ", " + kat.getGebuehr() + ")";
+		}
+		if(res.isSuccess())
+			res = executeUpdate(sql);
+		return res.isSuccess();
 	}
 	
 	/**

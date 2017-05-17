@@ -38,7 +38,6 @@ public class RennverwaltungsController {
 	 */
 	public boolean speichereRennen(Rennen rennen)
 	{
-		//TODO
-		return false;
+		return db.speichereRennen(rennen);
 	}
 }

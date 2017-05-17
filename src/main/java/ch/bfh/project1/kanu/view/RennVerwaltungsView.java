@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
@@ -12,6 +15,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -84,18 +88,40 @@ public class RennVerwaltungsView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		List<Rennen> lrennen = rController.ladeRennen();
-		System.out.println(lrennen.size());
+		Label larennen = new Label("Bereits erfasste Rennen:");
+		larennen.setStyleName("h3");
+		rennenLayout.addComponent(larennen);
+		Table trennen = new Table();
+		trennen.addContainerProperty("Name", String.class, null);
+		trennen.addContainerProperty("Ort", String.class, null);
+		trennen.addContainerProperty("Datum", String.class, null);
+		trennen.addContainerProperty("Bearbeiten", Button.class, null);
 		for(Rennen r : lrennen)
 		{
 			//TODO: Rennen ausgeben
 			//Wenn auf Rennen geklickt wird, showPopup mit dem Rennen Objekt aufrufen (Popup zum Rennen bearbeiten)
-			Label name = new Label(r.getName());
-			rennenLayout.addComponent(name);
+			Object id = trennen.addItem();
+			Item row = trennen.getItem(id);
+			row.getItemProperty("Name").setValue(r.getName());
+			row.getItemProperty("Ort").setValue(r.getOrt());
+			row.getItemProperty("Datum").setValue(r.getDatum().toGMTString()); //TODO
+			Button bbearbeiten = new Button("Bearbeiten");
+			bbearbeiten.addClickListener(new ClickListener() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					showPopup(r);
+				}
+			});
+			row.getItemProperty("Bearbeiten").setValue(bbearbeiten);
 		}
-		
+		trennen.setPageLength(lrennen.size());
+		rennenLayout.addComponent(trennen);
 		Button bneu = new Button("Rennen erfassen");
 		bneu.addClickListener(event -> {
 			Rennen rennen = new Rennen();
@@ -133,12 +159,13 @@ public class RennVerwaltungsView implements ViewTemplate {
 				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
 			}
 			rennen.setKategorien(kategorien);
-			rController.speichereRennen(rennen);
+			if(rController.speichereRennen(rennen))
+				popUpWindow.close();
 		});
 		
-		ddatum.setDateFormat("dd.mm.yyyy");
+		ddatum.setDateFormat("dd.MM.yyyy");
 		dzeit.setDateFormat("HH:mm");
-		
+		likategorie.clear();
 		for(AltersKategorie kat : rController.ladeKategorien())
 		{
 			likategorie.addItem(kat.getAltersKategorieID());
@@ -160,6 +187,15 @@ public class RennVerwaltungsView implements ViewTemplate {
 			{
 				likategorie.select(ak.getAltersKategorieID());
 			}
+		}
+		if(!neu)
+		{
+			tname.setValue(rennen.getName());
+			ddatum.setValue(rennen.getDatum());
+			dzeit.setValue(rennen.getDatum());
+			tort.setValue(rennen.getOrt());
+			tposten.setValue(rennen.getAnzPosten() + "");
+			ttore.setValue(rennen.getAnzTore() + "");
 		}
 		
 		layout.addComponent(lname, 0, 0);
