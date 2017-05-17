@@ -1,5 +1,6 @@
 package ch.bfh.project1.kanu.controller;
 
+import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.view.StartlistenView;
 
 /**
@@ -13,10 +14,19 @@ import ch.bfh.project1.kanu.view.StartlistenView;
  */
 
 public class StartlistenController {
-	private DBController dbController;
+	private DBController db;
 	private StartlistenView startlistenView;
 
+	public StartlistenController() {
+		db = DBController.getInstance();
+	}
+	
 	public void startlistenErstellen() {
-
+		
+	}
+	
+	public Rennen ladeRennen(Integer rennenID)
+	{
+		return db.ladeRennen().get(0); //TODO
 	}
 }

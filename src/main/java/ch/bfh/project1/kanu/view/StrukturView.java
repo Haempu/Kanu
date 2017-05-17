@@ -53,6 +53,7 @@ public class StrukturView extends UI {
 	private ZeiterfassungsView zeiterfassungsView = new ZeiterfassungsView(this);
 	private MutationsView mutationsView = new MutationsView(this);
 	private RennVerwaltungsView rennverwaltungsView = new RennVerwaltungsView(this);
+	private StartlistenView slView = new StartlistenView(this);
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -151,6 +152,7 @@ public class StrukturView extends UI {
 		this.fahreranmeldungsView.viewInitialisieren();
 		this.rechnungsView.viewInitialisieren();
 		this.rennverwaltungsView.viewInitialisieren();
+		slView.viewInitialisieren();
 
 		// TODO: menu nach benutzerrolle anzeigen
 		this.menu.addMenuItem("Fahrer verwalten ", () -> {
@@ -171,6 +173,10 @@ public class StrukturView extends UI {
 		
 		this.menu.addMenuItem("Rennen verwalten ", () -> {
 			this.rennverwaltungsView.viewAnzeigen(this.inhaltPanel);
+		});
+		
+		this.menu.addMenuItem("Startlisten verwalten ", () -> {
+			this.slView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		// default view

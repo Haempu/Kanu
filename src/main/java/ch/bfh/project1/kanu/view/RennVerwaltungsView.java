@@ -60,7 +60,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 
 	// member variabel: Popup fenster
 	private Rennen rennen;
-	private Button speichern = new Button("Speichern");
 
 	// Controller
 	private RennverwaltungsController rController = new RennverwaltungsController();
@@ -91,6 +90,114 @@ public class RennVerwaltungsView implements ViewTemplate {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void viewAnzeigen(Component inhalt) {
+		updateRennen();
+		Panel inhaltsPanel = (Panel) inhalt;
+		inhaltsPanel.setContent(rennenLayout);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void showPopup(final Rennen rennen)
+	{
+		this.rennen = rennen;
+		boolean neu = rennen.getRennenID() < 1 ? true : false;
+		Button speichern = new Button("Speichern");
+		final GridLayout layout = new GridLayout(2, 8);
+		
+		popUpWindow = new Window();
+		popUpWindow.center();
+		popUpWindow.setModal(true);
+		speichern.addClickListener(event -> {
+			rennen.setAnzPosten(Integer.parseInt(tposten.getValue()));
+			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
+			rennen.setOrt(tort.getValue());
+			rennen.setName(tname.getValue());
+			rennen.setDatum(ddatum.getValue());
+			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
+			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
+			for(int id : temp)
+			{
+				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
+			}
+			rennen.setKategorien(kategorien);
+			if(rController.speichereRennen(rennen))
+			{
+				updateRennen();
+				popUpWindow.close();
+			}
+		});
+		ddatum.setDateFormat("dd.MM.yyyy");
+		dzeit.setDateFormat("HH:mm");
+		likategorie.clear();
+		for(AltersKategorie kat : rController.ladeKategorien())
+		{
+			likategorie.addItem(kat.getAltersKategorieID());
+			likategorie.setItemCaption(kat.getAltersKategorieID(), kat.getName());
+		}
+		likategorie.setMultiSelect(true);
+		likategorie.setRows(10);
+		if(likategorie.size() == 0)
+		{
+			likategorie.setEnabled(false);
+			likategorie.addItem(-1);
+			likategorie.setItemCaption(-1, "Keine Kategorien");
+			likategorie.setRows(1);
+			speichern.setEnabled(false);
+		}
+		else if(!neu)
+		{
+			for(AltersKategorie ak : rennen.getKategorien())
+			{
+				likategorie.select(ak.getAltersKategorieID());
+			}
+		}
+		if(!neu)
+		{
+			tname.setValue(rennen.getName());
+			ddatum.setValue(rennen.getDatum());
+			dzeit.setValue(rennen.getDatum());
+			tort.setValue(rennen.getOrt());
+			tposten.setValue(rennen.getAnzPosten() + "");
+			ttore.setValue(rennen.getAnzTore() + "");
+		}
+		else
+		{
+			tname.setValue("");
+			ddatum.setValue(null);
+			dzeit.setValue(null);
+			tort.setValue("");
+			tposten.setValue("");
+			ttore.setValue("");
+		}
+		
+		layout.addComponent(lname, 0, 0);
+		layout.addComponent(tname, 1, 0);
+		layout.addComponent(ldatum, 0, 1);
+		layout.addComponent(ddatum, 1, 1);
+		layout.addComponent(lzeit, 0, 2);
+		layout.addComponent(dzeit, 1, 2);
+		layout.addComponent(lort, 0, 3);
+		layout.addComponent(tort, 1, 3);
+		layout.addComponent(ltore, 0, 4);
+		layout.addComponent(ttore, 1, 4);
+		layout.addComponent(lposten, 0, 5);
+		layout.addComponent(tposten, 1, 5);
+		layout.addComponent(lkategorie, 0, 6);
+		layout.addComponent(likategorie, 1, 6);
+		layout.addComponent(speichern, 0, 7);
+		
+		layout.setSpacing(true);
+		layout.setMargin(true);
+		
+		popUpWindow.setContent(layout);
+		popUpWindow.setWidth("600px");
+		popUpWindow.setHeight("450px");
+		popUpWindow.setCaption(!neu ? "Renndetails" : "Neues Rennen");
+		UI.getCurrent().addWindow(popUpWindow);
+	}
+
+	private void updateRennen()
+	{
+		rennenLayout.removeAllComponents();
 		List<Rennen> lrennen = rController.ladeRennen();
 		Label larennen = new Label("Bereits erfasste Rennen:");
 		larennen.setStyleName("h3");
@@ -130,98 +237,5 @@ public class RennVerwaltungsView implements ViewTemplate {
 		});
 		
 		rennenLayout.addComponent(bneu);
-		Panel inhaltsPanel = (Panel) inhalt;
-		inhaltsPanel.setContent(rennenLayout);
 	}
-	
-	@SuppressWarnings("unchecked")
-	private void showPopup(Rennen rennen)
-	{
-		this.rennen = rennen;
-		boolean neu = rennen.getRennenID() < 1 ? true : false;
-		
-		final GridLayout layout = new GridLayout(2, 8);
-		
-		popUpWindow = new Window();
-		popUpWindow.center();
-		popUpWindow.setModal(true);
-		
-		speichern.addClickListener(event -> {
-			rennen.setAnzPosten(Integer.parseInt(tposten.getValue()));
-			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
-			rennen.setOrt(tort.getValue());
-			rennen.setName(tname.getValue());
-			rennen.setDatum(ddatum.getValue());
-			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
-			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
-			for(int id : temp)
-			{
-				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
-			}
-			rennen.setKategorien(kategorien);
-			if(rController.speichereRennen(rennen))
-				popUpWindow.close();
-		});
-		
-		ddatum.setDateFormat("dd.MM.yyyy");
-		dzeit.setDateFormat("HH:mm");
-		likategorie.clear();
-		for(AltersKategorie kat : rController.ladeKategorien())
-		{
-			likategorie.addItem(kat.getAltersKategorieID());
-			likategorie.setItemCaption(kat.getAltersKategorieID(), kat.getName());
-		}
-		likategorie.setMultiSelect(true);
-		likategorie.setRows(10);
-		if(likategorie.size() == 0)
-		{
-			likategorie.setEnabled(false);
-			likategorie.addItem(-1);
-			likategorie.setItemCaption(-1, "Keine Kategorien");
-			likategorie.setRows(1);
-			speichern.setEnabled(false);
-		}
-		else if(!neu)
-		{
-			for(AltersKategorie ak : rennen.getKategorien())
-			{
-				likategorie.select(ak.getAltersKategorieID());
-			}
-		}
-		if(!neu)
-		{
-			tname.setValue(rennen.getName());
-			ddatum.setValue(rennen.getDatum());
-			dzeit.setValue(rennen.getDatum());
-			tort.setValue(rennen.getOrt());
-			tposten.setValue(rennen.getAnzPosten() + "");
-			ttore.setValue(rennen.getAnzTore() + "");
-		}
-		
-		layout.addComponent(lname, 0, 0);
-		layout.addComponent(tname, 1, 0);
-		layout.addComponent(ldatum, 0, 1);
-		layout.addComponent(ddatum, 1, 1);
-		layout.addComponent(lzeit, 0, 2);
-		layout.addComponent(dzeit, 1, 2);
-		layout.addComponent(lort, 0, 3);
-		layout.addComponent(tort, 1, 3);
-		layout.addComponent(ltore, 0, 4);
-		layout.addComponent(ttore, 1, 4);
-		layout.addComponent(lposten, 0, 5);
-		layout.addComponent(tposten, 1, 5);
-		layout.addComponent(lkategorie, 0, 6);
-		layout.addComponent(likategorie, 1, 6);
-		layout.addComponent(speichern, 0, 7);
-		
-		layout.setSpacing(true);
-		layout.setMargin(true);
-		
-		popUpWindow.setContent(layout);
-		popUpWindow.setWidth("600px");
-		popUpWindow.setHeight("450px");
-		popUpWindow.setCaption(!neu ? "Renndetails" : "Neues Rennen");
-		UI.getCurrent().addWindow(popUpWindow);
-	}
-
 }
