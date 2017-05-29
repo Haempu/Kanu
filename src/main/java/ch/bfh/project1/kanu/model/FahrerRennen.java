@@ -13,22 +13,24 @@ package ch.bfh.project1.kanu.model;
  *
  */
 
+@Deprecated
 public class FahrerRennen extends Fahrer {
 	
 	private Integer kategorieID;
 	private Integer rennenID;
 	private Integer bootID;
 	private Integer startplatz;
-	private String startzeit;
+	private String startzeit1, startzeit2;
 	
-	public FahrerRennen(Integer fahrerID, String name, String vorname, Integer rennenID, Integer kategorieID, Integer bootID, Integer startplatz, String startzeit)
+	public FahrerRennen(Integer fahrerID, String name, String vorname, Integer rennenID, Integer kategorieID, Integer bootID, Integer startplatz, String startzeit1, String startzeit2)
 	{
 		super(fahrerID, new Club(), name, vorname, 0, "", "", 0, "");
 		this.kategorieID = kategorieID;
 		this.rennenID = rennenID;
 		this.bootID = bootID;
 		this.setStartplatz(startplatz);
-		this.setStartzeit(startzeit);
+		this.setStartzeit1(startzeit1);
+		this.startzeit2 = startzeit2;
 	}
 
 	public Integer getKategorieID() {
@@ -63,12 +65,24 @@ public class FahrerRennen extends Fahrer {
 		this.startplatz = startplatz;
 	}
 
-	public String getStartzeit() {
-		return startzeit;
+	public String getStartzeit1()
+	{
+		return startzeit1;
 	}
 
-	public void setStartzeit(String startzeit) {
-		this.startzeit = startzeit;
+	public void setStartzeit1(String startzeit1)
+	{
+		this.startzeit1 = startzeit1;
+	}
+
+	public String getStartzeit2()
+	{
+		return startzeit2;
+	}
+
+	public void setStartzeit2(String startzeit2)
+	{
+		this.startzeit2 = startzeit2;
 	}
 
 }

@@ -99,6 +99,21 @@ public class DBController {
 		}
 	}
 	
+	public enum Table_Block_Rennen {
+		COLUMN_KATEGORIE_ID("kategorie_id"), COLUMN_RENNEN_ID("rennen_id"), COLUMN_BLOCK_NR("block_nr"),
+		COLUMN_ALL("*");
+		
+		private final String column;
+		
+		Table_Block_Rennen(String column) {
+			this.column = column;
+		}
+		
+		public String getValue() {
+			return column;
+		}
+	}
+	
 	public enum Table_Fahrer {
 		COLUMN_ID("fahrer_id"), COLUMN_CLUB_ID("club_id"), COLUMN_NAME("name"), 
 		COLUMN_VORNAME("vorname"), COLUMN_JAHRGANG("jahrgang"), COLUMN_TELNR("telnnr"),
@@ -214,6 +229,34 @@ public class DBController {
 	}
 	
 	/**
+	 * Liest die Blöcke aus der Datenbank
+	 * @param column Die Spalte, in der gesucht werden soll
+	 * @param value Der Wert, nach dem gesucht werden soll
+	 * @return Eine Liste mit Kategorien, die passen
+	 */
+	public <T> List<AltersKategorie> selectBloeckeBy(Table_Block_Rennen column, T value) {
+		String selectStmt = "SELECT * FROM block_rennen JOIN kategorien USING(kategorie_id) WHERE " + column.getValue();
+		if (value != null)
+			selectStmt += " = '" + value + "'";
+		else
+			selectStmt += " IS NULL";
+		if (column.equals(Table_Block_Rennen.COLUMN_ALL))
+			selectStmt = "SELECT * FROM block_rennen JOIN kategorien USING(kategorie_id)";
+		selectStmt += " ORDER BY block_nr, nr ASC";
+		List<AltersKategorie> kats = new ArrayList<AltersKategorie>();
+
+		for (Row row : executeSelect(selectStmt)) {
+			Integer katID = (Integer) row.getRow().get(0).getKey();
+			//Integer rennenID = (Integer) row.getRow().get(1).getKey();
+			Integer blockNr = (Integer) row.getRow().get(2).getKey();
+			Integer nr = (Integer) row.getRow().get(3).getKey();
+			String name = (String) row.getRow().get(4).getKey();
+			kats.add(new AltersKategorie(katID, name, blockNr, nr));
+		}
+		return kats;
+	}
+	
+	/**
 	 * Liest die Fahrer inkl. Club aus der Datenbank raus.
 	 * @param column Spalte, in der gesucht werden soll
 	 * @param value Wert, nach dem gesucht werden soll
@@ -225,7 +268,7 @@ public class DBController {
 			selectStmt += " = '" + value + "'";
 		else
 			selectStmt += " IS NULL";
-		if (column.equals(Table_Club.CLOUMN_ALL))
+		if (column.equals(Table_Fahrer.CLOUMN_ALL))
 			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id)";
 		List<Fahrer> fahrer = new ArrayList<Fahrer>();
 		for (Row row : executeSelect(selectStmt)) {
@@ -254,7 +297,7 @@ public class DBController {
 	public <T> List<FahrerRennen> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) {
 		String where = makeWhere(column, value);
 		String selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id) " + where;
-		if (column.equals(Table_Club.CLOUMN_ALL))
+		if (column.equals(Table_FahrerRennen.CLOUMN_ALL))
 			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
 		List<FahrerRennen> fahrer = new ArrayList<FahrerRennen>();
 		for (Row row : executeSelect(selectStmt)) {
@@ -264,9 +307,10 @@ public class DBController {
 			Integer bootID = (Integer) row.getRow().get(3).getKey();
 			Integer startplatz = (Integer) row.getRow().get(4).getKey();
 			String startzeit = (String) row.getRow().get(5).getKey();
+			String startzeit2 = ""; //TODO
 			String name = (String) row.getRow().get(10).getKey();
 			String vorname = (String) row.getRow().get(11).getKey();
-			fahrer.add(new FahrerRennen(idFahrer, name, vorname, rennenID, kategorieID, bootID, startplatz, startzeit));
+			fahrer.add(new FahrerRennen(idFahrer, name, vorname, rennenID, kategorieID, bootID, startplatz, startzeit, startzeit2));
 		}
 		return fahrer;
 	}
@@ -438,7 +482,7 @@ public class DBController {
 	// https://en.wikipedia.org/wiki/Isolation_(database_systems)#Read_uncommitted
 	// and JAVA Monitoring and synchronizing.
 
-	private <T> String makeWhere(T[] column, T[] value)
+	private <T> String makeWhere(Table_Rangliste[] column, T[] value)
 	{
 		String where = "WHERE ";
 		for(int x = 0;x < column.length;x++)
@@ -447,7 +491,26 @@ public class DBController {
 			{
 				if(x > 0)
 					where += ", ";
-				where += ((Table_Rangliste) column[x]).getValue();
+				where += column[x].getValue();
+				if(value[x] != null)
+					where += " = " + value[x];
+				else
+					where += " IS NULL";
+			}
+		}
+		return where;
+	}
+	
+	private <T> String makeWhere(Table_FahrerRennen[] column, T[] value)
+	{
+		String where = "WHERE ";
+		for(int x = 0;x < column.length;x++)
+		{
+			if(value.length > x)
+			{
+				if(x > 0)
+					where += ", ";
+				where += column[x].getValue();
 				if(value[x] != null)
 					where += " = " + value[x];
 				else
@@ -576,7 +639,7 @@ public class DBController {
 		if(clubs.size() > 0)
 			return clubs.get(0);
 		else
-			return null; //TODO abklären
+			return null; //TODO_1 abklären
 	}
 	
 	/**
@@ -665,7 +728,7 @@ public class DBController {
 		if(fahrer.size() > 0)
 			return fahrer.get(0);
 		else
-			return null; //TODO abzuklären
+			return null; //TODO_1 abzuklären
 	}
 	/**
 	 * Speichert einen Fahrer in der Datenbank. Um einen neuen Fahrer einzufügen, muss die ID kleiner als 1 sein, 
@@ -722,7 +785,7 @@ public class DBController {
 		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else
-			return null; //TODO abzuklären
+			return null; //TODO_1 abzuklären
 	}
 	
 	/**
@@ -736,7 +799,7 @@ public class DBController {
 		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else
-			return null; //TODO abzuklären
+			return null; //TODO_1 abzuklären
 	}
 	
 	/**
@@ -754,7 +817,7 @@ public class DBController {
 	 * @return
 	 */
 	@Deprecated
-	public List<Club> ladeAngemeldeteClubs() { //TODO löschen, nicht brauchbar
+	public List<Club> ladeAngemeldeteClubs() { //TODO_2 löschen, nicht brauchbar
 		return new ArrayList<Club>();
 	}
 	
@@ -782,7 +845,7 @@ public class DBController {
 	 * @param clubID Die ID des Clubs
 	 * @return Eine Liste mit Fahrer. Fahrer, welche angemeldet sind, haben den Typ "FahrerRennen", die andern nur "Fahrer"
 	 */
-	public List<Fahrer> ladeFahreranmeldungslisteClub(int clubID) {
+	public List<Fahrer> ladeFahreranmeldungslisteClub(int clubID) { //TODO Rennen ID
 		ArrayList<Fahrer> fahrer = new ArrayList<Fahrer>();
 		fahrer.addAll(selectStartlisteBy(new Table_FahrerRennen[] {Table_FahrerRennen.COLUMN_CLUB_ID}, new Integer[] {clubID}));
 		//Nur Fahrer hinzufügen, welche noch nicht vorhanden sind
@@ -822,6 +885,22 @@ public class DBController {
 	public List<FahrerRennen> ladeFehlererfassung(Integer rennenID, Integer kategorieID, Integer bootID) {
 		return selectStartlisteBy(new Table_FahrerRennen[] {Table_FahrerRennen.COLUMN_RENNEN_ID, Table_FahrerRennen.COLUMN_KATEGORIE,
 				Table_FahrerRennen.COLUMN_BOOTKLASSE}, new Integer[] {rennenID, kategorieID, bootID});
+	}
+	
+	/**
+	 * Speichert den Startplatz und die Startzeit eines Fahrer zu einem Rennen
+	 * @param fahrer Das Objekt mit dem Fahrer
+	 * @return true wenn ok, false sonst
+	 */
+	public boolean speichereStartplatz(FahrerRennen fahrer)
+	{
+		String s1 = fahrer.getStartzeit1();
+		String s2 = fahrer.getStartzeit2();
+		Integer sp = fahrer.getStartplatz();
+		ExecuteResult res = executeUpdate("UPDATE fahrer_rennen SET startzeit1 = '" + s1 + "', startzeit2 = '" + s2 + "', "
+			+ "startplatz = " + sp + " WHERE fahrer_id = " + fahrer.getFahrerID() + " AND rennen_id = " + fahrer.getRennenID() + ", "
+			+ "AND kategorie_id = " + fahrer.getKategorieID() + "");
+		return res.isSuccess();
 	}
 
 	/**
@@ -874,7 +953,7 @@ public class DBController {
 	 * @return
 	 */
 	@Deprecated
-	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) { //TODO löschen, doppelt
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) { //TODO_2 löschen, doppelt
 		return selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID);
 	}
 
@@ -925,7 +1004,7 @@ public class DBController {
 		if(rennen.size() > 0)
 			return rennen.get(0);
 		else
-			return null; //TODO abzuklären
+			return null; //TODO_1 abzuklären
 	}
 	
 	/**
@@ -939,11 +1018,12 @@ public class DBController {
 		ExecuteResult res;
 		if(rennen.getRennenID() < 1)
 		{
+			String zeit = rennen.getDatumVon().getHours() / 60 + rennen.getDatumVon().getMinutes() % 60 + ":00";
 			res = executeUpdate("INSERT INTO rennen (name, datum, zeit, ort, anz_tore, anz_posten) VALUES "
-					+ "('" + rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), "
+					+ "('" + rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), '" + zeit +"', "
 					+ "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten() + ");");
 			if(res.isSuccess())
-				rennen.setRennenID(res.generatedIDs.get(0)); //TODO Zeit vom Rennen richtig machen!
+				rennen.setRennenID(res.generatedIDs.get(0));
 		}
 		else
 		{
@@ -1034,5 +1114,47 @@ public class DBController {
 		rl.setResultate(resultat);
 		return rl;
 	}
+	
+	/**
+	 * Löscht die Blöcke inkl. deren Kategorien eines Rennens aus der Datenbank
+	 * @param rennenID Die ID des Rennens
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean loescheBloecke(Integer rennenID)
+	{
+		ExecuteResult res = executeUpdate("DELETE FROM block_rennen WHERE rennen_id = " + rennenID);
+		return res.isSuccess();
+	}
+	
+	/**
+	 * Liest zu einem Rennen die Blöcke inkl. Kategorien aus der Datenbank
+	 * @param rennenID Die ID des Rennens
+	 * @return Eine Liste mit Kategorien
+	 */
+	public List<AltersKategorie> ladeBloecke(Integer rennenID)
+	{
+		return selectBloeckeBy(Table_Block_Rennen.COLUMN_RENNEN_ID, rennenID);
+	}
 
+	/**
+	 * Speichert die Konfiguration eines Blockes
+	 * @param rennenID
+	 * @param blockNr
+	 * @param kategorien
+	 * @return
+	 */
+	public boolean speichereBlock(Integer rennenID, Integer blockNr, List<Integer> kategorien)
+	{
+		String sql = "INSERT INTO block_rennen (rennen_id, block_nr, kategorie_id, nr) VALUES ";
+		int x = 0;
+		for(Integer k : kategorien)
+		{
+			if(x > 0)
+				sql += ", ";
+			x++;
+			sql += "(" + rennenID + ", " + blockNr + ", " + k + ", " + x + ")";
+		}
+		ExecuteResult res = executeUpdate(sql);
+		return res.isSuccess();
+	}
 }

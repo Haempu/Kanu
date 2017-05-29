@@ -97,12 +97,10 @@ public class Rennen {
 		this.kategorien = kategorien;
 	}
 	
-	@Deprecated
 	public Date getDatumVon() {
 		return datum;
 	}
 	
-	@Deprecated
 	public Date getDatumBis() {
 		return datum;
 	}

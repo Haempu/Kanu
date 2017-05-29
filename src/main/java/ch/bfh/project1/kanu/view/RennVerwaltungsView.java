@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -19,10 +23,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.RennverwaltungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -87,7 +87,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		updateRennen();
