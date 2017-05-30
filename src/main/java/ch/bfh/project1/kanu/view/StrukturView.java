@@ -151,7 +151,7 @@ public class StrukturView extends UI {
 		this.fahreranmeldungsView.viewInitialisieren();
 		this.rechnungsView.viewInitialisieren();
 		this.rennverwaltungsView.viewInitialisieren();
-		slView.viewInitialisieren();
+		this.slView.viewInitialisieren();
 
 		// TODO: menu nach benutzerrolle anzeigen
 		this.menu.addMenuItem("Fahrer verwalten ", () -> {
@@ -179,7 +179,7 @@ public class StrukturView extends UI {
 		});
 
 		// default view
-		this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
+		this.mutationsView.viewAnzeigen(this.inhaltPanel);
 		this.menu.setContent(this.seite);
 	}
 

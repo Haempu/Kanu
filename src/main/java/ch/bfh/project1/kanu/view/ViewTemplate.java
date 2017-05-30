@@ -31,4 +31,11 @@ public interface ViewTemplate {
 	 * Die Funktion zeigt die View an.
 	 */
 	public void viewAnzeigen(Component inhalt);
+
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
+	// TODO: Add: public boolean istInitialisiert();
 }

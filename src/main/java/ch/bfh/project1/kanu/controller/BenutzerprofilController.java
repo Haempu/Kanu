@@ -56,4 +56,11 @@ public class BenutzerprofilController {
 		}
 		return false;
 	}
+
+	public void emailAendern(Integer benutzerID, String mail) {
+		Benutzer benutzer = this.dbController.ladeBenutzer(benutzerID);
+		benutzer.setEmailAdresse(mail);
+
+		this.dbController.speichereBenutzer(benutzer);
+	}
 }

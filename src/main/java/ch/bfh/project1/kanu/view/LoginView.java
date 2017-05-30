@@ -90,8 +90,7 @@ public class LoginView implements ViewTemplate {
 				if (LoginView.this.loginController.loginMitBenutzer(email.getValue(), passwort.getValue())) {
 					Page.getCurrent().reload();
 				} else {
-					// TODO: anders ausgeben
-					Notification.show("Login failed..", Type.ERROR_MESSAGE);
+					Notification.show("Login fehlgeschlagen. Bitte versuchen Sie es erneut.", Type.ERROR_MESSAGE);
 				}
 			}
 		});

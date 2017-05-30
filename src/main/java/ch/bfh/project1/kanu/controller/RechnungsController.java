@@ -24,11 +24,10 @@ public class RechnungsController {
 	}
 
 	/**
-	 * Lädt alle Klubs, die mindestens einen Fahrer an das Rennen angemeldet
-	 * haben.
+	 * Lädt alle Klubs
 	 */
 	public ArrayList<Club> ladeAngemeldeteClubs() {
-		return (ArrayList<Club>) this.dbController.ladeAngemeldeteClubs();
+		return (ArrayList<Club>) this.dbController.ladeClubs();
 	}
 
 	public void rechnungErstellen(Club club) {

@@ -48,13 +48,25 @@ public class BenutzerprofilView implements ViewTemplate {
 
 		ValidierungsController.setTextFeldRequired(this.email);
 		ValidierungsController.checkIfEmail(this.email);
-		// TODO: validation new, old pw etc.
+		ValidierungsController.checkIfPasswordIsEqualWithRepliedPassword(this.neuesPasswort, this.passwortBestaetigen);
 
 		this.email.setValue(SessionController.getBenutzerEmail());
 
 		this.speichern.addClickListener(event -> {
-			bController.benutzerprofilAendern(SessionController.getBenutzerID(), this.email.getValue(),
-					this.neuesPasswort.getValue(), this.neuesPasswort.getValue(), this.passwortBestaetigen.getValue());
+			if ((this.neuesPasswort.getValue() == null || this.neuesPasswort.getValue().equals(""))
+					&& (this.passwortBestaetigen.getValue() == null
+							|| this.passwortBestaetigen.getValue().equals(""))) {
+				if (this.email.isValid()) {
+					this.bController.emailAendern(SessionController.getBenutzerID(), this.email.getValue());
+				}
+			} else if (this.neuesPasswort.isValid() && this.altesPasswort.isValid()
+					&& this.passwortBestaetigen.isValid()) {
+				if (!this.bController.benutzerprofilAendern(SessionController.getBenutzerID(), this.email.getValue(),
+						this.neuesPasswort.getValue(), this.neuesPasswort.getValue(),
+						this.passwortBestaetigen.getValue())) {
+
+				}
+			}
 		});
 
 		this.benutzerProfilLayout.addComponent(this.titel);
@@ -70,12 +82,7 @@ public class BenutzerprofilView implements ViewTemplate {
 	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
-		formAbfuellen();
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(this.benutzerProfilLayout);
-	}
-
-	private void formAbfuellen() {
-		// TODO read current email address from logged in user
 	}
 }

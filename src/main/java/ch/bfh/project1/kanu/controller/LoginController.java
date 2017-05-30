@@ -1,9 +1,9 @@
 package ch.bfh.project1.kanu.controller;
 
+import com.vaadin.server.VaadinSession;
+
 import ch.bfh.project1.kanu.model.Benutzer;
 import ch.bfh.project1.kanu.view.LoginView;
-
-import com.vaadin.server.VaadinSession;
 
 /**
  * Die Klasse BenutzerprofilController beinhaltet die Logik der Klasse
@@ -39,7 +39,9 @@ public class LoginController {
 	public boolean loginMitBenutzer(String email, String passwort) {
 		if (existiertBenutzer(email, passwort)) {
 			SessionController.setBenutzerID(this.aktuellerBenutzer.getBenutzerID());
-			SessionController.setBenuterEmail(this.aktuellerBenutzer.getEmailAdresse()); //TODO (siehe SessionController)
+			SessionController.setBenuterEmail(this.aktuellerBenutzer.getEmailAdresse()); // TODO
+																							// (siehe
+																							// SessionController)
 			SessionController.setBenutzer(aktuellerBenutzer);
 			return true;
 		}

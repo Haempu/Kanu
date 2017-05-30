@@ -46,6 +46,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 	private List<AltersKategorie> kategorie;
 	private List<Rennen> rennen;
 	private FahreranmeldungsController fController = new FahreranmeldungsController();
+	private boolean firstCall = false;
 
 	// member variabel: Popup fenster
 	private Window popup;
@@ -125,18 +126,21 @@ public class FahreranmeldungsView implements ViewTemplate {
 
 		this.aktuellesRennen.addValueChangeListener(event -> {
 			if (this.aktuellesRennen.getValue() != null) {
-				this.layoutFahrer.removeAllComponents();
-				this.layoutAngemeldeteFahrer.removeAllComponents();
-
 				Rennen rennen = (Rennen) this.aktuellesRennen.getValue();
-				this.layoutFahrer.removeAllComponents();
 
-				if (fahrerTabelleAbfuellen(rennen.getRennenID())) {
-					this.layoutFahrer.addComponent(this.fahrerSuche);
-					this.layoutFahrer.addComponent(this.fahrerTable);
-				} else {
-					this.layoutFahrer.addComponent(new Label("Keine Fahrer vorhanden"));
+				if (!firstCall) {
+					firstCall = true;
+					this.layoutFahrer.removeAllComponents();
+
+					if (fahrerTabelleAbfuellen(rennen.getRennenID())) {
+						this.layoutFahrer.addComponent(this.fahrerSuche);
+						this.layoutFahrer.addComponent(this.fahrerTable);
+					} else {
+						this.layoutFahrer.addComponent(new Label("Keine Fahrer vorhanden"));
+					}
 				}
+
+				this.layoutAngemeldeteFahrer.removeAllComponents();
 				zeigeAngemeldeteFahrer(rennen.getRennenID());
 
 			} else {
