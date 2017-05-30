@@ -40,7 +40,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
-		this.dbController.fahrerAnmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
+		this.dbController.fahrerAnmelden(fahrerID, rennenID, alterskategorieID);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
-		dbController.fahrerAbmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
+		dbController.fahrerAbmelden(fahrerID, rennenID, alterskategorieID);
 	}
 
 	/**

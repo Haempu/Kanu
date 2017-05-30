@@ -38,17 +38,6 @@ public class RanglistenController {
 	}
 
 	/**
-	 * Gibt die Rangliste der Bootsklasse zurück.
-	 * 
-	 * @param bootsKlasseID
-	 *            - ID der Bootsklasse.
-	 * @return Rangliste
-	 */
-	public Rangliste ladeRanglisteBootsKlasse(Integer bootsKlasseID) {
-		return this.dbController.ladeRanglisteBootsKlasseID(null, bootsKlasseID); //TODO
-	}
-
-	/**
 	 * Gibt die Rangliste der Alterskategorie zurück.
 	 * 
 	 * @param altersKategorieID

@@ -41,6 +41,6 @@ public class FehlererfassungsController {
 	 *            - Tornummer, bei welchem der Fehler gemacht wurde.
 	 */
 	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
-		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer, tornummer); //TODO
+		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer); //TODO
 	}
 }
