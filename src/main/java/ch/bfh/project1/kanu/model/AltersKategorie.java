@@ -19,7 +19,7 @@ public class AltersKategorie {
 		this.altersKategorieID = altersKategorieID;
 		this.name = name;
 	}
-	
+
 	public AltersKategorie(Integer altersKategorieID, String name, Integer gebuehr) {
 		this.altersKategorieID = altersKategorieID;
 		this.name = name;
@@ -42,16 +42,37 @@ public class AltersKategorie {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
-
 	public Integer getGebuehr() {
 		return gebuehr;
 	}
 
 	public void setGebuehr(Integer gebuehr) {
 		this.gebuehr = gebuehr;
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+
+	@Override
+	public boolean equals(final Object object) {
+		//
+		if (this == object) { // return true if it is the same instance,
+			return true;
+		}
+		// equals takes an Object, ensure we compare apples with apples
+		if (!(object instanceof AltersKategorie)) {
+			return false;
+		}
+		final AltersKategorie other = (AltersKategorie) object;
+
+		// implies if EITHER instance's name is null we don't consider them
+		// equal
+		if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name))) {
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -17,21 +17,23 @@ public class FahrerResultat {
 	private Rennen rennen;
 	private AltersKategorie kategorie;
 	private Integer startnummer;
-	private BootsKlasse bootKategorie;
-	
-	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kategorie, BootsKlasse bootKategorie)
-	{
+	private String startzeitEins;
+	private String startzeitZwei;
+
+	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kategorie,
+			Integer startnummer, String startzeitEins, String startzeitZwei) {
 		this.fahrer = fahrer;
-		zeitErsterLauf = zeit1;
-		zeitZweiterLauf = zeit2;
+		this.zeitErsterLauf = zeit1;
+		this.zeitZweiterLauf = zeit2;
 		this.rennen = rennen;
 		this.kategorie = kategorie;
-		this.setBootKategorie(bootKategorie);
+		this.startnummer = startnummer;
+		this.setStartzeitEins(startzeitEins);
+		this.setStartzeitZwei(startzeitZwei);
 	}
-	
-	public FahrerResultat()
-	{
-		//TODO Im Moment nicht gebraucht --> löschen?
+
+	public FahrerResultat() {
+		// TODO Im Moment nicht gebraucht --> löschen?
 	}
 
 	public Fahrer getFahrer() {
@@ -90,11 +92,19 @@ public class FahrerResultat {
 		this.startnummer = startnummer;
 	}
 
-	public BootsKlasse getBootKategorie() {
-		return bootKategorie;
+	public String getStartzeitEins() {
+		return startzeitEins;
 	}
 
-	public void setBootKategorie(BootsKlasse bootKategorie) {
-		this.bootKategorie = bootKategorie;
+	public void setStartzeitEins(String startzeitEins) {
+		this.startzeitEins = startzeitEins;
+	}
+
+	public String getStartzeitZwei() {
+		return startzeitZwei;
+	}
+
+	public void setStartzeitZwei(String startzeitZwei) {
+		this.startzeitZwei = startzeitZwei;
 	}
 }

@@ -88,6 +88,7 @@ public class FehlererfassungsView implements ViewTemplate {
 
 		this.popup.setContent(this.popupLayout);
 		this.popup.center();
+		this.popup.setModal(true);
 
 		this.fehlererfassungsLayout.addComponent(this.titel);
 		this.fehlererfassungsLayout.addComponent(this.table);

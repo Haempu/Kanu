@@ -48,7 +48,7 @@ public class StrukturView extends UI {
 	private LoginView loginView = new LoginView(this.loginController, this);
 	private BenutzerprofilView benutzerprofilView = new BenutzerprofilView();
 	private RechnungsView rechnungsView = new RechnungsView();
-	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView();
+	private FahreranmeldungsView fahreranmeldungsView = new FahreranmeldungsView(this);
 	private FehlererfassungsView fehlererfassungsView = new FehlererfassungsView(this);
 	private ZeiterfassungsView zeiterfassungsView = new ZeiterfassungsView(this);
 	private MutationsView mutationsView = new MutationsView(this);
@@ -59,16 +59,15 @@ public class StrukturView extends UI {
 	protected void init(VaadinRequest request) {
 
 		this.getPage().setTitle("Kanu Club Grenchen");
-		
+
 		DBController db = DBController.getInstance();
 		try {
 			db.connect();
-			
+
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 
 		this.inhaltPanel.setStyleName(Reindeer.PANEL_LIGHT);
 		this.inhaltPanel.setSizeFull();
@@ -170,11 +169,11 @@ public class StrukturView extends UI {
 		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
 			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
 		});
-		
+
 		this.menu.addMenuItem("Rennen verwalten ", () -> {
 			this.rennverwaltungsView.viewAnzeigen(this.inhaltPanel);
 		});
-		
+
 		this.menu.addMenuItem("Startlisten verwalten ", () -> {
 			this.slView.viewAnzeigen(this.inhaltPanel);
 		});

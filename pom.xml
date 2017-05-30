@@ -145,6 +145,11 @@
 			<artifactId>sidemenu</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+   			<groupId>org.tepi.filtertable</groupId>
+   			<artifactId>filteringtable</artifactId>
+   			<version>1.0.1.v8</version>
+		</dependency>
 	</dependencies>
 
 	<build>

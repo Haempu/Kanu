@@ -61,6 +61,21 @@
  	color: white;
  	border: none
   }
+ 
+  .valo-menu-responsive[width-range~="0px-1100px"] .valo-menu-part {
+ 	background-color: #016074;
+ 	background-image: none;
+ 	border: 1px solid #016074;
+ 	/*padding-top: 15px;
+ 	padding-bottom: 15px;*/
+ }
+ 
+.valo-menu-responsive[width-range~="0px-1100px"] .valo-menu-part {
+	background-color: #8DB9B0;
+ 	background-image: none;
+ 	color: white;
+ 	border: none
+}
 
   .v-window-header {
   	background-color: #016074;
@@ -102,9 +117,15 @@
     font-size: 25px;
   }*/
 
+
   .inhaltPanel {
 	padding-left:15px;
+	padding-right:40px;
   }
+ 
+ .search {
+ 	margin-bottom: 10px;
+ }
   
   .errorTextFeld {
   	 border-color: red;

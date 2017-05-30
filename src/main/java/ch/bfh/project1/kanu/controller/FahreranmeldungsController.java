@@ -3,7 +3,10 @@ package ch.bfh.project1.kanu.controller;
 
 import java.util.List;
 
+import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.view.FahreranmeldungsView;
 
 /**
@@ -20,6 +23,10 @@ public class FahreranmeldungsController {
 	private DBController dbController;
 	private FahreranmeldungsView fahreranmeldungsView;
 
+	public FahreranmeldungsController() {
+		this.dbController = DBController.getInstance();
+	}
+
 	/**
 	 * Gibt eine Liste zurück, welche alle Fahrer eines Clubs mit den Attributen
 	 * "Angemeldet", "Vorname", "Nachnahme" und "Jahrgang" enthält, sowie die
@@ -30,7 +37,7 @@ public class FahreranmeldungsController {
 	 * @return
 	 */
 	public List<Fahrer> ladeFahrerlisteClub(int clubID) {
-		return dbController.fahrerlisteClub(clubID);
+		return this.dbController.fahrerlisteClub(clubID);
 	}
 
 	/**
@@ -39,8 +46,8 @@ public class FahreranmeldungsController {
 	 * @param fahrerID
 	 *            - ID eines Fahrers.
 	 */
-	public void fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
-		this.dbController.fahrerAnmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
+	public void fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer alterskategorieID) {
+		this.dbController.fahrerAnmelden(fahrerID, rennenID, alterskategorieID);
 	}
 
 	/**
@@ -49,8 +56,8 @@ public class FahreranmeldungsController {
 	 * @param fahrerID
 	 *            - ID eines Fahrers.
 	 */
-	public void fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer bootsKlasseID, Integer alterskategorieID) {
-		dbController.fahrerAbmelden(fahrerID, rennenID, bootsKlasseID, alterskategorieID);
+	public void fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer alterskategorieID) {
+		this.dbController.fahrerAbmelden(fahrerID, rennenID, alterskategorieID);
 	}
 
 	/**
@@ -62,7 +69,32 @@ public class FahreranmeldungsController {
 	 */
 	public Fahrer ladeFahrerVerwalten(Integer fahrerID) {
 		// TODO: Was wenn Fahrer nicht vorhanden? Exception von DBController?
-		return dbController.ladeFahrer(fahrerID);
+		return this.dbController.ladeFahrer(fahrerID);
+	}
+
+	public List<Fahrer> ladeAlleFahrer() {
+		return this.dbController.ladeFahrermutationslisteAlle();
+
+	}
+
+	public List<Fahrer> ladeFahrerMitSuche(String suche) {
+		return this.dbController.ladeFahrermutationslisteAlleMitSuche(suche);
+	}
+
+	public List<AltersKategorie> ladeAlleKategorien() {
+		return this.dbController.ladeKategorien();
+	}
+
+	public List<Rennen> ladeAlleRennen() {
+		return this.dbController.ladeRennen();
+	}
+
+	public List<FahrerResultat> ladeAngemeldeteFahrer(Integer rennenID) {
+		return this.dbController.ladeFehlererfassung(rennenID);
+	}
+
+	public void neueKategorie(Integer fahrerID, Integer alteKategorieID, Integer neueKategorieID, Integer rennenID) {
+		this.dbController.setzeNeueKategorie(fahrerID, alteKategorieID, neueKategorieID, rennenID);
 	}
 
 	/**
@@ -72,6 +104,6 @@ public class FahreranmeldungsController {
 	 *            - ID eines Fahrers.
 	 */
 	public void speichereFahrer(Fahrer fahrer) {
-		dbController.speichereFahrer(fahrer);
+		this.dbController.speichereFahrer(fahrer);
 	}
 }

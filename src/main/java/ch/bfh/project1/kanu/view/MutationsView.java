@@ -120,6 +120,7 @@ public class MutationsView implements ViewTemplate {
 
 		this.popup.setContent(this.popupLayoutMaster);
 		this.popup.center();
+		this.popup.setModal(true);
 
 		this.fahrerVerwaltungsLayout.addComponent(this.titel);
 		this.fahrerVerwaltungsLayout.addComponent(this.table);

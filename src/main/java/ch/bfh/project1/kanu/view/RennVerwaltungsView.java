@@ -34,9 +34,9 @@ import ch.bfh.project1.kanu.model.Rennen;
 public class RennVerwaltungsView implements ViewTemplate {
 
 	private UI ui; // Haupt GUI
-	
+
 	private FormLayout rennenLayout = new FormLayout();
-	
+
 	private Window popUpWindow;
 
 	// member variabeln
@@ -48,14 +48,14 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private Label ltore = new Label("Anzahl Tore");
 	private Label lkategorie = new Label("Kategorien");
 	private Label lposten = new Label("Anzahl Posten");
-	
+
 	private TextField tname = new TextField();
 	private TextField tort = new TextField();
 	private DateField ddatum = new DateField();
 	private DateField dzeit = new DateField();
 	private TextField ttore = new TextField();
 	private TextField tposten = new TextField();
-	
+
 	private ListSelect likategorie = new ListSelect();
 
 	// member variabel: Popup fenster
@@ -94,15 +94,14 @@ public class RennVerwaltungsView implements ViewTemplate {
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(rennenLayout);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private void showPopup(final Rennen rennen)
-	{
+	private void showPopup(final Rennen rennen) {
 		this.rennen = rennen;
 		boolean neu = rennen.getRennenID() < 1 ? true : false;
 		Button speichern = new Button("Speichern");
 		final GridLayout layout = new GridLayout(2, 8);
-		
+
 		popUpWindow = new Window();
 		popUpWindow.center();
 		popUpWindow.setModal(true);
@@ -114,13 +113,11 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setDatum(ddatum.getValue());
 			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
 			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
-			for(int id : temp)
-			{
+			for (int id : temp) {
 				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
 			}
 			rennen.setKategorien(kategorien);
-			if(rController.speichereRennen(rennen))
-			{
+			if (rController.speichereRennen(rennen)) {
 				updateRennen();
 				popUpWindow.close();
 			}
@@ -128,39 +125,31 @@ public class RennVerwaltungsView implements ViewTemplate {
 		ddatum.setDateFormat("dd.MM.yyyy");
 		dzeit.setDateFormat("HH:mm");
 		likategorie.clear();
-		for(AltersKategorie kat : rController.ladeKategorien())
-		{
+		for (AltersKategorie kat : rController.ladeKategorien()) {
 			likategorie.addItem(kat.getAltersKategorieID());
 			likategorie.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 		}
 		likategorie.setMultiSelect(true);
 		likategorie.setRows(10);
-		if(likategorie.size() == 0)
-		{
+		if (likategorie.size() == 0) {
 			likategorie.setEnabled(false);
 			likategorie.addItem(-1);
 			likategorie.setItemCaption(-1, "Keine Kategorien");
 			likategorie.setRows(1);
 			speichern.setEnabled(false);
-		}
-		else if(!neu)
-		{
-			for(AltersKategorie ak : rennen.getKategorien())
-			{
+		} else if (!neu) {
+			for (AltersKategorie ak : rennen.getKategorien()) {
 				likategorie.select(ak.getAltersKategorieID());
 			}
 		}
-		if(!neu)
-		{
+		if (!neu) {
 			tname.setValue(rennen.getName());
 			ddatum.setValue(rennen.getDatum());
 			dzeit.setValue(rennen.getDatum());
 			tort.setValue(rennen.getOrt());
 			tposten.setValue(rennen.getAnzPosten() + "");
 			ttore.setValue(rennen.getAnzTore() + "");
-		}
-		else
-		{
+		} else {
 			tname.setValue("");
 			ddatum.setValue(null);
 			dzeit.setValue(null);
@@ -168,7 +157,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 			tposten.setValue("");
 			ttore.setValue("");
 		}
-		
+
 		layout.addComponent(lname, 0, 0);
 		layout.addComponent(tname, 1, 0);
 		layout.addComponent(ldatum, 0, 1);
@@ -184,19 +173,18 @@ public class RennVerwaltungsView implements ViewTemplate {
 		layout.addComponent(lkategorie, 0, 6);
 		layout.addComponent(likategorie, 1, 6);
 		layout.addComponent(speichern, 0, 7);
-		
+
 		layout.setSpacing(true);
 		layout.setMargin(true);
-		
+
 		popUpWindow.setContent(layout);
-		popUpWindow.setWidth("600px");
-		popUpWindow.setHeight("450px");
+		// popUpWindow.setWidth("600px");
+		// popUpWindow.setHeight("450px");
 		popUpWindow.setCaption(!neu ? "Renndetails" : "Neues Rennen");
 		UI.getCurrent().addWindow(popUpWindow);
 	}
 
-	private void updateRennen()
-	{
+	private void updateRennen() {
 		rennenLayout.removeAllComponents();
 		List<Rennen> lrennen = rController.ladeRennen();
 		Label larennen = new Label("Bereits erfasste Rennen:");
@@ -207,15 +195,15 @@ public class RennVerwaltungsView implements ViewTemplate {
 		trennen.addContainerProperty("Ort", String.class, null);
 		trennen.addContainerProperty("Datum", String.class, null);
 		trennen.addContainerProperty("Bearbeiten", Button.class, null);
-		for(Rennen r : lrennen)
-		{
-			//TODO: Rennen ausgeben
-			//Wenn auf Rennen geklickt wird, showPopup mit dem Rennen Objekt aufrufen (Popup zum Rennen bearbeiten)
+		for (Rennen r : lrennen) {
+			// TODO: Rennen ausgeben
+			// Wenn auf Rennen geklickt wird, showPopup mit dem Rennen Objekt
+			// aufrufen (Popup zum Rennen bearbeiten)
 			Object id = trennen.addItem();
 			Item row = trennen.getItem(id);
 			row.getItemProperty("Name").setValue(r.getName());
 			row.getItemProperty("Ort").setValue(r.getOrt());
-			row.getItemProperty("Datum").setValue(r.getDatum().toGMTString()); //TODO
+			row.getItemProperty("Datum").setValue(r.getDatum().toGMTString()); // TODO
 			Button bbearbeiten = new Button("Bearbeiten");
 			bbearbeiten.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -235,7 +223,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setRennenID(0);
 			showPopup(rennen);
 		});
-		
+
 		rennenLayout.addComponent(bneu);
 	}
 }

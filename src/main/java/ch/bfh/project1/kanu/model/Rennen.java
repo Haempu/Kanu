@@ -18,17 +18,19 @@ public class Rennen {
 	private String titel;
 	private String name;
 	private Date datum;
-	private String veranstalter; //Kann auch Integer sein (Club ID); falls überhaupt benötigt
+	private String veranstalter; // Kann auch Integer sein (Club ID); falls
+									// überhaupt benötigt
 	private String ort;
 	private int anzTore;
 	private int anzPosten;
 	private List<AltersKategorie> kategorien;
-	
+
 	public Rennen() {
-		
+
 	}
-	
-	public Rennen(Integer rennenID, String name, Date datum, String ort, Integer anzTore, Integer anzPosten, List<AltersKategorie> kategorien) {
+
+	public Rennen(Integer rennenID, String name, Date datum, String ort, Integer anzTore, Integer anzPosten,
+			List<AltersKategorie> kategorien) {
 		this.rennenID = rennenID;
 		this.name = name;
 		this.datum = datum;
@@ -41,67 +43,85 @@ public class Rennen {
 	public Integer getRennenID() {
 		return rennenID;
 	}
+
 	public void setRennenID(Integer rennenID) {
 		this.rennenID = rennenID;
 	}
+
 	public String getTitel() {
 		return titel;
 	}
+
 	public void setTitel(String titel) {
 		this.titel = titel;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getDatum()
-	{
+
+	public Date getDatum() {
 		return datum;
 	}
-	public void setDatum(Date datum)
-	{
+
+	public void setDatum(Date datum) {
 		this.datum = datum;
 	}
+
 	public String getVeranstalter() {
 		return veranstalter;
 	}
+
 	public void setVeranstalter(String veranstalter) {
 		this.veranstalter = veranstalter;
 	}
+
 	public String getOrt() {
 		return ort;
 	}
+
 	public void setOrt(String ort) {
 		this.ort = ort;
 	}
+
 	public int getAnzTore() {
 		return anzTore;
 	}
+
 	public void setAnzTore(int anzTore) {
 		this.anzTore = anzTore;
 	}
+
 	public int getAnzPosten() {
 		return anzPosten;
 	}
+
 	public void setAnzPosten(int anzPosten) {
 		this.anzPosten = anzPosten;
 	}
-	public List<AltersKategorie> getKategorien()
-	{
+
+	public List<AltersKategorie> getKategorien() {
 		return kategorien;
 	}
-	public void setKategorien(List<AltersKategorie> kategorien)
-	{
+
+	public void setKategorien(List<AltersKategorie> kategorien) {
 		this.kategorien = kategorien;
 	}
-	
+
+	@Override
+	public String toString() {
+		return this.name + " " + this.ort;
+	}
+
 	@Deprecated
 	public Date getDatumVon() {
 		return datum;
 	}
-	
+
 	@Deprecated
 	public Date getDatumBis() {
 		return datum;
