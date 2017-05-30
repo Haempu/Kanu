@@ -15,6 +15,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
+import ch.bfh.project1.kanu.controller.ValidierungsController;
 import ch.bfh.project1.kanu.controller.ZeiterfassungsController;
 import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Fahrer;
@@ -96,8 +97,11 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.vornameText.setEnabled(false);
 		this.nachnameText.setEnabled(false);
 		this.clubText.setEnabled(false);
-		this.laufzeitEins.setInputPrompt("mm:ss:hh");
-		this.laufzeitZwei.setInputPrompt("mm:ss:hh");
+		this.laufzeitEins.setInputPrompt("Minuten:Sekunden.Milisekunden");
+		this.laufzeitZwei.setInputPrompt("Minuten:Sekunden.Milisekunden");
+
+		ValidierungsController.laufzeitValidation(this.laufzeitEins);
+		ValidierungsController.laufzeitValidation(this.laufzeitZwei);
 
 		this.popup = new Window("Zeit erfassen");
 		this.popup.center();
@@ -178,13 +182,26 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 			for (FahrerResultat fr : fahrer) {
 				Fahrer f = fr.getFahrer();
+
 				Object newItemId = this.table.addItem();
 				Item row = this.table.getItem(newItemId);
 
 				Button speichern = new Button("Speichern");
 
 				speichern.addClickListener(event -> {
-					// TODO: speichern
+					if (this.laufzeitEins.isValid() && this.laufzeitZwei.isValid()) {
+						int zeit1 = this.zController.getLaufzeitInMilisekunden(this.laufzeitEins.getValue());
+						int zeit2 = this.zController.getLaufzeitInMilisekunden(this.laufzeitZwei.getValue());
+
+						fr.setZeitErsterLauf(zeit1);
+						fr.setZeitZweiterLauf(zeit2);
+
+						this.zController.zeitErfassen(f, fr);
+						this.popup.close();
+
+					} else {
+						System.out.println("falsch");
+					}
 				});
 
 				Button zeitErfassen = new Button("Zeit erfassen");
@@ -197,12 +214,15 @@ public class ZeiterfassungsView implements ViewTemplate {
 					this.nachnameText.setValue(f.getName());
 					this.clubText.setValue(f.getClub().getName());
 
-					// TODO: laufzeiten darstellen
-					if (fr.getZeitErsterLauf() != 0.0d) {
-						// this.laufzeitEins.setValue(newValue);
+					if (fr.getZeitErsterLauf() != null) {
+						this.laufzeitEins.setValue(this.zController.getLaufzeitInFormat(fr.getZeitErsterLauf()));
+					} else {
+						this.laufzeitEins.setValue("");
 					}
-					if (fr.getZeitErsterLauf() != 0.0d) {
-
+					if (fr.getZeitErsterLauf() != null) {
+						this.laufzeitZwei.setValue(this.zController.getLaufzeitInFormat(fr.getZeitZweiterLauf()));
+					} else {
+						this.laufzeitZwei.setValue("");
 					}
 
 					popupLayoutForm.addComponent(this.startnummerText);
@@ -220,7 +240,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 					this.ui.addWindow(this.popup);
 				});
 
-				row.getItemProperty(COLUMN_STARTNUMMER).setValue(12);
+				row.getItemProperty(COLUMN_STARTNUMMER).setValue(fr.getStartnummer());
 				row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 				row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
 				row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());

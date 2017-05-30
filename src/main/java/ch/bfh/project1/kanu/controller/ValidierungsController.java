@@ -1,5 +1,8 @@
 package ch.bfh.project1.kanu.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.ui.PasswordField;
@@ -84,6 +87,22 @@ public class ValidierungsController {
 				} catch (NumberFormatException | NullPointerException e) {
 					throw new InvalidValueException("Jahrgang muss eine Zahl sein");
 
+				}
+			}
+		});
+
+	}
+
+	public static void laufzeitValidation(TextField textfield) {
+		textfield.addValidator(new Validator() {
+
+			@Override
+			public void validate(Object value) throws InvalidValueException {
+				SimpleDateFormat df = new SimpleDateFormat("mm:ss.SSS");
+				try {
+					df.parse(textfield.getValue());
+				} catch (ParseException e) {
+					throw new InvalidValueException("Format muss 'Minuten:Sekunden.Milisekunden' sein");
 				}
 			}
 		});

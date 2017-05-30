@@ -297,12 +297,12 @@ public class DBController {
 			Integer kategorieID = (Integer) row.getRow().get(3).getKey();
 			AltersKategorie kat = ladeKategorie(kategorieID);
 			Integer startplatz = (Integer) row.getRow().get(4).getKey();
-			// String startzeit1 = (String) row.getRow().get(5).getKey();
-			// String startzeit2 = (String) row.getRow().get(6).getKey();
-			// String laufzeit1 = (String) row.getRow().get(8).getKey();
-			// String laufzeit2 = (String) row.getRow().get(9).getKey();
+			// Integer startzeit1 = (Integer) row.getRow().get(5).getKey();
+			// Integer startzeit2 = (Integer) row.getRow().get(6).getKey();
+			Integer laufzeit1 = (Integer) row.getRow().get(7).getKey();
+			Integer laufzeit2 = (Integer) row.getRow().get(8).getKey();
 			// TODO: change 0.0d and null values
-			fahrer.add(new FahrerResultat(f, 0.0d, 0.0d, r, kat, startplatz, null, null));
+			fahrer.add(new FahrerResultat(f, laufzeit1, laufzeit2, r, kat, startplatz, null, null));
 		}
 		return fahrer;
 	}
@@ -468,8 +468,8 @@ public class DBController {
 				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) " + where + ";";
 		List<FahrerResultat> resultat = new ArrayList<FahrerResultat>();
 		for (Row row : executeSelect(selectStmt)) {
-			double zeit1 = row.getRow().get(0).getKey() == null ? (double) 0 : (double) row.getRow().get(0).getKey();
-			double zeit2 = row.getRow().get(1).getKey() == null ? (double) 0 : (double) row.getRow().get(1).getKey();
+			Integer zeit1 = (Integer) row.getRow().get(0).getKey();
+			Integer zeit2 = (Integer) row.getRow().get(1).getKey();
 			Integer idFahrer = (Integer) row.getRow().get(2).getKey();
 			Fahrer f = ladeFahrer(idFahrer);
 			Integer rennenID = (Integer) row.getRow().get(3).getKey();
@@ -1009,10 +1009,10 @@ public class DBController {
 			Integer startplatz = (Integer) row.getRow().get(4).getKey();
 			// String startzeit1 = (String) row.getRow().get(5).getKey();
 			// String startzeit2 = (String) row.getRow().get(6).getKey();
-			// String laufzeit1 = (String) row.getRow().get(8).getKey();
-			// String laufzeit2 = (String) row.getRow().get(9).getKey();
+			Integer laufzeit1 = (Integer) row.getRow().get(7).getKey();
+			Integer laufzeit2 = (Integer) row.getRow().get(8).getKey();
 			// TODO: change 0.0d and null values
-			fahrer.add(new FahrerResultat(f, 0.0d, 0.0d, r, kat, startplatz, null, null));
+			fahrer.add(new FahrerResultat(f, laufzeit1, laufzeit2, r, kat, startplatz, null, null));
 		}
 		return fahrer;
 	}
