@@ -79,7 +79,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 	@Override
 	public void viewInitialisieren() {
 		this.fahreranmeldungsLayout.setSpacing(true);
-		this.titel.setValue("Fahreranmeldung: Kanu Club Grenchen");
+		this.titel.setValue("Fahreranmeldung");
 		this.titel.setStyleName("h2");
 
 		this.fahrerSuche.setInputPrompt("Suchen");

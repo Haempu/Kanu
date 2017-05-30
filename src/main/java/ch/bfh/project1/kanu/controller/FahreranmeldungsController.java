@@ -74,7 +74,6 @@ public class FahreranmeldungsController {
 
 	public List<Fahrer> ladeAlleFahrer() {
 		return this.dbController.ladeFahrermutationslisteAlle();
-
 	}
 
 	public List<Fahrer> ladeFahrerMitSuche(String suche) {
