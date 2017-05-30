@@ -113,7 +113,7 @@ public class StartlistenController {
 				if(x == 1)
 				{
 					if(zeit - startBlock < 45) //Wenn keine 45min zwischen erstem und zweitem Lauf vergangen sind, die Pause erzwingen
-						zeit += startBlock + 45;
+						zeit = startBlock + 45;
 				}
 				for(Integer id : ids)
 				{

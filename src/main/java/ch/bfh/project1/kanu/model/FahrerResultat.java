@@ -11,8 +11,8 @@ package ch.bfh.project1.kanu.model;
 
 public class FahrerResultat {
 	private Fahrer fahrer;
-	private double zeitErsterLauf;
-	private double zeitZweiterLauf;
+	private Integer zeitErsterLauf;
+	private Integer zeitZweiterLauf;
 	private boolean neusterEintrag;
 	private Rennen rennen;
 	private AltersKategorie kategorie;
@@ -20,7 +20,7 @@ public class FahrerResultat {
 	private String startzeitEins;
 	private String startzeitZwei;
 
-	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kategorie,
+	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kategorie,
 			Integer startnummer, String startzeitEins, String startzeitZwei) {
 		this.fahrer = fahrer;
 		this.zeitErsterLauf = zeit1;
@@ -42,7 +42,7 @@ public class FahrerResultat {
 		startzeitZwei = s2;
 	}
 	
-	public FahrerResultat(Fahrer fahrer, double zeit1, double zeit2, Rennen rennen, AltersKategorie kat)
+	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kat)
 	{
 		this.fahrer = fahrer;
 		zeitErsterLauf = zeit1;
@@ -63,19 +63,19 @@ public class FahrerResultat {
 		this.fahrer = fahrer;
 	}
 
-	public double getZeitErsterLauf() {
+	public Integer getZeitErsterLauf() {
 		return zeitErsterLauf;
 	}
 
-	public void setZeitErsterLauf(double zeitErsterLauf) {
+	public void setZeitErsterLauf(Integer zeitErsterLauf) {
 		this.zeitErsterLauf = zeitErsterLauf;
 	}
 
-	public double getZeitZweiterLauf() {
+	public Integer getZeitZweiterLauf() {
 		return zeitZweiterLauf;
 	}
 
-	public void setZeitZweiterLauf(double zeitZweiterLauf) {
+	public void setZeitZweiterLauf(Integer zeitZweiterLauf) {
 		this.zeitZweiterLauf = zeitZweiterLauf;
 	}
 

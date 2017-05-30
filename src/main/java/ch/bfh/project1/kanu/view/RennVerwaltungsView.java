@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import ch.bfh.project1.kanu.controller.RennverwaltungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Rennen;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,6 +19,10 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -110,7 +110,8 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
 			rennen.setOrt(tort.getValue());
 			rennen.setName(tname.getValue());
-			rennen.setDatum(ddatum.getValue());
+			rennen.setDatumVon(ddatum.getValue());
+			rennen.setDatumBis(dzeit.getValue());
 			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
 			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
 			for(int id : temp)
@@ -124,8 +125,8 @@ public class RennVerwaltungsView implements ViewTemplate {
 				popUpWindow.close();
 			}
 		});
-		ddatum.setDateFormat("dd.MM.yyyy");
-		dzeit.setDateFormat("HH:mm");
+		ddatum.setDateFormat("dd.MM.yyyy HH:mm");
+		dzeit.setDateFormat("dd.MM.yyyy HH:mm");
 		likategorie.clear();
 		for(AltersKategorie kat : rController.ladeKategorien())
 		{

@@ -97,6 +97,16 @@ public class Rennen {
 		this.kategorien = kategorien;
 	}
 	
+	public void setDatumVon(Date datum)
+	{
+		this.datum = datum;
+	}
+	
+	public void setDatumBis(Date datum)
+	{
+		this.datum = datum;
+	}
+	
 	public Date getDatumVon() {
 		return datum;
 	}
