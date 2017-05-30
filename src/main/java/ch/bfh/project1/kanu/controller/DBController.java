@@ -283,6 +283,7 @@ public class DBController {
 		String where = makeWhereRennen(column, value);
 		String selectStmt = "SELECT fahrer_id, club_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, zeit1, zeit2 FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id) "
 				+ where;
+
 		if (column.equals(Table_Club.CLOUMN_ALL))
 			selectStmt = "SELECT fahrer_id, club_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, zeit1, zeit2 FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
 		List<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
@@ -503,7 +504,7 @@ public class DBController {
 		for (int x = 0; x < column.length; x++) {
 			if (value.length > x) {
 				if (x > 0)
-					where += ", ";
+					where += " AND ";
 				where += ((Table_Rangliste) column[x]).getValue();
 				if (value[x] != null)
 					where += " = " + value[x];
@@ -519,7 +520,7 @@ public class DBController {
 		for (int x = 0; x < column.length; x++) {
 			if (value.length > x) {
 				if (x > 0)
-					where += ", ";
+					where += " AND ";
 				where += ((Table_FahrerRennen) column[x]).getValue();
 				if (value[x] != null)
 					where += " = " + value[x];
@@ -972,6 +973,48 @@ public class DBController {
 		return selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_RENNEN_ID,
 				Table_FahrerRennen.COLUMN_KATEGORIE, Table_FahrerRennen.COLUMN_BOOTKLASSE },
 				new Integer[] { rennenID, kategorieID, bootID });
+	}
+
+	/**
+	 * Liest zu einer bestimmten Kategorie von einem Rennen die Startliste aus
+	 * 
+	 * @param rennenID
+	 *            Die ID des Rennens
+	 * @param kategorieID
+	 *            Die ID der Kategorie
+	 * 
+	 * @return Eine Liste von Fahrern
+	 */
+	public List<FahrerResultat> ladeStartliste(Integer rennenID, Integer kategorieID) {
+		return selectStartlisteBy(
+				new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_RENNEN_ID, Table_FahrerRennen.COLUMN_KATEGORIE },
+				new Integer[] { rennenID, kategorieID });
+	}
+
+	public List<FahrerResultat> ladeStartlisteMitSuche(Integer rennenID, Integer kategorieID, String suche) {
+		String selectStmt = "SELECT fahrer_id, club_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, zeit1, zeit2 FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)"
+				+ " WHERE (rennen_id = " + rennenID + " AND kategorie_id = " + kategorieID + ") AND (name LIKE '%"
+				+ suche + "%'" + " OR vorname LIKE '%" + suche + "%'" + " OR jahrgang LIKE '%" + suche
+				+ "%'  OR startplatz LIKE '%" + suche + "%');";
+		List<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
+		for (Row row : executeSelect(selectStmt)) {
+			Integer idFahrer = (Integer) row.getRow().get(0).getKey();
+			Fahrer f = ladeFahrer(idFahrer);
+			Integer clubID = (Integer) row.getRow().get(1).getKey();
+			Club club = ladeClubByID(clubID);
+			Integer rID = (Integer) row.getRow().get(2).getKey();
+			Rennen r = ladeRennen(rID);
+			Integer katID = (Integer) row.getRow().get(3).getKey();
+			AltersKategorie kat = ladeKategorie(katID);
+			Integer startplatz = (Integer) row.getRow().get(4).getKey();
+			// String startzeit1 = (String) row.getRow().get(5).getKey();
+			// String startzeit2 = (String) row.getRow().get(6).getKey();
+			// String laufzeit1 = (String) row.getRow().get(8).getKey();
+			// String laufzeit2 = (String) row.getRow().get(9).getKey();
+			// TODO: change 0.0d and null values
+			fahrer.add(new FahrerResultat(f, 0.0d, 0.0d, r, kat, startplatz, null, null));
+		}
+		return fahrer;
 	}
 
 	/**
