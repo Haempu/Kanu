@@ -87,7 +87,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		updateRennen();
@@ -110,7 +109,8 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
 			rennen.setOrt(tort.getValue());
 			rennen.setName(tname.getValue());
-			rennen.setDatum(ddatum.getValue());
+			rennen.setDatumVon(ddatum.getValue());
+			rennen.setDatumBis(dzeit.getValue());
 			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
 			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
 			for (int id : temp) {
@@ -122,8 +122,8 @@ public class RennVerwaltungsView implements ViewTemplate {
 				popUpWindow.close();
 			}
 		});
-		ddatum.setDateFormat("dd.MM.yyyy");
-		dzeit.setDateFormat("HH:mm");
+		ddatum.setDateFormat("dd.MM.yyyy HH:mm");
+		dzeit.setDateFormat("dd.MM.yyyy HH:mm");
 		likategorie.clear();
 		for (AltersKategorie kat : rController.ladeKategorien()) {
 			likategorie.addItem(kat.getAltersKategorieID());

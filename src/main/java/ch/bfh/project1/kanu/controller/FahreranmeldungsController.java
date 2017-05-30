@@ -90,7 +90,7 @@ public class FahreranmeldungsController {
 	}
 
 	public List<FahrerResultat> ladeAngemeldeteFahrer(Integer rennenID) {
-		return this.dbController.ladeFehlererfassung(rennenID);
+		return this.dbController.ladeStartliste(rennenID);
 	}
 
 	public void neueKategorie(Integer fahrerID, Integer alteKategorieID, Integer neueKategorieID, Integer rennenID) {

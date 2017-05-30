@@ -27,7 +27,7 @@ public class FehlererfassungsController {
 	 * @return Liste von allen Fahrern eines Rennens.
 	 */
 	public List<FahrerResultat> ladeFehlererfassung(Integer rennenID) {
-		return this.dbController.ladeFehlererfassung(rennenID);
+		return this.dbController.ladeStartliste(rennenID);
 	}
 
 	/**
@@ -41,6 +41,6 @@ public class FehlererfassungsController {
 	 *            - Tornummer, bei welchem der Fehler gemacht wurde.
 	 */
 	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
-		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer, tornummer); // TODO
+		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer); //TODO
 	}
 }

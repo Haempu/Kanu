@@ -117,12 +117,20 @@ public class Rennen {
 		return this.name + " " + this.ort;
 	}
 
-	@Deprecated
+	public void setDatumVon(Date datum)
+	{
+		this.datum = datum;
+	}
+	
+	public void setDatumBis(Date datum)
+	{
+		this.datum = datum;
+	}
+	
 	public Date getDatumVon() {
 		return datum;
 	}
-
-	@Deprecated
+	
 	public Date getDatumBis() {
 		return datum;
 	}
