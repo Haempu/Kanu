@@ -38,6 +38,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	private Label titel = new Label("Zeit erfassen");
 	private TextField fahrerSuche = new TextField();
 	private Table table = new Table();
+	private HorizontalLayout tableLayout = new HorizontalLayout();
 	private FormLayout zeiterfassungsLayout = new FormLayout();
 	private List<Rennen> rennen;
 	private List<AltersKategorie> kategorien;
@@ -118,13 +119,6 @@ public class ZeiterfassungsView implements ViewTemplate {
 			}
 		}
 
-		for (AltersKategorie kat : this.kategorien) {
-			this.kategorienSelect.addItem(kat);
-			if (this.kategorienSelect.getValue() == null) {
-				this.kategorienSelect.setValue(kat);
-			}
-		}
-
 		this.kategorienSelect.addValueChangeListener(event -> {
 			AltersKategorie kat = (AltersKategorie) this.kategorienSelect.getValue();
 			Rennen rennen = (Rennen) this.rennenSelect.getValue();
@@ -136,6 +130,13 @@ public class ZeiterfassungsView implements ViewTemplate {
 			Rennen rennen = (Rennen) this.rennenSelect.getValue();
 			tabelleAbfuellen(rennen.getRennenID(), kat.getAltersKategorieID());
 		});
+
+		for (AltersKategorie kat : this.kategorien) {
+			this.kategorienSelect.addItem(kat);
+			if (this.kategorienSelect.getValue() == null) {
+				this.kategorienSelect.setValue(kat);
+			}
+		}
 
 		this.fahrerSuche.addValueChangeListener(event -> {
 			AltersKategorie kat = (AltersKategorie) this.kategorienSelect.getValue();
@@ -152,7 +153,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.zeiterfassungsLayout.addComponent(this.titel);
 		this.zeiterfassungsLayout.addComponent(this.filterLayout);
 		this.zeiterfassungsLayout.addComponent(this.fahrerSuche);
-		this.zeiterfassungsLayout.addComponent(this.table);
+		this.zeiterfassungsLayout.addComponent(this.tableLayout);
 	}
 
 	/**
@@ -168,6 +169,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	 * Funktion füllt die Tabelle mit allen Fahrer des Clubs ab.
 	 */
 	private void tabelleAbfuellen(Integer rennenID, Integer kategorieID) {
+		this.tableLayout.removeAllComponents();
 		this.table.removeAllItems();
 		List<FahrerResultat> fahrer = null;
 
@@ -199,8 +201,6 @@ public class ZeiterfassungsView implements ViewTemplate {
 						this.zController.zeitErfassen(f, fr);
 						this.popup.close();
 
-					} else {
-						System.out.println("falsch");
 					}
 				});
 
@@ -248,7 +248,11 @@ public class ZeiterfassungsView implements ViewTemplate {
 				row.getItemProperty(COLUMN_BUTTON).setValue(zeitErfassen);
 
 				this.table.setPageLength(fahrer.size());
+				this.table.setWidth(100L, Component.UNITS_PERCENTAGE);
+				this.tableLayout.addComponent(this.table);
 			}
+		} else {
+			this.tableLayout.addComponent(new Label("Keine angemeldeten Fahrer für diese Kategorie"));
 		}
 	}
 
