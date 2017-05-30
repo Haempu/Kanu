@@ -176,6 +176,7 @@ public class StrukturView extends UI {
 		});
 		
 		this.menu.addMenuItem("Startlisten verwalten ", () -> {
+			this.slView.setRennen(null);
 			this.slView.viewAnzeigen(this.inhaltPanel);
 		});
 

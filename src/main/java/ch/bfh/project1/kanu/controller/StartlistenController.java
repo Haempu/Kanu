@@ -3,12 +3,12 @@ package ch.bfh.project1.kanu.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.ListSelect;
+
 import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.FahrerRennen;
+import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.view.StartlistenView;
-
-import com.vaadin.ui.ListSelect;
 
 /**
  * Die Klasse StartlistenController beinhaltet die Logik der Klasse
@@ -31,6 +31,21 @@ public class StartlistenController {
 	public Rennen ladeRennen(Integer rennenID)
 	{
 		return db.ladeRennen(rennenID);
+	}
+	
+	public List<Rennen> ladeAlleRennen()
+	{
+		return db.ladeRennen();
+	}
+	
+	/**
+	 * Lädt die Startliste zu einem Rennen
+	 * @param rennenID Die ID des Rennens
+	 * @return Eine Liste mit den Fahrern, sortiert nach Startplatz
+	 */
+	public List<FahrerResultat> ladeStartliste(Integer rennenID)
+	{
+		return db.ladeStartliste(rennenID);
 	}
 	
 	/**
@@ -57,7 +72,7 @@ public class StartlistenController {
 	 * @param rennenID
 	 * @return
 	 */
-	public List<ListSelect> ladeBloecke(Integer rennenID)
+	public List<ListSelect> ladeBloecke(Integer rennenID, List<Integer> kats)
 	{
 		List<ListSelect> ls = new ArrayList<ListSelect>();
 		for(AltersKategorie k : db.ladeBloecke(rennenID))
@@ -71,8 +86,8 @@ public class StartlistenController {
 			}
 			ls.get(k.getBlock() - 1).addItem(k.getAltersKategorieID());
 			ls.get(k.getBlock() - 1).setItemCaption(k.getAltersKategorieID(), k.getName());
+			kats.add(k.getAltersKategorieID());
 		}
-		System.out.println(ls.size());
 		return ls;
 	}
 	
@@ -102,17 +117,19 @@ public class StartlistenController {
 				}
 				for(Integer id : ids)
 				{
-					List<FahrerRennen> fahrer = db.ladeFehlererfassung(rennen.getRennenID(), id, 0);
-					for(FahrerRennen f : fahrer)
+					List<FahrerResultat> fahrer = db.ladeStartliste(rennen.getRennenID(), id);
+					for(FahrerResultat f : fahrer)
 					{
 						if(x == 0) //Beim ersten Lauf wird der Startplatz (Nr.) vergeben, die ist beim zweiten Lauf gleich
 						{
 							i++;
-							f.setStartplatz(i);
-							f.setStartzeit1(zeit / 60 + ":" + zeit % 60 + ":00");
+							f.setStartnummer(i);
+							f.setStartzeitEins(zeit / 60 + ":" + zeit % 60 + ":00");
 						}
 						else
-							f.setStartzeit2(zeit / 60 + ":" + zeit % 60 + ":00");
+						{
+							f.setStartzeitZwei(zeit / 60 + ":" + zeit % 60 + ":00");
+						}
 						zeit++;
 						if(!db.speichereStartplatz(f))
 							success = false;

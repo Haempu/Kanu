@@ -2,7 +2,7 @@ package ch.bfh.project1.kanu.controller;
 
 import java.util.List;
 
-import ch.bfh.project1.kanu.model.FahrerRennen;
+import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.view.FehlererfassungsView;
 
 /**
@@ -26,8 +26,8 @@ public class FehlererfassungsController {
 	 *            - ID des Rennens
 	 * @return Liste von allen Fahrern eines Rennens.
 	 */
-	public List<FahrerRennen> ladeFehlererfassung(Integer rennenID) {
-		return this.dbController.ladeFehlererfassung(rennenID);
+	public List<FahrerResultat> ladeFehlererfassung(Integer rennenID) {
+		return this.dbController.ladeStartliste(rennenID);
 	}
 
 	/**
