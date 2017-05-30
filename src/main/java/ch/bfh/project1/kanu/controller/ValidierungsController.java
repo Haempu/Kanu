@@ -68,4 +68,25 @@ public class ValidierungsController {
 			}
 		});
 	}
+
+	/**
+	 * Funktion überprüft ob das Textfeld ein gültiger Integer ist.
+	 * 
+	 * @param textfield
+	 */
+	public static void checkIfInteger(TextField textfield) {
+		textfield.addValidator(new Validator() {
+
+			@Override
+			public void validate(Object value) throws InvalidValueException {
+				try {
+					Integer.parseInt(textfield.getValue());
+				} catch (NumberFormatException | NullPointerException e) {
+					throw new InvalidValueException("Jahrgang muss eine Zahl sein");
+
+				}
+			}
+		});
+
+	}
 }

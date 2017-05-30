@@ -26,17 +26,15 @@ public class Club {
 		this.name = name;
 		this.bezahlt = bezahlt;
 	}
-	
-	public Club (Integer clubID, String kennung, String name)
-	{
+
+	public Club(Integer clubID, String kennung, String name) {
 		this.clubID = clubID;
 		this.kennung = kennung;
 		this.name = name;
 	}
-	
-	public Club()
-	{
-		
+
+	public Club() {
+
 	}
 
 	public int getClubID() {
@@ -106,5 +104,29 @@ public class Club {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	/**
+	 * Wird gebraucht damit das NativeSelect ein gleiches Objekt erkennt.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (super.equals(obj)) {
+			return true;
+		}
+		if (obj != null && ((Club) obj).getClubID() == clubID) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Wird gebraucht damit das NativeSelect ein gleiches Objekt erkennt.
+	 */
+	@Override
+	public int hashCode() {
+		int result = clubID != null ? clubID.hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		return result;
 	}
 }

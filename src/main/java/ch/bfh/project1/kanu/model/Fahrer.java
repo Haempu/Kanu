@@ -21,9 +21,9 @@ public class Fahrer {
 	private Integer plz;
 	private String ort;
 	private boolean angemeldet;
-	
-	public Fahrer(Integer fahrerID, Club club, String name, String vorname, Integer jahrgang, String telNr, String strasse, Integer plz, String ort)
-	{
+
+	public Fahrer(Integer fahrerID, Club club, String name, String vorname, Integer jahrgang, String telNr,
+			String strasse, Integer plz, String ort) {
 		this.fahrerID = fahrerID;
 		this.club = club;
 		this.name = name;
@@ -34,10 +34,9 @@ public class Fahrer {
 		this.plz = plz;
 		this.ort = ort;
 	}
-	
-	public Fahrer()
-	{
-		
+
+	public Fahrer() {
+
 	}
 
 	public Fahrer(int fahrerID, String name, String vorname, int jahrgang, boolean angemeldet) {
@@ -48,7 +47,8 @@ public class Fahrer {
 		this.angemeldet = angemeldet;
 	}
 
-	public Fahrer(String name, String vorname, int jahrgang, String telNr, String strasse, int plz, String ort) {
+	public Fahrer(String name, String vorname, int jahrgang, String telNr, String strasse, int plz, String ort,
+			Club club) {
 		this.name = name;
 		this.vorname = vorname;
 		this.jahrgang = jahrgang;
@@ -56,6 +56,7 @@ public class Fahrer {
 		this.strasse = strasse;
 		this.plz = plz;
 		this.ort = ort;
+		this.club = club;
 	}
 
 	public Integer getFahrerID() {

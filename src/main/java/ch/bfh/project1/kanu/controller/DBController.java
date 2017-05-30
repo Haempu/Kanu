@@ -736,6 +736,17 @@ public class DBController {
 	}
 
 	/**
+	 * Funktion löscht einen Fahrer aus der Datenbank
+	 * 
+	 * @param fahrerID
+	 * @return
+	 */
+	public boolean fahrerLoeschen(Integer fahrerID) {
+		ExecuteResult res = executeUpdate("DELETE FROM fahrer WHERE fahrer_id = " + fahrerID + ";");
+		return res.isSuccess();
+	}
+
+	/**
 	 * Meldet einen Fahrer von einem Rennen ab (eine Kategorie und Bootsklasse)
 	 * 
 	 * @param fahrerID
@@ -785,6 +796,9 @@ public class DBController {
 					+ "VALUES (" + fahrer.getClub().getClubID() + ", '" + fahrer.getName() + "', '"
 					+ fahrer.getVorname() + "', " + fahrer.getJahrgang() + ", '" + fahrer.getTelNr() + "', '"
 					+ fahrer.getStrasse() + "', " + fahrer.getPlz() + ", '" + fahrer.getOrt() + "');");
+
+			return res.isSuccess();
+
 		} else {
 			res = executeUpdate("UPDATE fahrer SET club_id = " + fahrer.getClub().getClubID() + ", name = '"
 					+ fahrer.getName() + "', vorname = '" + fahrer.getVorname() + "', jahrgang = "
@@ -793,6 +807,16 @@ public class DBController {
 					+ fahrer.getFahrerID() + ";");
 		}
 		return res.isSuccess();
+	}
+
+	public Integer speichereNeuenFahrer(Fahrer fahrer) {
+		ExecuteResult res;
+		res = executeUpdate("INSERT INTO fahrer (club_id, name, vorname, jahrgang, telnr, strasse, plz, ort) "
+				+ "VALUES (" + fahrer.getClub().getClubID() + ", '" + fahrer.getName() + "', '" + fahrer.getVorname()
+				+ "', " + fahrer.getJahrgang() + ", '" + fahrer.getTelNr() + "', '" + fahrer.getStrasse() + "', "
+				+ fahrer.getPlz() + ", '" + fahrer.getOrt() + "');");
+
+		return (Integer) res.getGeneratedIDs().get(0);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package ch.bfh.project1.kanu.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.view.MutationsView;
@@ -20,6 +21,9 @@ public class MutationsController {
 	private DBController dbController;
 	private MutationsView mutationsView;
 
+	/**
+	 * Konstruktor: MutationsController
+	 */
 	public MutationsController() {
 		this.dbController = DBController.getInstance();
 	}
@@ -32,6 +36,16 @@ public class MutationsController {
 	 */
 	public ArrayList<Fahrer> ladeFahrermutationslisteAlle() {
 		return (ArrayList<Fahrer>) this.dbController.ladeFahrermutationslisteAlle();
+	}
+
+	/**
+	 * Lädt die Liste für die Fahrermutationstabelle. Lädt Fahrer von allen
+	 * Clubs.
+	 * 
+	 * @return Liste von allen Fahrern die am Rennen teilgenommen haben.
+	 */
+	public ArrayList<Fahrer> ladeFahrermutationslisteAlleMitSuche(String suche) {
+		return (ArrayList<Fahrer>) this.dbController.ladeFahrermutationslisteAlleMitSuche(suche);
 	}
 
 	/**
@@ -59,6 +73,25 @@ public class MutationsController {
 	}
 
 	/**
+	 * Lädt alle Clubs
+	 * 
+	 * @return
+	 */
+	public List<Club> ladeAlleClubs() {
+		return this.dbController.ladeClubs();
+	}
+
+	/**
+	 * Lädt einen Fahrer mit der FahrerID
+	 * 
+	 * @param fahrerID
+	 * @return
+	 */
+	public Fahrer ladeFahrer(Integer fahrerID) {
+		return this.dbController.ladeFahrer(fahrerID);
+	}
+
+	/**
 	 * Speichert die bearbeiteten Daten sowie die bearbeiteten Resultate des
 	 * ausgewählten Fahrers.
 	 * 
@@ -66,9 +99,29 @@ public class MutationsController {
 	 *            - Ausgewählter Fahrer.
 	 * @param fahrerResultat
 	 *            - Resultate des ausgewählten Fahrers.
+	 * @return fahrerID
 	 */
 	public void speichereFahrerBearbeitenAlle(Fahrer fahrer) {
-		this.dbController.speichereFahrerBearbeitenAlle(fahrer);
+		this.dbController.speichereFahrer(fahrer);
+	}
+
+	/**
+	 * Speichert einen neuen Fahrer
+	 * 
+	 * @param fahrer
+	 * @return
+	 */
+	public Integer speichereNeuenFahrer(Fahrer fahrer) {
+		return this.dbController.speichereNeuenFahrer(fahrer);
+	}
+
+	/**
+	 * Löscht einen Fahrer
+	 * 
+	 * @param fahrerID
+	 */
+	public void fahrerLoeschen(Integer fahrerID) {
+		this.dbController.fahrerLoeschen(fahrerID);
 	}
 
 	/**
@@ -78,6 +131,6 @@ public class MutationsController {
 	 *            - Ausgewählter Fahrer.
 	 */
 	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
-		this.dbController.speichereFahrerBearbeitenClub(fahrer);
+		this.dbController.speichereFahrer(fahrer);
 	}
 }
