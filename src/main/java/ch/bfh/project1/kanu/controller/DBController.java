@@ -84,6 +84,20 @@ public class DBController {
 		}
 	}
 	
+	public enum Table_Strafzeit {
+		COLUMN_RENNEN_ID("rennen_id"), COLUMN_FAHRER_ID("fahrer_id"), COLUMN_KATEGORIE("kategorie_id"), COLUMN_LAUF("lauf"), CLOUMN_ALL("*");
+
+		private final String column;
+
+		Table_Strafzeit(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
+	
 	public enum Table_Kategorien {
 		COLUMN_ID("kategorie_id"), COLUMN_NAME("name"), COLUMN_ALL("*");
 		
@@ -228,6 +242,26 @@ public class DBController {
 	}
 	
 	/**
+	 * Liest die Strafzeiten aus der Datenbank
+	 * @param column Spalten, in denen gesucht werden soll
+	 * @param value Werte, nach denen gesucht werden soll
+	 * @return Eine Liste mit Strafzeiten
+	 */
+	public <T> List<Strafzeit> selectStrafzeitBy(Table_Strafzeit[] column, T[] value) {
+		String where = makeWhere(column, value);
+		String selectStmt = "SELECT * FROM strafzeiten " + where; //TODO
+		List<Strafzeit> strafzeiten = new ArrayList<Strafzeit>();
+
+		for (Row row : executeSelect(selectStmt)) {
+			Integer lauf = (Integer) row.getRow().get(3).getKey();
+			Integer torNr = (Integer) row.getRow().get(4).getKey();
+			Integer strafzeit = (Integer) row.getRow().get(5).getKey();
+			strafzeiten.add(new Strafzeit(torNr, lauf, strafzeit));
+		}
+		return strafzeiten;
+	}
+	
+	/**
 	 * Liest die Blöcke aus der Datenbank
 	 * @param column Die Spalte, in der gesucht werden soll
 	 * @param value Der Wert, nach dem gesucht werden soll
@@ -319,6 +353,8 @@ public class DBController {
 			String vorname = (String) row.getRow().get(7).getKey();
 			Integer jg = (Integer) row.getRow().get(8).getKey();
 			String kat_name = (String) row.getRow().get(11).getKey();
+			Integer clubID = (Integer) row.getRow().get(9).getKey();
+			String clubName = (String) row.getRow().get(10).getKey();
 			startzeit = startzeit == null ? new Time(0) : startzeit;
 			startzeit2 = startzeit2 == null ? new Time(0) : startzeit2;
 			Calendar cal = GregorianCalendar.getInstance();
@@ -328,7 +364,9 @@ public class DBController {
 			String s2 = String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
 			Rennen rennen = new Rennen();
 			rennen.setRennenID(rennenID);
-			fahrer.add(new FahrerResultat(new Fahrer(idFahrer, name, vorname, jg, true), rennen, new AltersKategorie(kategorieID, kat_name), s1, s2, startplatz));
+			Fahrer f = new Fahrer(idFahrer, name, vorname, jg, true);
+			f.setClub(new Club(clubID, "", clubName));
+			fahrer.add(new FahrerResultat(f, rennen, new AltersKategorie(kategorieID, kat_name), s1, s2, startplatz));
 		}
 		return fahrer;
 	}
@@ -517,6 +555,25 @@ public class DBController {
 	}
 	
 	private <T> String makeWhere(Table_FahrerRennen[] column, T[] value)
+	{
+		String where = "WHERE ";
+		for(int x = 0;x < column.length;x++)
+		{
+			if(value.length > x)
+			{
+				if(x > 0)
+					where += " AND ";
+				where += column[x].getValue();
+				if(value[x] != null)
+					where += " = " + value[x];
+				else
+					where += " IS NULL";
+			}
+		}
+		return where;
+	}
+	
+	private <T> String makeWhere(Table_Strafzeit[] column, T[] value)
 	{
 		String where = "WHERE ";
 		for(int x = 0;x < column.length;x++)
@@ -1223,8 +1280,18 @@ public class DBController {
 		return res.isSuccess();
 	}
 	
+	/**
+	 * Liest die Strafzeiten zur Datenbank raus.
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die ID der Kategorie
+	 * @param lauf Der Lauf
+	 * @return Eine Liste mit Strafzeiten (ist die Liste leer, wurde noch nichts erfasst oder der Lauf wurde fehlerfrei durchgeführt)
+	 */
 	public List<Strafzeit> ladeStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf)
 	{
-		return new ArrayList<Strafzeit>();
+		return selectStrafzeitBy(new Table_Strafzeit[]{Table_Strafzeit.COLUMN_FAHRER_ID, Table_Strafzeit.COLUMN_RENNEN_ID, Table_Strafzeit.COLUMN_KATEGORIE,
+				Table_Strafzeit.COLUMN_LAUF}, 
+				new Integer[]{fahrerID, rennenID, kategorieID, lauf});
 	}
 }
