@@ -125,7 +125,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setAnzTore(Integer.parseInt(ttore.getValue()));
 			rennen.setOrt(tort.getValue());
 			rennen.setName(tname.getValue());
-			rennen.setDatum(ddatum.getValue());
+			rennen.setDatumBis(ddatum.getValue());
 			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
 			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
 			for(int id : temp)

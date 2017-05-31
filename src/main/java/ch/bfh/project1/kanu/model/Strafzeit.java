@@ -13,32 +13,27 @@ package ch.bfh.project1.kanu.model;
 
 public class Strafzeit {
 
-	private Fahrer fahrer;
-	private Rennen rennen;
 	private int torNummer;
-
-	public Fahrer getFahrer() {
-		return fahrer;
-	}
-
-	public void setFahrer(Fahrer fahrer) {
-		this.fahrer = fahrer;
-	}
-
-	public Rennen getRennen() {
-		return rennen;
-	}
-
-	public void setRennen(Rennen rennen) {
-		this.rennen = rennen;
-	}
-
+	private boolean torBeruehrt;
+	private boolean torVerpasst;
+	
 	public int getTorNummer() {
 		return torNummer;
 	}
-
 	public void setTorNummer(int torNummer) {
 		this.torNummer = torNummer;
+	}
+	public boolean getTorBeruehrt() {
+		return torBeruehrt;
+	}
+	public void setTorBeruehrt(boolean torBeruehrt) {
+		this.torBeruehrt = torBeruehrt;
+	}
+	public boolean getTorVerpasst() {
+		return torVerpasst;
+	}
+	public void setTorVerpasst(boolean torVerpasst) {
+		this.torVerpasst = torVerpasst;
 	}
 
 }
