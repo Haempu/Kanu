@@ -496,31 +496,33 @@ public class DBController {
 				+ "kategorie_id, boot_id WHERE rennen_id = " + rennen.getRennenID() + ";"; //ORDER BY min(ges_zeit) */
 		//Gibt die Zeiten beider Läufe aus
 		String where = makeWhere(column, value);
-		selectStmt = "SELECT ges_zeit1, ges_zeit2, fahrer_id, rennen_id, kategorie_id, boot_id, f.name, vorname, c.club_name, "
-				+ "c.club_id FROM (SELECT zeit1 + t.strafzeit AS ges_zeit1, fahrer_id, rennen_id, kategorie_id, boot_id "
-				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, boot_id, lauf, SUM(strafzeit) AS strafzeit FROM strafzeiten "
-				+ "NATURAL JOIN fahrer_rennen GROUP BY fahrer_id, rennen_id, kategorie_id, boot_id, lauf) as t NATURAL JOIN "
-				+ "fahrer_rennen WHERE t.lauf = 1) as z LEFT JOIN (SELECT zeit2 + t.strafzeit AS ges_zeit2, fahrer_id, rennen_id, "
-				+ "kategorie_id, boot_id FROM (SELECT fahrer_id, rennen_id, kategorie_id, boot_id, lauf, SUM(strafzeit) AS strafzeit "
-				+ "FROM strafzeiten NATURAL JOIN fahrer_rennen GROUP BY fahrer_id, rennen_id, kategorie_id, boot_id, lauf) as t "
-				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2) as b USING(fahrer_id, rennen_id, kategorie_id, boot_id) JOIN "
-				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) " + where + ";";
+		selectStmt = "SELECT IFNULL(ges_zeit1, 0), IFNULL(ges_zeit2, 0), fahrer_id, rennen_id, kategorie_id, f.name, vorname, c.club_name, "
+				+ "c.club_id FROM (SELECT zeit1 + IFNULL(t.strafzeit, 0) AS ges_zeit1, fahrer_id, rennen_id, kategorie_id "
+				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit FROM fahrer_rennen "
+				+ "LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t NATURAL JOIN "
+				+ "fahrer_rennen WHERE t.lauf = 1 OR t.lauf IS NULL) as z LEFT JOIN (SELECT zeit2 + IFNULL(t.strafzeit, 0) AS ges_zeit2, fahrer_id, rennen_id, "
+				+ "kategorie_id FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit "
+				+ "FROM fahrer_rennen LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t "
+				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2 OR t.lauf IS NULL) as b USING(fahrer_id, rennen_id, kategorie_id) JOIN "
+				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) " + where + " ORDER BY kategorie_id;";
 		List<FahrerResultat> resultat = new ArrayList<FahrerResultat>();
 		for (Row row : executeSelect(selectStmt)) {
-			Integer zeit1 = row.getRow().get(0).getKey() == null ? (Integer) 0 : (Integer) row.getRow().get(0).getKey();
-			Integer zeit2 = row.getRow().get(1).getKey() == null ? (Integer) 0 : (Integer) row.getRow().get(1).getKey();
+			java.math.BigDecimal zeit1 = row.getRow().get(0).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(0).getKey();
+			java.math.BigDecimal zeit2 = row.getRow().get(1).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(1).getKey();
 			Integer idFahrer = (Integer) row.getRow().get(2).getKey();
 			Integer rennenID = (Integer) row.getRow().get(3).getKey();
 			Integer kategorieID = (Integer) row.getRow().get(4).getKey();
 			String vorname = (String) row.getRow().get(6).getKey();
-			String name = (String) row.getRow().get(7).getKey();
-			String clubname = (String) row.getRow().get(8).getKey();
-			Integer clubID = (Integer) row.getRow().get(9).getKey();
+			String name = (String) row.getRow().get(5).getKey();
+			String clubname = (String) row.getRow().get(7).getKey();
+			Integer clubID = (Integer) row.getRow().get(8).getKey();
 			Club club = new Club(clubID, "", clubname);
 			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, 0, "", "", 0, "");
 			Rennen rennen = new Rennen();
 			rennen.setRennenID(rennenID);
-			resultat.add(new FahrerResultat(fahrer, zeit1, zeit2, rennen, ladeKategorie(kategorieID)));
+			Integer z1 = zeit1.intValue();
+			Integer z2 = zeit2.intValue();
+			resultat.add(new FahrerResultat(fahrer, z1, z2, rennen, ladeKategorie(kategorieID)));
 		}
 		return resultat;
 	}

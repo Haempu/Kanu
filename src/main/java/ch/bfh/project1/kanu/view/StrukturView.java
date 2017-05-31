@@ -23,6 +23,7 @@ import ch.bfh.project1.kanu.controller.DBController;
 import ch.bfh.project1.kanu.controller.LoginController;
 import ch.bfh.project1.kanu.controller.SessionController;
 import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
+import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * 
@@ -54,6 +55,7 @@ public class StrukturView extends UI {
 	private MutationsView mutationsView = new MutationsView(this);
 	private RennVerwaltungsView rennverwaltungsView = new RennVerwaltungsView(this);
 	private StartlistenView slView = new StartlistenView(this);
+	private RanglistenView rlView = new RanglistenView();
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -194,6 +196,14 @@ public class StrukturView extends UI {
 				this.zeiterfassungsView.viewInitialisieren();
 			}
 			this.zeiterfassungsView.viewAnzeigen(this.inhaltPanel);
+		});
+		
+		this.menu.addMenuItem("Rangliste ", () -> {
+			if (!this.rlView.istInitialisiert()) {
+				rlView.setRennen(new Rennen(2, "", null, "", 0, 0, null)); //TODO weg
+				this.rlView.viewInitialisieren();
+			}
+			this.rlView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		// default view
