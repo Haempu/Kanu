@@ -29,6 +29,8 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class MutationsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	private UI ui; // Haupt GUI
 
 	// member variabeln: Übersichtstabelle
@@ -140,6 +142,8 @@ public class MutationsView implements ViewTemplate {
 		this.fahrerVerwaltungsLayout.addComponent(this.neuerFahrer);
 		this.fahrerVerwaltungsLayout.addComponent(this.fahrerSuche);
 		this.fahrerVerwaltungsLayout.addComponent(this.table);
+
+		this.init = true;
 	}
 
 	/**
@@ -352,6 +356,11 @@ public class MutationsView implements ViewTemplate {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 
 }

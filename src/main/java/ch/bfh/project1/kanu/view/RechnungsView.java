@@ -23,6 +23,8 @@ import ch.bfh.project1.kanu.model.Club;
 
 public class RechnungsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	// UI Komponenten
 	private Label titel = new Label("Rechnungsverwaltung");
 	private Table table = new Table();
@@ -61,6 +63,8 @@ public class RechnungsView implements ViewTemplate {
 		this.rechnungsViewLayout.addComponent(this.titel);
 		this.rechnungsViewLayout.addComponent(this.table);
 		this.rechnungsViewLayout.addComponent(this.allePDFgenerieren);
+
+		this.init = true;
 	}
 
 	/**
@@ -111,5 +115,10 @@ public class RechnungsView implements ViewTemplate {
 		}
 
 		this.table.setPageLength(clubs.size());
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 }

@@ -37,5 +37,5 @@ public interface ViewTemplate {
 	 * 
 	 * @return
 	 */
-	// TODO: Add: public boolean istInitialisiert();
+	public boolean istInitialisiert();
 }

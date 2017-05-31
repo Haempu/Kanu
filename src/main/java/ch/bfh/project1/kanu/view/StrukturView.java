@@ -145,46 +145,61 @@ public class StrukturView extends UI {
 
 		setEingeloggterBenutzer(SessionController.getBenutzerEmail());
 
-		// TODO: alle views einbeziehen
-		this.mutationsView.viewInitialisieren();
-		this.fehlererfassungsView.viewInitialisieren();
-		this.fahreranmeldungsView.viewInitialisieren();
-		this.rechnungsView.viewInitialisieren();
-		this.rennverwaltungsView.viewInitialisieren();
-		this.slView.viewInitialisieren();
-		this.zeiterfassungsView.viewInitialisieren();
-
 		// TODO: menu nach benutzerrolle anzeigen
 		this.menu.addMenuItem("Fahrer verwalten ", () -> {
+			if (!this.mutationsView.istInitialisiert()) {
+				this.mutationsView.viewInitialisieren();
+			}
 			this.mutationsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Fehler erfassen", () -> {
+			if (!this.fehlererfassungsView.istInitialisiert()) {
+				this.fehlererfassungsView.viewInitialisieren();
+			}
 			this.fehlererfassungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Fahrer anmelden ", () -> {
+			if (!this.fahreranmeldungsView.istInitialisiert()) {
+				this.fahreranmeldungsView.viewInitialisieren();
+			}
 			this.fahreranmeldungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Rechnungen verwalten ", () -> {
+			if (!this.rechnungsView.istInitialisiert()) {
+				this.rechnungsView.viewInitialisieren();
+			}
 			this.rechnungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Rennen verwalten ", () -> {
+			if (!this.rennverwaltungsView.istInitialisiert()) {
+				this.rennverwaltungsView.viewInitialisieren();
+			}
 			this.rennverwaltungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Startlisten verwalten ", () -> {
 			this.slView.setRennen(null);
+			if (!this.slView.istInitialisiert()) {
+				this.slView.viewInitialisieren();
+			}
 			this.slView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		this.menu.addMenuItem("Zeiterfassung ", () -> {
+			if (!this.zeiterfassungsView.istInitialisiert()) {
+				this.zeiterfassungsView.viewInitialisieren();
+			}
 			this.zeiterfassungsView.viewAnzeigen(this.inhaltPanel);
 		});
 
 		// default view
+		if (!this.mutationsView.istInitialisiert()) {
+			this.mutationsView.viewInitialisieren();
+		}
 		this.mutationsView.viewAnzeigen(this.inhaltPanel);
 		this.menu.setContent(this.seite);
 	}

@@ -33,6 +33,8 @@ import ch.bfh.project1.kanu.model.Rennen;
 
 public class RennVerwaltungsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	private UI ui; // Haupt GUI
 
 	private FormLayout rennenLayout = new FormLayout();
@@ -82,6 +84,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 	public void viewInitialisieren() {
 		titel.setStyleName("h2");
 		rennenLayout.addComponent(titel);
+		this.init = true;
 	}
 
 	/**
@@ -225,5 +228,10 @@ public class RennVerwaltungsView implements ViewTemplate {
 		});
 
 		rennenLayout.addComponent(bneu);
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 }

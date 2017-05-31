@@ -30,6 +30,8 @@ import ch.bfh.project1.kanu.model.Rennen;
 
 public class FahreranmeldungsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	// UI Komponenten
 	private Label titel = new Label("Fahreranmeldung");
 	private VerticalLayout layoutFahrer = new VerticalLayout();
@@ -174,6 +176,8 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.fahreranmeldungsLayout.addComponent(label2);
 		this.fahreranmeldungsLayout.addComponent(this.layoutAngemeldeteFahrer);
 		this.fahreranmeldungsLayout.setImmediate(true);
+
+		this.init = true;
 	}
 
 	/**
@@ -340,5 +344,10 @@ public class FahreranmeldungsView implements ViewTemplate {
 		} else {
 			this.layoutAngemeldeteFahrer.addComponent(new Label("Keine Fahrer angemeldet"));
 		}
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 }

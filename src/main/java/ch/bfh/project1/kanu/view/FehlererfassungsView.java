@@ -24,6 +24,8 @@ import ch.bfh.project1.kanu.model.Fahrer;
 
 public class FehlererfassungsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	private UI ui; // Haupt GUI
 
 	// member variabeln: Übersichtstabelle
@@ -92,6 +94,8 @@ public class FehlererfassungsView implements ViewTemplate {
 
 		this.fehlererfassungsLayout.addComponent(this.titel);
 		this.fehlererfassungsLayout.addComponent(this.table);
+
+		this.init = true;
 	}
 
 	/**
@@ -141,6 +145,11 @@ public class FehlererfassungsView implements ViewTemplate {
 		}
 
 		this.table.setPageLength(fahrer.size());
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 
 }

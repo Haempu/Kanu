@@ -31,6 +31,8 @@ import ch.bfh.project1.kanu.model.Rennen;
 
 public class ZeiterfassungsView implements ViewTemplate {
 
+	private boolean init = false;
+
 	private UI ui;
 	private ZeiterfassungsController zController = new ZeiterfassungsController();
 
@@ -154,6 +156,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.zeiterfassungsLayout.addComponent(this.filterLayout);
 		this.zeiterfassungsLayout.addComponent(this.fahrerSuche);
 		this.zeiterfassungsLayout.addComponent(this.tableLayout);
+		this.init = true;
 	}
 
 	/**
@@ -254,6 +257,11 @@ public class ZeiterfassungsView implements ViewTemplate {
 		} else {
 			this.tableLayout.addComponent(new Label("Keine angemeldeten Fahrer für diese Kategorie"));
 		}
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 
 }

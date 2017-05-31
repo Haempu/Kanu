@@ -29,6 +29,7 @@ public class BenutzerprofilView implements ViewTemplate {
 	private PasswordField passwortBestaetigen = new PasswordField("Passwort bestätigen");
 	private Button speichern = new Button("Speichern");
 	private FormLayout benutzerProfilLayout = new FormLayout();
+	private boolean init = false;
 
 	// Kontroller
 	private BenutzerprofilController bController = new BenutzerprofilController();
@@ -75,6 +76,8 @@ public class BenutzerprofilView implements ViewTemplate {
 		this.benutzerProfilLayout.addComponent(this.neuesPasswort);
 		this.benutzerProfilLayout.addComponent(this.passwortBestaetigen);
 		this.benutzerProfilLayout.addComponent(this.speichern);
+
+		this.init = true;
 	}
 
 	/**
@@ -84,5 +87,10 @@ public class BenutzerprofilView implements ViewTemplate {
 	public void viewAnzeigen(Component inhalt) {
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(this.benutzerProfilLayout);
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 }

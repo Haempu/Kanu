@@ -11,12 +11,15 @@ import com.vaadin.ui.Component;
 
 public class RanglistenView implements ViewTemplate {
 
+	private boolean init = false;
+
 	/**
 	 * Die Funktion initialisiert die View
 	 */
 	@Override
 	public void viewInitialisieren() {
 		// TODO Auto-generated method stub
+		this.init = true;
 
 	}
 
@@ -27,6 +30,11 @@ public class RanglistenView implements ViewTemplate {
 	public void viewAnzeigen(Component inhalt) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 
 }

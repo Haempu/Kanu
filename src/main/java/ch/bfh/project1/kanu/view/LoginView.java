@@ -24,6 +24,8 @@ import ch.bfh.project1.kanu.controller.LoginController;
 
 public class LoginView implements ViewTemplate {
 
+	private boolean init = false;
+
 	// UI Komponenten
 	private FormLayout loginLayout = new FormLayout();
 	private Label titel = new Label("Login");
@@ -67,6 +69,8 @@ public class LoginView implements ViewTemplate {
 
 		this.email.setImmediate(true);
 		this.passwort.setImmediate(true);
+
+		this.init = true;
 	}
 
 	/**
@@ -94,6 +98,11 @@ public class LoginView implements ViewTemplate {
 				}
 			}
 		});
+	}
+
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 
 }
