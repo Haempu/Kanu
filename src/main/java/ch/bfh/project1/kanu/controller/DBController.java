@@ -591,6 +591,7 @@ public class DBController {
 					where += " IS NULL";
 			}
 		}
+		where += " AND tor_nr > 0"; //Dummy Einträge rausfiltern
 		return where;
 	}
 	
@@ -1295,5 +1296,42 @@ public class DBController {
 		return selectStrafzeitBy(new Table_Strafzeit[]{Table_Strafzeit.COLUMN_FAHRER_ID, Table_Strafzeit.COLUMN_RENNEN_ID, Table_Strafzeit.COLUMN_KATEGORIE,
 				Table_Strafzeit.COLUMN_LAUF}, 
 				new Integer[]{fahrerID, rennenID, kategorieID, lauf});
+	}
+	
+	/**
+	 * Speicher eine Strafzeit in der Datenbank; ist für dieses Tor in diesem Rennen bereits eine Strafzeit eingetragen, wird diese überschrieben!
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die Kategorie ID
+	 * @param lauf Der Lauf
+	 * @param tor Das Tor
+	 * @param strafzeit Die Strafzeit (in ms)
+	 * @return true wenn erfolgreich, false sonst
+	 */
+	public boolean speichereStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tor, Integer strafzeit)
+	{
+		boolean tmp = speichereStrafzeitIntern(fahrerID, rennenID, kategorieID, lauf, tor, strafzeit);
+		lauf = lauf == 1 ? 2 : 1; //Dummy Eintrag, siehe Beschreibung von interner Methode
+		return tmp && speichereStrafzeitIntern(fahrerID, rennenID, kategorieID, lauf, 0, 0);
+	}
+	
+	/**
+	 * Speichert einen Fehler in der db
+	 * Als Workaround, weil die Rangliste sonst nicht richtig aus der Datenbank gelgesen wird, muss für jeden Eintrag zum einen Lauf mindestens ein Eintrag
+	 * zum anderen Lauf erstellt werden. Dies wird hier mit Tor 0 und einer Strafzeit von 0 gemacht (dieser Dummy Eintrag wird nicht zurückgegeben).
+	 * @param fahrerID
+	 * @param rennenID
+	 * @param kategorieID
+	 * @param lauf
+	 * @param tor
+	 * @param strafzeit
+	 * @return
+	 */
+	private boolean speichereStrafzeitIntern(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tor, Integer strafzeit)
+	{
+		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_ id, lauf, tor_nr, strafzeit) VALUES"
+				+ " (" + fahrerID + ", " + rennenID + ", " + kategorieID + ", " + lauf + ", " + tor + ", " + strafzeit + ") ON DUPLICATE KEY UPDATE"
+						+ " strafzeit = " + strafzeit);
+		return res.isSuccess();
 	}
 }
