@@ -1,10 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
-import java.awt.Checkbox;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -16,15 +13,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import ch.bfh.project1.kanu.controller.FehlererfassungsController;
 import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.model.Strafzeit;
@@ -55,10 +49,6 @@ public class FehlererfassungsView implements ViewTemplate {
 	private List<AltersKategorie> altersKategorieliste;
 	private NativeSelect dropDownRennen = new NativeSelect(NAME_RENNEN);
 	private NativeSelect dropDownAlterskategorie = new NativeSelect(NAME_KATEGORIE);
-	private Button btnVor = new Button("Vor");
-	private Button btnZurueck = new Button("Zurück");
-	private Button btnSpeichern = new Button("Speichern");
-	
 	
 	//Popup Komponenten
 	private Window popup;
@@ -170,8 +160,9 @@ public class FehlererfassungsView implements ViewTemplate {
 				Object newItemId = this.tabelleFahrer.addItem();
 				Item row = this.tabelleFahrer.getItem(newItemId);
 				final Integer fahrerID = fr.getFahrer().getFahrerID();
-
+				
 				Button bearbeiten = new Button("Bearbeiten");
+				// Popup-Fenster
 				bearbeiten.addClickListener(event -> {
 					FormLayout popupLayoutForm = new FormLayout();
 					VerticalLayout lauf1 = new VerticalLayout();
@@ -184,13 +175,9 @@ public class FehlererfassungsView implements ViewTemplate {
 					hl.addComponent(lauf1);
 					hl.addComponent(lauf2);
 					hl.setMargin(true);
-					HorizontalLayout buttons = new HorizontalLayout();
-					buttons.addComponent(btnZurueck);
-					buttons.addComponent(btnVor);
-					buttons.addComponent(btnSpeichern);
-					buttons.setMargin(true);
+					Button btnSpeichern = new Button("Speichern");
 					popupLayoutForm.addComponent(hl);
-					popupLayoutForm.addComponent(buttons);
+					popupLayoutForm.addComponent(btnSpeichern);
 					popupLayoutForm.addStyleName("popup");
 					this.popup.setContent(popupLayoutForm);
 					this.ui.addWindow(this.popup);
@@ -232,39 +219,5 @@ public class FehlererfassungsView implements ViewTemplate {
 		}
 		return tabelle;
 	}
-	
-	/**
-	 * Die Funktion zeigt das entsprechende Layout für die angemeldeten Fahrer
-	 * an.
-	 * 
-	 * @param rennenID
-	 */
-//	private void zeigeAngemeldeteFahrer(Integer rennenID) {
-//		this.layoutAngemeldeteFahrer.removeAllComponents();
-//
-//		if (angemeldeteFahrerTabelleAbfuellen(rennenID)) {
-//			this.layoutAngemeldeteFahrer.addComponent(this.angemeldeteFahrerTable);
-//		} else {
-//			this.layoutAngemeldeteFahrer.addComponent(new Label("Keine Fahrer angemeldet"));
-//		}
-//	}
 }
-	
-	
-	
-//	private void generiereFahrertabelle(List<FahrerResultat> listeFahrer) {
-//		this.tabelleFahrer.clear();
-//		System.out.println(listeFahrer.size());
-//		listeFahrer.add(new FahrerResultat());
-//		listeFahrer.get(0).setFahrer(new Fahrer(1, "Hans", "Müller", 1993, true));
-//		for (FahrerResultat fr : listeFahrer) {
-//			Object newItemId = this.tabelleFahrer.addItem();
-//			Item row = this.tabelleFahrer.getItem(newItemId);
-//			row.getItemProperty(COLUMN_NR).setValue("1");
-//			row.getItemProperty(COLUMN_NAME).setValue(fr.getFahrer().getName() + " " + fr.getFahrer().getVorname());
-//			row.getItemProperty(COLUMN_CLUB).setValue(fr.getFahrer().getClub().getName());
-//			row.getItemProperty(COLUMN_BEARBEITEN).setValue(newValue);
-//		}
-//		this.tabelleFahrer.setPageLength(listeFahrer.size());
-//	}
 
