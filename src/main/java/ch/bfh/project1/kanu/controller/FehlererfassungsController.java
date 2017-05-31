@@ -3,6 +3,8 @@ package ch.bfh.project1.kanu.controller;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
+import ch.bfh.project1.kanu.model.Strafzeit;
 import ch.bfh.project1.kanu.view.FehlererfassungsView;
 
 /**
@@ -29,18 +31,29 @@ public class FehlererfassungsController {
 	public List<FahrerResultat> ladeFehlererfassung(Integer rennenID) {
 		return this.dbController.ladeStartliste(rennenID);
 	}
+	
+	public FehlererfassungsController()
+	{
+		dbController = DBController.getInstance();
+	}
 
 	/**
-	 * Wird immer aufgerufen, wenn die erfassten Fehler bestätigt wurden.
+	 * Lädt alle Rennen.
 	 * 
-	 * @param fahrerID
-	 *            - ID des aktuellen Fahrers
-	 * @param rennenID
-	 *            - ID des aktuellen Rennens
-	 * @param tornummer
-	 *            - Tornummer, bei welchem der Fehler gemacht wurde.
 	 */
 	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
 		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer); //TODO
 	}
+	public List<Rennen> ladeRennen() {
+		return dbController.ladeRennen();
+	}
+	
+	public List<FahrerResultat> ladeFahrerliste(Integer rennID, Integer kategorieID) {
+		return dbController.ladeStartliste(rennID, kategorieID);
+	}
+	
+	public List<Strafzeit> ladeStrafzeitliste(Integer fahrerID, Integer rennenID, Integer kategorieID, int lauf) {
+		return dbController.ladeStrafzeit(fahrerID, rennenID, kategorieID, lauf);
+	}
+
 }

@@ -85,7 +85,7 @@ public class RanglistenController {
 			daten.add(tabelle);
 		}
 		// TODO: Exceptionhandling
-		PDFController.generierePDF(pfad, rennen, DOKUMENTTITEL_STARTLISTE, tabellentitel, HEADER, daten);
+		//PDFController.generierePDF(pfad, rennen, DOKUMENTTITEL_STARTLISTE, tabellentitel, HEADER, daten);
 	}
 
 }

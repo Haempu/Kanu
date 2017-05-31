@@ -147,8 +147,8 @@ public class RennVerwaltungsView implements ViewTemplate {
 		}
 		if (!neu) {
 			tname.setValue(rennen.getName());
-			ddatum.setValue(rennen.getDatum());
-			dzeit.setValue(rennen.getDatum());
+			ddatum.setValue(rennen.getDatumVon());
+			dzeit.setValue(rennen.getDatumBis());
 			tort.setValue(rennen.getOrt());
 			tposten.setValue(rennen.getAnzPosten() + "");
 			ttore.setValue(rennen.getAnzTore() + "");
@@ -206,7 +206,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 			Item row = trennen.getItem(id);
 			row.getItemProperty("Name").setValue(r.getName());
 			row.getItemProperty("Ort").setValue(r.getOrt());
-			row.getItemProperty("Datum").setValue(r.getDatum().toGMTString()); // TODO
+			row.getItemProperty("Datum").setValue(r.getDatumVon().toGMTString()); // TODO
 			Button bbearbeiten = new Button("Bearbeiten");
 			bbearbeiten.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;

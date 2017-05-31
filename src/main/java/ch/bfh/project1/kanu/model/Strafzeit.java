@@ -33,11 +33,11 @@ public class Strafzeit {
 			verpasst = false;
 	}
 
-	public int getTorNummer() {
+	public Integer getTorNummer() {
 		return torNummer;
 	}
 
-	public void setTorNummer(int torNummer) {
+	public void setTorNummer(Integer torNummer) {
 		this.torNummer = torNummer;
 	}
 
@@ -62,6 +62,7 @@ public class Strafzeit {
 	}
 
 	public void setVerpasst(boolean verpasst) {
+		this.strafzeit = verpasst==true ? 60 : 0;
 		this.verpasst = verpasst;
 	}
 
@@ -70,6 +71,7 @@ public class Strafzeit {
 	}
 
 	public void setBeruehrt(boolean beruehrt) {
+		this.strafzeit = beruehrt==true ? 5 : 0;
 		this.beruehrt = beruehrt;
 	}
 

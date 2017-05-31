@@ -54,7 +54,21 @@ public class DBController {
 		public String getValue() {
 			return column;
 		}
-	}		public enum Table_Rennen {		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ZEIT("zeit"), COLUMN_ORT("ort"), COLUMN_ALL("*");		private final String column;		Table_Rennen(String column) {			this.column = column;		}		public String getValue() {			return column;		}	}
+	}
+	
+	public enum Table_Rennen {
+		COLUMN_ID("rennen_id"), COLUMN_NAME("name"), COLUMN_datum("datum"), COLUMN_ZEIT("zeit"), COLUMN_ORT("ort"), COLUMN_ALL("*");
+
+		private final String column;
+
+		Table_Rennen(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+	}
 	
 	public enum Table_Kat_Rennen {
 		COLUMN_RENNEN_ID("rennen_id"), COLUMN_KATEGORIE_ID("kategorie_id"), COLUMN_GEBUEHR("gebuehr"), CLOUMN_ALL("*");
@@ -221,7 +235,13 @@ public class DBController {
 	public void disconnect() throws SQLException {
 		connection.close();
 	}
-		/**	 * Liest die Clubs aus der Datenbank aus	 * @param column Spalte, in der gesucht werden soll	 * @param value Wert, nach dem gesucht werden soll	 * @return Liste der Clubs, die die Suchkriterien einhalten	 */
+	
+	/**
+	 * Liest die Clubs aus der Datenbank aus
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
+	 * @return Liste der Clubs, die die Suchkriterien einhalten
+	 */
 	public <T> List<Club> selectClubBy(Table_Club column, T value) {
 		String selectStmt = "SELECT * FROM club WHERE " + column.getValue();
 		if (value != null)
@@ -918,7 +938,20 @@ public class DBController {
 	 * @return true wenn erfolg, false sonst
 	 */
 	public boolean speichereBenutzer(Benutzer benutzer) {
-		ExecuteResult res;		if(benutzer.getBenutzerID() < 1)		{			res = executeUpdate("INSERT INTO benutzer (passwort, email, rechte) "					+ "VALUES ('" + benutzer.getPasswort() + "', '"					+ benutzer.getEmailAdresse() + "', " + benutzer.getRechte() + ");");		}		else		{			res = executeUpdate("UPDATE benutzer SET email = '" + benutzer.getEmailAdresse() 					+ "', passwort = '" + benutzer.getPasswort()					+ "', rechte = " + benutzer.getRechte() + " WHERE user_id = " + benutzer.getBenutzerID() + ";");		}		return res.isSuccess();
+		ExecuteResult res;
+		if(benutzer.getBenutzerID() < 1)
+		{
+			res = executeUpdate("INSERT INTO benutzer (passwort, email, rechte) "
+					+ "VALUES ('" + benutzer.getPasswort() + "', '"
+					+ benutzer.getEmailAdresse() + "', " + benutzer.getRechte() + ");");
+		}
+		else
+		{
+			res = executeUpdate("UPDATE benutzer SET email = '" + benutzer.getEmailAdresse() 
+					+ "', passwort = '" + benutzer.getPasswort()
+					+ "', rechte = " + benutzer.getRechte() + " WHERE user_id = " + benutzer.getBenutzerID() + ";");
+		}
+		return res.isSuccess();
 	}
 
 	/**
@@ -1148,14 +1181,14 @@ public class DBController {
 		if(rennen.getRennenID() < 1)
 		{
 			res = executeUpdate("INSERT INTO rennen (name, datum, zeit, ort, anz_tore, anz_posten) VALUES "
-					+ "('" + rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), '" + zeit +"', "
+					+ "('" + rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatumVon().getTime() / 1000 + "), '" + zeit +"', "
 					+ "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten() + ");");
 			if(res.isSuccess())
 				rennen.setRennenID(res.generatedIDs.get(0));
 		}
 		else
 		{
-			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', datum = FROM_UNIXTIME(" + rennen.getDatum().getTime() / 1000 + "), "
+			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', datum = FROM_UNIXTIME(" + rennen.getDatumVon().getTime() / 1000 + "), "
 					+ "zeit = '" + zeit + "', ort = '" + rennen.getOrt() + "', anz_tore = " + rennen.getAnzTore() + ", "
 					+ "anz_posten = " + rennen.getAnzPosten() + " WHERE rennen_id = " + rennen.getRennenID() + ";");
 			if(res.isSuccess())
@@ -1329,7 +1362,7 @@ public class DBController {
 	 */
 	private boolean speichereStrafzeitIntern(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tor, Integer strafzeit)
 	{
-		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_ id, lauf, tor_nr, strafzeit) VALUES"
+		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES"
 				+ " (" + fahrerID + ", " + rennenID + ", " + kategorieID + ", " + lauf + ", " + tor + ", " + strafzeit + ") ON DUPLICATE KEY UPDATE"
 						+ " strafzeit = " + strafzeit);
 		return res.isSuccess();

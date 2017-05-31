@@ -101,5 +101,6 @@ public class AltersKategorie {
 	public void setNr(Integer nr)
 	{
 		this.nr = nr;
+
 	}
 }

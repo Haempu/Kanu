@@ -17,9 +17,9 @@ public class Rennen {
 	private Integer rennenID;
 	private String titel;
 	private String name;
-	private Date datum;
-	private String veranstalter; // Kann auch Integer sein (Club ID); falls
-									// überhaupt benötigt
+	private Date datumVon;
+	private Date datumBis;
+	private String veranstalter; //Kann auch Integer sein (Club ID); falls überhaupt benötigt
 	private String ort;
 	private int anzTore;
 	private int anzPosten;
@@ -28,12 +28,13 @@ public class Rennen {
 	public Rennen() {
 
 	}
-
+@Deprecated
 	public Rennen(Integer rennenID, String name, Date datum, String ort, Integer anzTore, Integer anzPosten,
 			List<AltersKategorie> kategorien) {
 		this.rennenID = rennenID;
 		this.name = name;
-		this.datum = datum;
+		this.datumBis = datum;
+		this.datumVon = datum;
 		this.ort = ort;
 		this.anzPosten = anzPosten;
 		this.anzTore = anzTore;
@@ -63,13 +64,23 @@ public class Rennen {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Date getDatum() {
-		return datum;
+	
+	public Date getDatumVon()
+	{
+		return datumVon;
 	}
 
-	public void setDatum(Date datum) {
-		this.datum = datum;
+	public void setDatumVon(Date datum)
+	{
+		this.datumVon = datum;
+	}
+	public Date getDatumBis()
+	{
+		return datumBis;
+	}
+	public void setDatumBis(Date datum)
+	{
+		this.datumBis = datum;
 	}
 
 	public String getVeranstalter() {
@@ -115,23 +126,5 @@ public class Rennen {
 	@Override
 	public String toString() {
 		return this.name + " " + this.ort;
-	}
-
-	public void setDatumVon(Date datum)
-	{
-		this.datum = datum;
-	}
-	
-	public void setDatumBis(Date datum)
-	{
-		this.datum = datum;
-	}
-	
-	public Date getDatumVon() {
-		return datum;
-	}
-	
-	public Date getDatumBis() {
-		return datum;
 	}
 }
