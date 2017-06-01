@@ -14,8 +14,17 @@ import ch.bfh.project1.kanu.view.BenutzerprofilView;
  */
 
 public class BenutzerprofilController {
+
+	// Membervariablen
 	private DBController dbController;
 	private BenutzerprofilView benutzerProfilView;
+
+	/**
+	 * Konstruktor: BenutzerprofilController
+	 */
+	public BenutzerprofilController() {
+		this.dbController = DBController.getInstance();
+	}
 
 	/**
 	 * Ändert die E-Mailadresse und/oder das Passwort des aktuell angemeldeten
@@ -57,6 +66,12 @@ public class BenutzerprofilController {
 		return false;
 	}
 
+	/**
+	 * Funktion ändert die E-Mail Adresse.
+	 * 
+	 * @param benutzerID
+	 * @param mail
+	 */
 	public void emailAendern(Integer benutzerID, String mail) {
 		Benutzer benutzer = this.dbController.ladeBenutzer(benutzerID);
 		benutzer.setEmailAdresse(mail);

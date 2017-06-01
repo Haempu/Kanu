@@ -13,6 +13,10 @@ import ch.bfh.project1.kanu.controller.SessionController;
 import ch.bfh.project1.kanu.controller.ValidierungsController;
 
 /**
+ * Sofern man ein eigenes Benutzerprofil hat (welches vom Chef Rechnungsbüro
+ * verteilt wird), kann man in dieser View seine Email-Adresse und sein Passwort
+ * ändern.
+ * 
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
@@ -47,12 +51,15 @@ public class BenutzerprofilView implements ViewTemplate {
 		this.neuesPasswort.setInputPrompt("Passwort");
 		this.passwortBestaetigen.setInputPrompt("Passwort");
 
+		// Setze für die Textfelder die jeweilige Validierung
 		ValidierungsController.setTextFeldRequired(this.email);
 		ValidierungsController.checkIfEmail(this.email);
 		ValidierungsController.checkIfPasswordIsEqualWithRepliedPassword(this.neuesPasswort, this.passwortBestaetigen);
 
+		// Feld wird mit angemeldeter Email Adresse abgefüllt
 		this.email.setValue(SessionController.getBenutzerEmail());
 
+		// Speichern Event
 		this.speichern.addClickListener(event -> {
 			if ((this.neuesPasswort.getValue() == null || this.neuesPasswort.getValue().equals(""))
 					&& (this.passwortBestaetigen.getValue() == null
@@ -65,11 +72,11 @@ public class BenutzerprofilView implements ViewTemplate {
 				if (!this.bController.benutzerprofilAendern(SessionController.getBenutzerID(), this.email.getValue(),
 						this.neuesPasswort.getValue(), this.neuesPasswort.getValue(),
 						this.passwortBestaetigen.getValue())) {
-
 				}
 			}
 		});
 
+		// Komponenten dem LAyout hinzufügen
 		this.benutzerProfilLayout.addComponent(this.titel);
 		this.benutzerProfilLayout.addComponent(this.email);
 		this.benutzerProfilLayout.addComponent(this.altesPasswort);
@@ -77,7 +84,7 @@ public class BenutzerprofilView implements ViewTemplate {
 		this.benutzerProfilLayout.addComponent(this.passwortBestaetigen);
 		this.benutzerProfilLayout.addComponent(this.speichern);
 
-		this.init = true;
+		this.init = true; // Die View ist initialisiert
 	}
 
 	/**
@@ -89,6 +96,11 @@ public class BenutzerprofilView implements ViewTemplate {
 		inhaltsPanel.setContent(this.benutzerProfilLayout);
 	}
 
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;

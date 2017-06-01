@@ -20,9 +20,14 @@ import ch.bfh.project1.kanu.view.FahreranmeldungsView;
  */
 
 public class FahreranmeldungsController {
+
+	// Membervariablen
 	private DBController dbController;
 	private FahreranmeldungsView fahreranmeldungsView;
 
+	/**
+	 * Konstruktor: FahreranmeldungsController
+	 */
 	public FahreranmeldungsController() {
 		this.dbController = DBController.getInstance();
 	}
@@ -68,39 +73,77 @@ public class FahreranmeldungsController {
 	 * @return
 	 */
 	public Fahrer ladeFahrerVerwalten(Integer fahrerID) {
-		// TODO: Was wenn Fahrer nicht vorhanden? Exception von DBController?
 		return this.dbController.ladeFahrer(fahrerID);
 	}
 
+	/**
+	 * Funktion lädt alle Fahrer (Auch ohne Anmeldung).
+	 * 
+	 * @return
+	 */
 	public List<Fahrer> ladeAlleFahrer() {
 		return this.dbController.ladeFahrermutationslisteAlle();
 	}
 
+	/**
+	 * Funktion lädt alle Fahrer mit einem Such-String (Auch ohne Anmeldung).
+	 * 
+	 * @param suche
+	 * @return
+	 */
+	/**
+	 * 
+	 * @param suche
+	 * @return
+	 */
 	public List<Fahrer> ladeFahrerMitSuche(String suche) {
 		return this.dbController.ladeFahrermutationslisteAlleMitSuche(suche);
 	}
 
+	/**
+	 * Funktion lädt alle Kategorien
+	 * 
+	 * @return
+	 */
 	public List<AltersKategorie> ladeAlleKategorien() {
 		return this.dbController.ladeKategorien();
 	}
 
+	/**
+	 * Funktion lädt alle Rennen.
+	 * 
+	 * @return
+	 */
 	public List<Rennen> ladeAlleRennen() {
 		return this.dbController.ladeRennen();
 	}
 
+	/**
+	 * 
+	 * @param rennenID
+	 * @return
+	 */
 	public List<FahrerResultat> ladeAngemeldeteFahrer(Integer rennenID) {
 		return this.dbController.ladeStartliste(rennenID);
 	}
 
-	public void neueKategorie(Integer fahrerID, Integer alteKategorieID, Integer neueKategorieID, Integer rennenID) {
+	/**
+	 * Funktion meldet einen Fahrer für eine neue Kategorie an.
+	 * 
+	 * @param fahrerID
+	 * @param alteKategorieID
+	 * @param neueKategorieID
+	 * @param rennenID
+	 */
+	public void fahrerFuerNeueKategorieAnmelden(Integer fahrerID, Integer alteKategorieID, Integer neueKategorieID,
+			Integer rennenID) {
 		this.dbController.setzeNeueKategorie(fahrerID, alteKategorieID, neueKategorieID, rennenID);
 	}
 
 	/**
-	 * Speichert den bearbeiteten Fahrer.
+	 * Speichert den neuen oder bearbeiteten Fahrer.
 	 * 
 	 * @param fahrer
-	 *            - ID eines Fahrers.
 	 */
 	public void speichereFahrer(Fahrer fahrer) {
 		this.dbController.speichereFahrer(fahrer);

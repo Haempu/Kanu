@@ -22,15 +22,17 @@ import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
 
 /**
+ * Hier kann man alle Fahrer an- und auch wieder abmelden. Der Benutzer hat
+ * vorerst eine Übersicht aller Fahrer/Innen.
+ *
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
  */
-
 public class FahreranmeldungsView implements ViewTemplate {
 
-	private boolean init = false;
+	private boolean init = false; // Ist die View initialisiert
 
 	// UI Komponenten
 	private Label titel = new Label("Fahreranmeldung");
@@ -47,8 +49,10 @@ public class FahreranmeldungsView implements ViewTemplate {
 	// Membervariablen
 	private List<AltersKategorie> kategorie;
 	private List<Rennen> rennen;
-	private FahreranmeldungsController fController = new FahreranmeldungsController();
 	private boolean firstCall = false;
+
+	// Kontroller
+	private FahreranmeldungsController fController = new FahreranmeldungsController();
 
 	// member variabel: Popup fenster
 	private Window popup;
@@ -63,7 +67,6 @@ public class FahreranmeldungsView implements ViewTemplate {
 	private static final String COLUMN_ALTERSKATEGORIE = "Kategorie";
 	private static final String COLUMN_ANMELDEN = "Anmelden";
 	private static final String COLUMN_ABMELDEN = "Abmelden";
-
 	private static final int ROW_HEIGHT = 5;
 
 	/**
@@ -126,6 +129,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.popup.setModal(true);
 		this.popup.setWidth("400px");
 
+		// Wenn ein neues Rennen ausgewählt wird, wird die Tabelle neu abgefüllt
 		this.aktuellesRennen.addValueChangeListener(event -> {
 			if (this.aktuellesRennen.getValue() != null) {
 				Rennen rennen = (Rennen) this.aktuellesRennen.getValue();
@@ -153,6 +157,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 			}
 		});
 
+		// Dropdown für alle Rennen abfüllen
 		for (Rennen rn : this.rennen) {
 			this.aktuellesRennen.addItem(rn);
 
@@ -161,6 +166,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 			}
 		}
 
+		// Event für die Suche
 		this.fahrerSuche.addValueChangeListener(event -> {
 			Rennen rennen = (Rennen) this.aktuellesRennen.getValue();
 			fahrerTabelleAbfuellen(rennen.getRennenID());
@@ -169,6 +175,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.layoutFahrer.setImmediate(true);
 		this.layoutAngemeldeteFahrer.setImmediate(true);
 
+		// Layout mit Komponenten abfüllen
 		this.fahreranmeldungsLayout.addComponent(this.titel);
 		this.fahreranmeldungsLayout.addComponent(this.aktuellesRennen);
 		this.fahreranmeldungsLayout.addComponent(label1);
@@ -177,7 +184,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.fahreranmeldungsLayout.addComponent(this.layoutAngemeldeteFahrer);
 		this.fahreranmeldungsLayout.setImmediate(true);
 
-		this.init = true;
+		this.init = true; // Die View ist nun initlialisiert
 	}
 
 	/**
@@ -191,23 +198,32 @@ public class FahreranmeldungsView implements ViewTemplate {
 
 	/**
 	 * Funktion füllt die Tabelle mit allen Fahrer des Clubs ab.
+	 * 
+	 * @param rennenID
+	 *            - ausgewähltes Rennen
+	 * @return - Wenn keine Werte in die Tabelle geschrieben werden, wird false
+	 *         zurückgegeben
 	 */
 	private boolean fahrerTabelleAbfuellen(Integer rennenID) {
 		this.fahrerTable.removeAllItems();
 		List<Fahrer> fahrer = null;
 
 		if (this.fahrerSuche.getValue() == null || this.fahrerSuche.getValue().equals("")) {
+			// Lade Fahrer ohne Suche
 			fahrer = this.fController.ladeAlleFahrer();
 		} else {
+			// Lade Fahrer mit Suche
 			fahrer = this.fController.ladeFahrerMitSuche(this.fahrerSuche.getValue());
 		}
 
 		if (!fahrer.isEmpty()) {
 
+			// Alle Fahrer in die Tabelle abfüllen
 			for (Fahrer f : fahrer) {
 				Object newItemId = this.fahrerTable.addItem();
 				Item row = this.fahrerTable.getItem(newItemId);
 
+				// Alterskategorien hinzufügen
 				for (AltersKategorie ak : this.kategorie) {
 					this.altersKategorien.addItem(ak);
 					if (this.altersKategorien.getValue() == null) {
@@ -216,6 +232,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 				}
 				Button speichern = new Button("Speichern");
 
+				// Speichern Event
 				speichern.addClickListener(event -> {
 					AltersKategorie ak = (AltersKategorie) altersKategorien.getValue();
 					this.fController.fahrerAnmelden(f.getFahrerID(), rennenID, ak.getAltersKategorieID());
@@ -225,6 +242,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 
 				Button anmelden = new Button("Anmelden");
 
+				// Anmelden Event (in der Tabelle)
 				anmelden.addClickListener(event -> {
 
 					FormLayout popupLayoutForm = new FormLayout();
@@ -245,6 +263,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 					this.ui.addWindow(this.popup);
 				});
 
+				// Tabelle mit Werten abfüllen
 				row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 				row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
 				row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());
@@ -257,7 +276,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 				this.fahrerTable.setPageLength(ROW_HEIGHT);
 			}
 		} else {
-			return false;
+			return false; // keine Fahrer vorhanden
 		}
 
 		return true;
@@ -265,13 +284,20 @@ public class FahreranmeldungsView implements ViewTemplate {
 
 	/**
 	 * Funktion füllt die Tabelle mit allen angemeldeten Fahrer des Clubs ab.
+	 *
+	 * @param rennenID
+	 *            - ausgewähltes Rennen
+	 * @return - Wenn keine Werte in die Tabelle geschrieben werden, wird false
+	 *         zurückgegeben
 	 */
 	private boolean angemeldeteFahrerTabelleAbfuellen(Integer rennenID) {
 		this.angemeldeteFahrerTable.removeAllItems();
 
+		// Angemeldete Fahrer aus der Datenbank lesen
 		List<FahrerResultat> angemeldeteFahrer = this.fController.ladeAngemeldeteFahrer(rennenID);
 
 		if (!angemeldeteFahrer.isEmpty()) {
+			// Angemeldete Fahrer iterieren
 			for (FahrerResultat fr : angemeldeteFahrer) {
 
 				Fahrer f = fr.getFahrer();
@@ -299,19 +325,23 @@ public class FahreranmeldungsView implements ViewTemplate {
 					rennen.addItem(rn);
 				}
 
+				// Wenn die Kategorie geändert wurde soll dies in der Datenbank
+				// gespeichert werden
 				altersKategorien.addValueChangeListener(event -> {
 					AltersKategorie neu = (AltersKategorie) altersKategorien.getValue();
-					this.fController.neueKategorie(f.getFahrerID(), kat.getAltersKategorieID(),
+					this.fController.fahrerFuerNeueKategorieAnmelden(f.getFahrerID(), kat.getAltersKategorieID(),
 							neu.getAltersKategorieID(), rennenID);
 				});
 
 				Button abmelden = new Button("Abmelden");
 
+				// Abmelden Event
 				abmelden.addClickListener(event -> {
 					this.fController.fahrerAbmelden(f.getFahrerID(), rennenID, kat.getAltersKategorieID());
 					zeigeAngemeldeteFahrer(rennenID);
 				});
 
+				// Tabelle mit Werten abfüllen
 				row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 				row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
 				row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());
@@ -324,7 +354,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 				this.angemeldeteFahrerTable.setPageLength(ROW_HEIGHT);
 			}
 		} else {
-			return false;
+			return false; // Keine angemeldeten Fahrer vorhanden
 		}
 
 		return true;
@@ -335,6 +365,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 	 * an.
 	 * 
 	 * @param rennenID
+	 *            - ausgewähltes Rennen
 	 */
 	private void zeigeAngemeldeteFahrer(Integer rennenID) {
 		this.layoutAngemeldeteFahrer.removeAllComponents();
@@ -346,6 +377,11 @@ public class FahreranmeldungsView implements ViewTemplate {
 		}
 	}
 
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;

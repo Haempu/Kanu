@@ -21,24 +21,24 @@ import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 
 /**
+ * Der Benutzer kann hier die Daten der Fahrer bearbeiten.
+ * 
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
  */
-
 public class MutationsView implements ViewTemplate {
 
-	private boolean init = false;
+	private boolean init = false; // Ist die view initialisiert
 
-	private UI ui; // Haupt GUI
-
-	// member variabeln: Übersichtstabelle
+	// UI Komponenten
 	private Label titel = new Label("Fahrerverwaltung");
 	private TextField fahrerSuche = new TextField();
 	private Table table = new Table();
 	private FormLayout fahrerVerwaltungsLayout = new FormLayout();
 	private Button neuerFahrer = new Button("Neuer Fahrer");
+	private UI ui; // Haupt GUI
 
 	// member variabel: Popup fenster
 	private Window popup;
@@ -51,7 +51,7 @@ public class MutationsView implements ViewTemplate {
 	private TextField telefonNrText = new TextField("Telefonnummer");
 	private NativeSelect clubs = new NativeSelect("Klub");
 
-	// Controller
+	// Kontroller
 	private MutationsController mController = new MutationsController();
 
 	// Konstanten
@@ -66,6 +66,7 @@ public class MutationsView implements ViewTemplate {
 	 * Konstruktor: MutationsView
 	 * 
 	 * @param ui
+	 *            - wird aufgrund des Popup Windows verwendet
 	 */
 	public MutationsView(UI ui) {
 		this.ui = ui;
@@ -82,6 +83,7 @@ public class MutationsView implements ViewTemplate {
 		this.fahrerSuche.setInputPrompt("Suchen");
 		this.fahrerSuche.setStyleName("search");
 
+		// Tabellenstruktur
 		this.table.addContainerProperty(COLUMN_VORNAME, String.class, null);
 		this.table.addContainerProperty(COLUMN_NACHNAME, String.class, null);
 		this.table.addContainerProperty(COLUMN_JAHRGANG, Integer.class, null);
@@ -93,9 +95,11 @@ public class MutationsView implements ViewTemplate {
 		this.table.setImmediate(true);
 		this.fahrerVerwaltungsLayout.setImmediate(true);
 
-		this.clubs.setNullSelectionAllowed(false);
+		// Alle Klubs aus der Datenbank lesen
 		List<Club> cl = this.mController.ladeAlleClubs();
+		this.clubs.setNullSelectionAllowed(false);
 
+		// Alle Klubs dem Dropdownfeld hinzufügen
 		for (Club c : cl) {
 			this.clubs.addItem(c);
 
@@ -104,12 +108,13 @@ public class MutationsView implements ViewTemplate {
 			}
 		}
 
-		tabelleAbfuellen();
+		tabelleAbfuellen(); // Tabelle mit Fahrern abfüllen
 
 		Button speichern = new Button("Speichern");
 		popupEvent(this.neuerFahrer, speichern, null);
 		fahrerSpeichernEvent(speichern, null, null, true);
 
+		// Vaidierungen zu den Textfeldern hinzufügen
 		ValidierungsController.setTextFeldRequired(this.nachnameText);
 		ValidierungsController.setTextFeldRequired(this.vornameText);
 		ValidierungsController.setTextFeldRequired(this.ortText);
@@ -119,31 +124,24 @@ public class MutationsView implements ViewTemplate {
 		ValidierungsController.setTextFeldRequired(this.jahrgangText);
 		ValidierungsController.checkIfInteger(this.jahrgangText);
 
-		// TODO: add benutzerrolle
-
-		// if
-		// (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG))
-		// {
-		// this.popupLayoutMaster.addComponent(this.clubs);
-		// }
-
+		// Event für die Suche
 		this.fahrerSuche.addValueChangeListener(event -> {
-			// Rennen rennen = (Rennen) this.aktuellesRennen.getValue();
-			// fahrerTabelleAbfuellen(rennen.getRennenID());
 			tabelleAbfuellen();
 		});
 
+		// Popup Window initialisieren
 		this.popup = new Window("Fahrer verwalten");
 		this.popup.center();
 		this.popup.setModal(true);
 		this.popup.setWidth("400px");
 
+		// Komponenten zum Layout hinzufügen
 		this.fahrerVerwaltungsLayout.addComponent(this.titel);
 		this.fahrerVerwaltungsLayout.addComponent(this.neuerFahrer);
 		this.fahrerVerwaltungsLayout.addComponent(this.fahrerSuche);
 		this.fahrerVerwaltungsLayout.addComponent(this.table);
 
-		this.init = true;
+		this.init = true; // Die View ist initialisiert
 	}
 
 	/**
@@ -156,27 +154,21 @@ public class MutationsView implements ViewTemplate {
 	}
 
 	/**
-	 * Funktion füllt die Tabelle mit allen Clubs ab.
+	 * Funktion füllt die Tabelle mit allen Fahrern ab.
 	 */
 	private void tabelleAbfuellen() {
 		ArrayList<Fahrer> fahrer;
 		this.table.removeAllItems();
 
-		// if
-		// (SessionController.getBenutzerRolle().equals(BenutzerRolle.ROLLE_RECHNUNG))
-		// {
-
 		if (this.fahrerSuche.getValue() == null || this.fahrerSuche.getValue().equals("")) {
+			// Alle Fahrer ohne Suche
 			fahrer = this.mController.ladeFahrermutationslisteAlle();
 		} else {
+			// Fahrer mit Suche
 			fahrer = this.mController.ladeFahrermutationslisteAlleMitSuche(this.fahrerSuche.getValue());
 		}
 
-		// } else {
-		// TODO: change club id
-		// fahrer = this.mController.ladeFahrermutationslisteClub(1);
-		// }
-
+		// Durch alle Fahrer iterieren
 		for (Fahrer f : fahrer) {
 			Object newItemId = this.table.addItem();
 			Item row = this.table.getItem(newItemId);
@@ -189,6 +181,7 @@ public class MutationsView implements ViewTemplate {
 			popupEvent(bearbeiten, speichern, f);
 			loeschenEvent(loeschen, f, row);
 
+			// Tabelle mit Werten abfüllen
 			row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 			row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
 			row.getItemProperty(COLUMN_JAHRGANG).setValue(f.getJahrgang());
@@ -201,7 +194,7 @@ public class MutationsView implements ViewTemplate {
 	}
 
 	/**
-	 * Fahrer Speichern Event
+	 * Hier wird der Event für den Speichern Button im Popup definiert.
 	 * 
 	 * @param speichern
 	 * @param row
@@ -210,6 +203,7 @@ public class MutationsView implements ViewTemplate {
 	 * @param bearbeiten
 	 */
 	private void fahrerSpeichernEvent(Button speichern, Item row, Fahrer f, boolean neuerFahrer) {
+		// Speichern Event hinzufügen
 		speichern.addClickListener(event -> {
 			if (textfelderValidieren()) {
 
@@ -221,8 +215,11 @@ public class MutationsView implements ViewTemplate {
 
 				if (!neuerFahrer) {
 					newFahrer.setFahrerID(f.getFahrerID());
+
+					// Bearbeiteter Fahrer in die Datenbank speichern
 					this.mController.speichereFahrerBearbeitenAlle(newFahrer);
 
+					// Werte in die Tabelle füllen
 					row.getItemProperty(COLUMN_VORNAME).setValue(newFahrer.getVorname());
 					row.getItemProperty(COLUMN_NACHNAME).setValue(newFahrer.getName());
 					row.getItemProperty(COLUMN_JAHRGANG).setValue(newFahrer.getJahrgang());
@@ -241,6 +238,7 @@ public class MutationsView implements ViewTemplate {
 					Button newLoeschen = new Button("Löschen");
 					loeschenEvent(newLoeschen, newFahrer, newRow);
 
+					// Werte in die Tabelle füllen
 					newRow.getItemProperty(COLUMN_VORNAME).setValue(newFahrer.getVorname());
 					newRow.getItemProperty(COLUMN_NACHNAME).setValue(newFahrer.getName());
 					newRow.getItemProperty(COLUMN_JAHRGANG).setValue(newFahrer.getJahrgang());
@@ -252,26 +250,22 @@ public class MutationsView implements ViewTemplate {
 
 				this.popup.close();
 			}
-
-			// TODO: add this
-			/*
-			 * if (SessionController.getBenutzerRolle().equals(BenutzerRolle.
-			 * ROLLE_RECHNUNG)) { fahrer.setClub((Club) this.clubs.getValue());
-			 * this.mController.speichereFahrerBearbeitenAlle(fahrer); } else {
-			 * this.mController.speichereFahrerBearbeitenClub(fahrer); }
-			 */
 		});
-
 	}
 
 	/**
-	 * Event für das Popup Fenster
+	 * Event für den berbeiten Button. Wird der Bearbeiten Button gedrückt
+	 * erscheint ein PopUp.
 	 * 
 	 * @param popupButton
+	 *            - Button pro Tabelleneintrag
 	 * @param speichern
+	 *            - Speicherbutton auf dem Popup
 	 * @param f
+	 *            - ausgewählter Fahrer
 	 */
 	private void popupEvent(Button popupButton, Button speichern, Fahrer f) {
+		// Event für Bearbeiten Button
 		popupButton.addClickListener(event -> {
 
 			if (f != null) {
@@ -287,6 +281,7 @@ public class MutationsView implements ViewTemplate {
 				this.telefonNrText.setValue("");
 			}
 
+			// PopupLayout mit Komponenten abfüllen
 			FormLayout popupLayoutMaster = new FormLayout();
 			popupLayoutMaster.addComponent(this.vornameText);
 			popupLayoutMaster.addComponent(this.nachnameText);
@@ -301,12 +296,6 @@ public class MutationsView implements ViewTemplate {
 			popupLayoutMaster.addStyleName("popup");
 			this.popup.setContent(popupLayoutMaster);
 
-			// TODO: add benutzerrolle
-			/*
-			 * if (SessionController.getBenutzerRolle().equals(BenutzerRolle.
-			 * ROLLE_RECHNUNG)) { this.clubs.setValue(f.getClub()); }
-			 */
-
 			this.ui.addWindow(this.popup);
 		});
 	}
@@ -319,19 +308,18 @@ public class MutationsView implements ViewTemplate {
 	 * @param itemId
 	 */
 	public void loeschenEvent(Button loeschen, Fahrer f, Object itemId) {
+		// Löesch-Button Event
 		loeschen.addClickListener(event -> {
 			this.mController.fahrerLoeschen(f.getFahrerID());
 			tabelleAbfuellen();
-			// TODO: performance
-			// this.table.removeItem(itemId);
-			// this.table.setImmediate(true);
 		});
 	}
 
 	/**
-	 * Füllt das Fahrer Popup Formular ab.
+	 * Füllt das Fahrer Popup Formular mit dem gegebenen Fahrer ab.
 	 * 
 	 * @param f
+	 *            - ausgewählter Fahrer
 	 */
 	private void fahrerFelderAbfuellen(Fahrer f) {
 		this.vornameText.setValue(f.getVorname());
@@ -345,9 +333,9 @@ public class MutationsView implements ViewTemplate {
 	}
 
 	/**
-	 * Validiert die Textfelder
+	 * Validiert alle Textfelder.
 	 * 
-	 * @return
+	 * @return - true wenn Validierung Ok ist.
 	 */
 	private boolean textfelderValidieren() {
 		if (this.vornameText.isValid() && this.nachnameText.isValid() && this.jahrgangText.isValid()
@@ -358,6 +346,11 @@ public class MutationsView implements ViewTemplate {
 		return false;
 	}
 
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;

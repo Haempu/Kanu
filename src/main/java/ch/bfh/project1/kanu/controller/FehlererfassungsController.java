@@ -22,6 +22,13 @@ public class FehlererfassungsController {
 	private FehlererfassungsView fehlererfassungsview;
 
 	/**
+	 * Konstruktor: FehlererfassungsController
+	 */
+	public FehlererfassungsController() {
+		this.dbController = DBController.getInstance();
+	}
+
+	/**
 	 * Lädt alle Fahrer eines Rennens.
 	 * 
 	 * @param rennenID
@@ -32,13 +39,16 @@ public class FehlererfassungsController {
 		return this.dbController.ladeStartliste(rennenID);
 	}
 
-	public FehlererfassungsController() {
-		dbController = DBController.getInstance();
-	}
-
 	/**
-	 * Lädt alle Rennen.
+	 * Erfasst einen Fehler und berechnet die Strafzeit.
 	 * 
+	 * @param fahrerID
+	 * @param kategorieID
+	 * @param rennenID
+	 * @param tornummer
+	 * @param lauf
+	 * @param beruehrt
+	 * @param verfehlt
 	 */
 	public void fehlerErfassen(Integer fahrerID, Integer kategorieID, Integer rennenID, int tornummer, int lauf,
 			boolean beruehrt, boolean verfehlt) {
@@ -57,14 +67,47 @@ public class FehlererfassungsController {
 		this.dbController.fehlerErfassen(fahrerID, rennenID, kategorieID, lauf, tornummer, strafzeit);
 	}
 
+	/**
+	 * Funktion lädt alle Rennen.
+	 * 
+	 * @return
+	 */
 	public List<Rennen> ladeRennen() {
 		return dbController.ladeRennen();
 	}
 
+	/**
+	 * Funktion ladet alle angemeldeten Fahrer.
+	 * 
+	 * @param rennID
+	 * @param kategorieID
+	 * @return
+	 */
 	public List<FahrerResultat> ladeFahrerliste(Integer rennID, Integer kategorieID) {
 		return dbController.ladeStartliste(rennID, kategorieID);
 	}
 
+	/**
+	 * Funktion ladet alle angemeldeten Fahrer mit einem Such-String.
+	 * 
+	 * @param rennID
+	 * @param kategorieID
+	 * @param suche
+	 * @return
+	 */
+	public List<FahrerResultat> ladeFahrerlistMitSuche(Integer rennID, Integer kategorieID, String suche) {
+		return dbController.ladeStartlisteMitSuche(rennID, kategorieID, suche);
+	}
+
+	/**
+	 * Funktion ladet alle erfassten Strafzeiten.
+	 * 
+	 * @param fahrerID
+	 * @param rennenID
+	 * @param kategorieID
+	 * @param lauf
+	 * @return
+	 */
 	public List<Strafzeit> ladeStrafzeitliste(Integer fahrerID, Integer rennenID, Integer kategorieID, int lauf) {
 		return dbController.ladeStrafzeit(fahrerID, rennenID, kategorieID, lauf);
 	}

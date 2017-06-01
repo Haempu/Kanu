@@ -18,6 +18,8 @@ import ch.bfh.project1.kanu.view.MutationsView;
  */
 
 public class MutationsController {
+
+	// Membervariablen
 	private DBController dbController;
 	private MutationsView mutationsView;
 

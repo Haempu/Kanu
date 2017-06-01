@@ -24,7 +24,7 @@ import ch.bfh.project1.kanu.controller.LoginController;
 
 public class LoginView implements ViewTemplate {
 
-	private boolean init = false;
+	private boolean init = false; // Ist die View initialisiert
 
 	// UI Komponenten
 	private FormLayout loginLayout = new FormLayout();
@@ -59,6 +59,7 @@ public class LoginView implements ViewTemplate {
 		this.email.setInputPrompt("E-Mail");
 		this.passwort.setInputPrompt("Passwort");
 
+		// Komponenten zum Layout hinzufügen
 		this.loginLayout.addComponent(this.titel);
 		this.loginLayout.addComponent(this.email);
 		this.loginLayout.addComponent(this.passwort);
@@ -100,6 +101,11 @@ public class LoginView implements ViewTemplate {
 		});
 	}
 
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;
