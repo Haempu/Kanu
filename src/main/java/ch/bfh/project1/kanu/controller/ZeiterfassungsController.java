@@ -22,34 +22,64 @@ import ch.bfh.project1.kanu.view.ZeiterfassungsView;
  */
 
 public class ZeiterfassungsController {
+	// Membervariablen
 	private DBController dbController;
 	private ZeiterfassungsView zeiterfassungsView;
-	private static final SimpleDateFormat df = new SimpleDateFormat("mm:ss.SS");
 
+	// Konstanten
+	private static final SimpleDateFormat DF = new SimpleDateFormat("mm:ss.SS");
+
+	/**
+	 * Konstruktor: ZeiterfassungsController;
+	 */
 	public ZeiterfassungsController() {
 		this.dbController = DBController.getInstance();
 	}
 
+	/**
+	 * Funktion liefert für die eingegebene Laufzeit die Milisekunden zurück.
+	 * 
+	 * @param laufzeit
+	 * @return
+	 */
 	public int getLaufzeitInMilisekunden(String laufzeit) {
 		Date date;
 		try {
-			date = df.parse(laufzeit);
+			date = DF.parse(laufzeit);
 		} catch (ParseException e) {
 			return 0;
 		}
-		System.out.println("Time: " + (int) date.getTime());
 		return (int) date.getTime();
 	}
 
+	/**
+	 * Funktion wandelt die Milisekunden in das gegeben Format.
+	 * 
+	 * @param milisekunden
+	 * @return
+	 */
 	public String getLaufzeitInFormat(int milisekunden) {
 		Date date = new Date(milisekunden);
-		return (df.format(date));
+		return (DF.format(date));
 	}
 
+	/**
+	 * Funktion erfasst die Zet für einen Benutzer.
+	 * 
+	 * @param fahrer
+	 * @param resultat
+	 */
 	public void zeitErfassen(Fahrer fahrer, FahrerResultat resultat) {
 		this.dbController.speichereFahrer(fahrer, resultat);
 	}
 
+	/**
+	 * Funktion ladet alle Fahrer mit der gegebenen Kategorie.
+	 * 
+	 * @param rennenID
+	 * @param kategorieID
+	 * @return
+	 */
 	public List<FahrerResultat> ladeAngemeldeteFahrerMitKategorie(Integer rennenID, Integer kategorieID) {
 		return this.dbController.ladeStartliste(rennenID, kategorieID);
 	}
@@ -58,15 +88,34 @@ public class ZeiterfassungsController {
 		return this.dbController.ladeFahrerresultatByKategorie(fahrerID, kategorieID, rennenID);
 	}
 
+	/**
+	 * Funktion ladet alle Fahrer mit der gegebenen Kategorie und einem
+	 * Such-String.
+	 * 
+	 * @param rennenID
+	 * @param kategorieID
+	 * @param suche
+	 * @return
+	 */
 	public List<FahrerResultat> ladeAngemeldeteFahrerMitKategorieMitSuche(Integer rennenID, Integer kategorieID,
 			String suche) {
 		return this.dbController.ladeStartlisteMitSuche(rennenID, kategorieID, suche);
 	}
 
+	/**
+	 * Lädt alle Kategorien.
+	 * 
+	 * @return
+	 */
 	public List<AltersKategorie> ladeAlleKategorien() {
 		return this.dbController.ladeKategorien();
 	}
 
+	/**
+	 * Lädt alle Rennen.
+	 * 
+	 * @return
+	 */
 	public List<Rennen> ladeAlleRennen() {
 		return this.dbController.ladeRennen();
 	}

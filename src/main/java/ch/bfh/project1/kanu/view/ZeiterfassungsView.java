@@ -23,20 +23,23 @@ import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
 
 /**
+ * Hier kann der Zeitnehmer die Laufzeit für den Fahrer eingeben und bearbeiten.
+ * Als Übersicht wird ihm eine Tabelle, aller startenden Fahrern, angezeigt. Mit
+ * dem Suchfeld kann er den aktuellen Fahrer suchen und die Laufzeit erfassen
+ * 
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
  * @date 11.04.2017
  * @version 1.0
  *
  */
-
 public class ZeiterfassungsView implements ViewTemplate {
 
-	private boolean init = false;
+	private boolean init = false; // Ist die View initialisiert
 
-	private UI ui;
+	// Kontroller
 	private ZeiterfassungsController zController = new ZeiterfassungsController();
 
-	// member variabeln: Übersichtstabelle
+	// UI Komponenten
 	private Label titel = new Label("Zeit erfassen");
 	private TextField fahrerSuche = new TextField();
 	private Table table = new Table();
@@ -47,6 +50,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	private NativeSelect rennenSelect = new NativeSelect("Rennen");
 	private NativeSelect kategorienSelect = new NativeSelect("Kategorie");
 	private HorizontalLayout filterLayout = new HorizontalLayout();
+	private UI ui; // Haupt GUI
 
 	// member variabel: Popup fenster
 	private Window popup;
@@ -70,6 +74,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	 * Konstruktor: ZeiterfassungsView
 	 * 
 	 * @param ui
+	 *            - Haupt GUI
 	 */
 	public ZeiterfassungsView(UI ui) {
 		this.ui = ui;
@@ -87,6 +92,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.fahrerSuche.setInputPrompt("Suchen");
 		this.fahrerSuche.setStyleName("search");
 
+		// Tabellenstruktur
 		this.table.addContainerProperty(COLUMN_STARTNUMMER, Integer.class, null);
 		this.table.addContainerProperty(COLUMN_VORNAME, String.class, null);
 		this.table.addContainerProperty(COLUMN_NACHNAME, String.class, null);
@@ -96,16 +102,21 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 		this.table.setWidth(100L, Component.UNITS_PERCENTAGE);
 
+		// Die folgenden Felder können nicht bearbeitet werden
 		this.startnummerText.setEnabled(false);
 		this.vornameText.setEnabled(false);
 		this.nachnameText.setEnabled(false);
 		this.clubText.setEnabled(false);
+
+		// Hinweis wie das Zeitformat aussieht
 		this.laufzeitEins.setInputPrompt("Minuten:Sekunden.Milisekunden");
 		this.laufzeitZwei.setInputPrompt("Minuten:Sekunden.Milisekunden");
 
+		// Validierung zu den Laufzeitfelder hinzufügen
 		ValidierungsController.laufzeitValidation(this.laufzeitEins);
 		ValidierungsController.laufzeitValidation(this.laufzeitZwei);
 
+		// Popup Window
 		this.popup = new Window("Zeit erfassen");
 		this.popup.center();
 		this.popup.setModal(true);
@@ -114,6 +125,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.rennen = this.zController.ladeAlleRennen();
 		this.kategorien = this.zController.ladeAlleKategorien();
 
+		// Rennen Dropdown mit Werten abfüllen
 		for (Rennen r : this.rennen) {
 			this.rennenSelect.addItem(r);
 			if (this.rennenSelect.getValue() == null) {
@@ -121,18 +133,21 @@ public class ZeiterfassungsView implements ViewTemplate {
 			}
 		}
 
+		// Event wenn die Kategorie geändert hat
 		this.kategorienSelect.addValueChangeListener(event -> {
 			AltersKategorie kat = (AltersKategorie) this.kategorienSelect.getValue();
 			Rennen rennen = (Rennen) this.rennenSelect.getValue();
 			tabelleAbfuellen(rennen.getRennenID(), kat.getAltersKategorieID());
 		});
 
+		// Event wenn das Rennen geändert hat
 		this.rennenSelect.addValueChangeListener(event -> {
 			AltersKategorie kat = (AltersKategorie) this.kategorienSelect.getValue();
 			Rennen rennen = (Rennen) this.rennenSelect.getValue();
 			tabelleAbfuellen(rennen.getRennenID(), kat.getAltersKategorieID());
 		});
 
+		// Kategorien in Dropdown füllen
 		for (AltersKategorie kat : this.kategorien) {
 			this.kategorienSelect.addItem(kat);
 			if (this.kategorienSelect.getValue() == null) {
@@ -140,6 +155,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 			}
 		}
 
+		// Event für die Suche
 		this.fahrerSuche.addValueChangeListener(event -> {
 			AltersKategorie kat = (AltersKategorie) this.kategorienSelect.getValue();
 			Rennen rennen = (Rennen) this.rennenSelect.getValue();
@@ -152,11 +168,13 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.filterLayout.addComponent(this.rennenSelect);
 		this.filterLayout.addComponent(this.kategorienSelect);
 
+		// Komponenten zum Layout hinzufügen
 		this.zeiterfassungsLayout.addComponent(this.titel);
 		this.zeiterfassungsLayout.addComponent(this.filterLayout);
 		this.zeiterfassungsLayout.addComponent(this.fahrerSuche);
 		this.zeiterfassungsLayout.addComponent(this.tableLayout);
-		this.init = true;
+
+		this.init = true; // View ist initialisiert
 	}
 
 	/**
@@ -172,19 +190,23 @@ public class ZeiterfassungsView implements ViewTemplate {
 	 * Funktion füllt die Tabelle mit allen Fahrer des Clubs ab.
 	 */
 	private void tabelleAbfuellen(Integer rennenID, Integer kategorieID) {
+		// Alle Tabellen einträge löschen
 		this.tableLayout.removeAllComponents();
 		this.table.removeAllItems();
 		List<FahrerResultat> fahrer = null;
 
 		if (this.fahrerSuche.getValue() == null || this.fahrerSuche.getValue().equals("")) {
+			// Angemeldete Fahrer mit Kategorie laden (ohne Suche)
 			fahrer = this.zController.ladeAngemeldeteFahrerMitKategorie(rennenID, kategorieID);
 		} else {
+			// Angemeldete Fahrer mit Suche
 			fahrer = this.zController.ladeAngemeldeteFahrerMitKategorieMitSuche(rennenID, kategorieID,
 					this.fahrerSuche.getValue());
 		}
 
 		if (!fahrer.isEmpty()) {
 
+			// Angemeldete Fahrer iterieren
 			for (FahrerResultat fr : fahrer) {
 				Fahrer f = fr.getFahrer();
 
@@ -193,10 +215,12 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 				Button speichern = new Button("Speichern");
 
+				// Speichern Event
 				speichern.addClickListener(event -> {
 					if (this.laufzeitEins.isValid() && this.laufzeitZwei.isValid()) {
 						Integer zeit1 = null;
 						Integer zeit2 = null;
+
 						if (!this.laufzeitEins.getValue().equals("")) {
 							zeit1 = this.zController.getLaufzeitInMilisekunden(this.laufzeitEins.getValue());
 						}
@@ -207,6 +231,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 						fr.setZeitErsterLauf(zeit1);
 						fr.setZeitZweiterLauf(zeit2);
 
+						// Zeit erfassen und in die Datenbank schreiben
 						this.zController.zeitErfassen(f, fr);
 						this.popup.close();
 
@@ -215,8 +240,10 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 				Button zeitErfassen = new Button("Zeit erfassen");
 
+				// Event für Popup
 				zeitErfassen.addClickListener(event -> {
 
+					// Angemeldete Fahrer aus der Datenbank lesen
 					FahrerResultat newFahrerResultat = this.zController.ladeAngemeldetenFahrer(f.getFahrerID(),
 							kategorieID, rennenID);
 
@@ -239,6 +266,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 						this.laufzeitZwei.setValue("");
 					}
 
+					// Popup mit Komponenten abfüllen
 					popupLayoutForm.addComponent(this.startnummerText);
 					popupLayoutForm.addComponent(this.vornameText);
 					popupLayoutForm.addComponent(this.nachnameText);
@@ -254,6 +282,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 					this.ui.addWindow(this.popup);
 				});
 
+				// Tabelle mit Werten abfüllen
 				row.getItemProperty(COLUMN_STARTNUMMER).setValue(fr.getStartnummer());
 				row.getItemProperty(COLUMN_VORNAME).setValue(f.getVorname());
 				row.getItemProperty(COLUMN_NACHNAME).setValue(f.getName());
@@ -270,6 +299,11 @@ public class ZeiterfassungsView implements ViewTemplate {
 		}
 	}
 
+	/**
+	 * Funktion gibt zurück ob die View bereits initialisiert wurde.
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;
