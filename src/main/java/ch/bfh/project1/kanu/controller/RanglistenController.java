@@ -58,6 +58,11 @@ public class RanglistenController {
 	{
 		return dbController.ladeRennen();
 	}
+	
+	public Rennen ladeRennen(Integer rennenID)
+	{
+		return dbController.ladeRennen(rennenID);
+	}
 
 	/**
 	 * Gibt die Rangliste der Alterskategorie zurück.

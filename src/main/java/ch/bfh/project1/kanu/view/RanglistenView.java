@@ -63,7 +63,12 @@ public class RanglistenView implements ViewTemplate {
 			ns.addItem(r.getRennenID());
 			ns.setItemCaption(r.getRennenID(), r.getName());
 		}
-		
+		ns.select(rennen.getRennenID());
+		ns.addValueChangeListener(event -> {
+			setRennen(rController.ladeRennen((Integer) ns.getValue()));
+			viewAnzeigen(inhalt);
+		});
+		layout.addComponent(ns);
 		Label titel = new Label("Rangliste");
 		titel.setStyleName("h2");
 		layout.addComponent(titel);
@@ -144,18 +149,23 @@ public class RanglistenView implements ViewTemplate {
 		this.rennen = rennen;
 	}
 	
+	/**
+	 * Wandelt die Millisekunden in ein von Menschen lesbares Format um.
+	 * @param zahl Die Zahl in ms
+	 * @return Formatierter String im Format mm.ss.S
+	 */
 	private String renderMilli(Integer zahl)
 	{
 		Integer hs = (zahl % 1000) / 100;
 		Integer s = (zahl / 1000) % 60;
 		Integer m = zahl / 60000;
-		String string = m + ":" + s + "." + hs;
+		String string = String.format("%02d:%02d.%d", m, s, hs);
 		return string;
 	}
 	
 	public enum Tabelle {
-		RANG("#"), NAME("Name"), CLUB("Club"), ZEIT1("Zeit"), FEHLER1("Fehler"), 
-		TOTAL1("Total"), ZEIT2("Zeit"), FEHLER2("Fehler"), TOTAL2("Total"), 
+		RANG("#"), NAME("Name"), CLUB("Club"), ZEIT1("Zeit 1. Lauf"), FEHLER1("Fehler"), 
+		TOTAL1("Total"), ZEIT2("Zeit 2. Lauf"), FEHLER2("Fehler"), TOTAL2("Total"), 
 		TOTAL("Total"), DIFF("Diff");
 
 		private final String column;
