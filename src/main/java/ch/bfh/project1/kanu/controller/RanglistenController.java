@@ -42,12 +42,17 @@ public class RanglistenController {
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) {
 		Rangliste rl = dbController.ladeRanglisteRennen(rennen);
+		List<FahrerResultat> zuloeschen = new ArrayList<FahrerResultat>();
 		for(FahrerResultat f : rl.getResultate())
 		{
+			
 			Date d = new Date(f.getZeitErsterLauf());
 			if(d.getTime() == 0)
-				rl.getResultate().remove(f);
+				zuloeschen.add(f);
+			else
+				System.out.println(d.getTime());
 		}
+		rl.getResultate().removeAll(zuloeschen);
 		return rl;
 	}
 

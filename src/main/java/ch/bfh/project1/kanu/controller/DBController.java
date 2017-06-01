@@ -601,7 +601,7 @@ public class DBController {
 			Integer sz2 = ((java.math.BigDecimal) row.getRow().get(12).getKey()).intValue();
 			String kategorie = (String) row.getRow().get(13).getKey();
 			Integer sp = ((Long) row.getRow().get(14).getKey()).intValue();
-			Integer gebuehr = ((Long) row.getRow().get(15).getKey()).intValue();
+			Integer gebuehr = (Integer) row.getRow().get(15).getKey();
 			Club club = new Club(clubID, "", clubname);
 			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, 0, "", "", 0, "");
 			Rennen rennen = new Rennen();

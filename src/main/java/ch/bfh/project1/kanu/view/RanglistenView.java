@@ -2,6 +2,7 @@ package ch.bfh.project1.kanu.view;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.vaadin.data.Item;
@@ -89,7 +90,8 @@ public class RanglistenView implements ViewTemplate {
 						row.getItemProperty(Tabelle.RANG).setValue(i + "");
 						row.getItemProperty(Tabelle.NAME).setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
 						row.getItemProperty(Tabelle.CLUB).setValue(r.getFahrer().getClub().getName());
-						row.getItemProperty(Tabelle.ZEIT1).setValue(r.getZeitErsterLauf() + "");
+						Date d = new Date(r.getZeitErsterLauf());
+						row.getItemProperty(Tabelle.ZEIT1).setValue(d.getTime() + "");
 						row.getItemProperty(Tabelle.FEHLER1).setValue(r.getStrafzeit1() + "");
 						row.getItemProperty(Tabelle.TOTAL1).setValue(r.getGesamtzeit1() + "");
 						row.getItemProperty(Tabelle.ZEIT2).setValue(r.getZeitZweiterLauf() + "");
