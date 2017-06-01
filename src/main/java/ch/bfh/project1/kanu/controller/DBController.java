@@ -1,16 +1,20 @@
 package ch.bfh.project1.kanu.controller;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Benutzer;
@@ -338,7 +342,7 @@ public class DBController {
 		if (column.equals(Table_Fahrer.CLOUMN_ALL))
 			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id)";
 		if (column.equals(Table_Fahrer.COLUMN_FTS))
-			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id) WHERE name LIKE '% " + value + "%' OR "
+			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id) WHERE name LIKE '%" + value + "%' OR "
 					+ "vorname LIKE '%" + value + "%' OR jahrgang LIKE '%" + value + "%'";
 		List<Fahrer> fahrer = new ArrayList<Fahrer>();
 		for (Row row : executeSelect(selectStmt)) {
@@ -371,19 +375,22 @@ public class DBController {
 	public <T> List<FahrerResultat> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) 
 	{
 		String where = makeWhere(column, value);
-		String selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort"
+		
+		String selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 				+ " FROM fahrer_rennen JOIN fahrer AS f USING(fahrer_id) JOIN club USING(club_id) JOIN kategorien AS t USING (kategorie_id) "
 				+ where;
 		if (column[0].equals(Table_FahrerRennen.CLOUMN_ALL))
-			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
+			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
+					+ " FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
 		if (column[0].equals(Table_FahrerRennen.COLUMN_FTS))
-			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort"
+			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 					+ " FROM fahrer_rennen JOIN fahrer AS f USING(fahrer_id) JOIN club USING(club_id) JOIN kategorien AS t USING (kategorie_id) WHERE (rennen_id = "
-					+ value[0] + " AND kategorie_id = " + value[1] + ") AND (name LIKE '%" + value[2]
-					+ "%' OR vorname LIKE '%" + value[2] + "%' OR jahrgang LIKE '%" + value[2] + "%')";
+					+ value[0] + " AND kategorie_id = " + value[1] + ") AND (f.name LIKE '%" + value[2]
+					+ "%' OR vorname LIKE '%" + value[2] + "%' OR jahrgang = '" + value[2] + "' OR startplatz = '" + value[2] + "')";
 		selectStmt += " ORDER BY startplatz";
 		List<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
-		for (Row row : executeSelect(selectStmt)) {
+		for(Row row : executeSelect(selectStmt)) 
+		{
 			Integer idFahrer = (Integer) row.getRow().get(0).getKey();
 			Integer rennenID = (Integer) row.getRow().get(1).getKey();
 			Integer kategorieID = (Integer) row.getRow().get(2).getKey();
@@ -399,6 +406,7 @@ public class DBController {
 			String kat_name = (String) row.getRow().get(11).getKey();
 			Integer plz = (Integer) row.getRow().get(12).getKey();
 			String ort = (String) row.getRow().get(13).getKey();
+			Integer gebuehr = (Integer) row.getRow().get(14).getKey();
 
 			startzeit = startzeit == null ? new Time(0) : startzeit;
 			startzeit2 = startzeit2 == null ? new Time(0) : startzeit2;
@@ -413,7 +421,7 @@ public class DBController {
 			f.setPlz(plz);
 			f.setOrt(ort);
 			f.setClub(new Club(clubID, "", clubName));
-			fahrer.add(new FahrerResultat(f, rennen, new AltersKategorie(kategorieID, kat_name), s1, s2, startplatz));
+			fahrer.add(new FahrerResultat(f, rennen, new AltersKategorie(kategorieID, kat_name, gebuehr), s1, s2, startplatz));
 		}
 		return fahrer;
 	}
@@ -437,7 +445,8 @@ public class DBController {
 		if (column.equals(Table_Rennen.COLUMN_ALL))
 			selectStmt = "SELECT * FROM rennen JOIN club USING(club_id)";
 		List<Rennen> rennen = new ArrayList<Rennen>();
-		for (Row row : executeSelect(selectStmt)) {
+		for(Row row : executeSelect(selectStmt)) 
+		{
 			Integer clubID = (Integer) row.getRow().get(0).getKey();
 			Integer rennenID = (Integer) row.getRow().get(1).getKey();
 			String name = (String) row.getRow().get(2).getKey();
@@ -521,7 +530,8 @@ public class DBController {
 		for (Row row : executeSelect(selectStmt)) {
 			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
 			String name = (String) row.getRow().get(1).getKey();
-			kategorie.add(new AltersKategorie(kategorieID, name));
+			Integer gebuehr = (Integer) row.getRow().get(2).getKey();
+			kategorie.add(new AltersKategorie(kategorieID, name, gebuehr));
 		}
 		return kategorie;
 	}
@@ -570,10 +580,10 @@ public class DBController {
 		// Gibt die Zeiten beider Läufe aus
 		String where = makeWhere(column, value);
 		selectStmt = "SELECT IFNULL(ges_zeit1, 0), IFNULL(ges_zeit2, 0), fahrer_id, rennen_id, kategorie_id, f.name, vorname, c.club_name, "
-				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0) FROM (SELECT zeit1 + IFNULL(t.strafzeit, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
+				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0), gebuehr FROM (SELECT IFNULL(zeit1, 0) + IFNULL(t.strafzeit * 1000, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
 				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit FROM fahrer_rennen "
 				+ "LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t NATURAL JOIN "
-				+ "fahrer_rennen WHERE t.lauf = 1 OR t.lauf IS NULL) as z LEFT JOIN (SELECT zeit2 + IFNULL(t.strafzeit, 0) AS ges_zeit2, zeit2, IFNULL(t.strafzeit, 0) AS sz2, fahrer_id, rennen_id, "
+				+ "fahrer_rennen WHERE t.lauf = 1 OR t.lauf IS NULL) as z LEFT JOIN (SELECT IFNULL(zeit2, 0) + IFNULL(t.strafzeit * 1000, 0) AS ges_zeit2, zeit2, IFNULL(t.strafzeit, 0) AS sz2, fahrer_id, rennen_id, "
 				+ "kategorie_id FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit "
 				+ "FROM fahrer_rennen LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t "
 				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2 OR t.lauf IS NULL) as b USING(fahrer_id, rennen_id, kategorie_id) JOIN "
@@ -595,13 +605,14 @@ public class DBController {
 			Integer sz2 = ((java.math.BigDecimal) row.getRow().get(12).getKey()).intValue();
 			String kategorie = (String) row.getRow().get(13).getKey();
 			Integer sp = ((Long) row.getRow().get(14).getKey()).intValue();
+			Integer gebuehr = (Integer) row.getRow().get(15).getKey();
 			Club club = new Club(clubID, "", clubname);
 			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, 0, "", "", 0, "");
 			Rennen rennen = new Rennen();
 			rennen.setRennenID(rennenID);
 			Integer z1 = zeit1.intValue();
 			Integer z2 = zeit2.intValue();
-			resultat.add(new FahrerResultat(fahrer, z1, z2, l1, l2, sz1, sz2, sp, rennen, new AltersKategorie(kategorieID, kategorie)));
+			resultat.add(new FahrerResultat(fahrer, z1, z2, milliZuDate(l1), milliZuDate(l2), sz1, sz2, sp, rennen, new AltersKategorie(kategorieID, kategorie, gebuehr)));
 		}
 		return resultat;
 	}
@@ -938,17 +949,21 @@ public class DBController {
 	 * @param fahrer
 	 * @return
 	 */
-	private Integer speichereFahrerIntern(Fahrer fahrer) {
+	private Integer speichereFahrerIntern(Fahrer fahrer) 
+	{
 		ExecuteResult res;
 		Integer id = -1;
-		if (fahrer.getFahrerID() < 1 || fahrer.getFahrerID() == null) {
+		if (fahrer.getFahrerID() < 1 || fahrer.getFahrerID() == null) 
+		{
 			res = executeUpdate("INSERT INTO fahrer (club_id, name, vorname, jahrgang, telnr, strasse, plz, ort) "
 					+ "VALUES (" + fahrer.getClub().getClubID() + ", '" + fahrer.getName() + "', '"
 					+ fahrer.getVorname() + "', " + fahrer.getJahrgang() + ", '" + fahrer.getTelNr() + "', '"
 					+ fahrer.getStrasse() + "', " + fahrer.getPlz() + ", '" + fahrer.getOrt() + "');");
 			if (res.isSuccess())
 				id = res.getGeneratedIDs().get(0);
-		} else {
+		} 
+		else 
+		{
 			res = executeUpdate("UPDATE fahrer SET club_id = " + fahrer.getClub().getClubID() + ", name = '"
 					+ fahrer.getName() + "', vorname = '" + fahrer.getVorname() + "', jahrgang = "
 					+ fahrer.getJahrgang() + ", telnr = '" + fahrer.getTelNr() + "', strasse = '" + fahrer.getStrasse()
@@ -967,7 +982,8 @@ public class DBController {
 	 *            Die ID des zu löschenden Fahrers
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean fahrerLoeschen(Integer fahrerID) {
+	public boolean fahrerLoeschen(Integer fahrerID) 
+	{
 		ExecuteResult res = executeUpdate("DELETE FROM fahrer WHERE fahrer_id = " + fahrerID + ";");
 		return res.isSuccess();
 	}
@@ -981,8 +997,10 @@ public class DBController {
 	 *            Das FahrerResultat Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean speichereFahrer(Fahrer fahrer, FahrerResultat resultat) {
+	public boolean speichereFahrer(Fahrer fahrer, FahrerResultat resultat) 
+	{
 		ExecuteResult res;
+		resultat.setZeitErsterLauf(dateZuMilli(resultat.getZeitErsterLauf()));
 		res = executeUpdate("INSERT INTO fahrer_rennen (fahrer_id, rennen_id, kategorie_id, startplatz, zeit1, zeit2)"
 				+ " VALUES (" + fahrer.getFahrerID() + ", " + resultat.getRennen().getRennenID() + ", "
 				+ resultat.getKategorie().getAltersKategorieID() + ", " + resultat.getStartnummer() + ", "
@@ -991,15 +1009,53 @@ public class DBController {
 				+ "zeit2 = " + resultat.getZeitZweiterLauf() + ";");
 		return speichereFahrer(fahrer) && res.isSuccess();
 	}
+	
+	/**
+	 * In der db die Zahl in ms abspeichern, nicht mit dem Wert, der vom Date kommt (mit dem kann ich nichts rechnen)
+	 * @param zahl
+	 * @return
+	 */
+	private Integer dateZuMilli(Integer zahl)
+	{
+		SimpleDateFormat df = new SimpleDateFormat("mm:ss.S");
+		Date date = new Date(zahl);
+		String zeit = df.format(date);
+		System.out.println(zeit);
+		Pattern p = Pattern.compile("(\\d+):(\\d+)\\.(\\d+)");
+		Matcher m = p.matcher(zeit);
+		m.matches();
+		return (Integer.parseInt(m.group(1)) * 60 + Integer.parseInt(m.group(2))) * 1000 + Integer.parseInt(m.group(3)) * 100;
+	}
+	
+	/**
+	 * Rückkonvertierung zum Date Format
+	 * @param zahl
+	 * @return
+	 */
+	private Integer milliZuDate(Integer zahl)
+	{
+		Integer hs = (zahl % 1000) / 100;
+		Integer s = (zahl / 1000) % 60;
+		Integer m = zahl / 60000;
+		String string = m + ":" + s + "." + hs;
+		SimpleDateFormat df = new SimpleDateFormat("mm:ss.SS");
+		Date date = new Date();
+		try {
+			date = df.parse(string);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return (int) date.getTime();
+	}
 
 	/**
 	 * Lädt einen Benutzer aus der Datenbank
 	 * 
-	 * @param benutzerID
-	 *            Die Benutzer ID
+	 * @param benutzerID Die Benutzer ID
 	 * @return Das Benutzer Objekt, null wenn Benutzer nicht vorhanden
 	 */
-	public Benutzer ladeBenutzer(Integer benutzerID) {
+	public Benutzer ladeBenutzer(Integer benutzerID) 
+	{
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
 		if (benutzer.size() > 0)
 			return benutzer.get(0);
@@ -1030,28 +1086,21 @@ public class DBController {
 	 *            Das Benutzer Objekt
 	 * @return true wenn erfolg, false sonst
 	 */
-	public boolean speichereBenutzer(Benutzer benutzer) {
+	public boolean speichereBenutzer(Benutzer benutzer) 
+	{
 		ExecuteResult res;
-		if (benutzer.getBenutzerID() < 1) {
+		if(benutzer.getBenutzerID() < 1) 
+		{
 			res = executeUpdate("INSERT INTO benutzer (passwort, email, rechte) " + "VALUES ('" + benutzer.getPasswort()
 					+ "', '" + benutzer.getEmailAdresse() + "', " + benutzer.getRechte() + ");");
-		} else {
+		} 
+		else
+		{
 			res = executeUpdate("UPDATE benutzer SET email = '" + benutzer.getEmailAdresse() + "', passwort = '"
 					+ benutzer.getPasswort() + "', rechte = " + benutzer.getRechte() + " WHERE user_id = "
 					+ benutzer.getBenutzerID() + ";");
 		}
 		return res.isSuccess();
-	}
-
-	/**
-	 * Welches Rennen denn? Die ID als Argument fehlt...
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public List<Club> ladeAngemeldeteClubs() { // TODO_2 löschen, nicht
-												// brauchbar
-		return new ArrayList<Club>();
 	}
 
 	/**
@@ -1061,12 +1110,14 @@ public class DBController {
 	 *            Die ID des Rennens
 	 * @return Eine Liste von Clubs
 	 */
-	public List<Club> ladeAngemeldeteClubs(Integer rennenID) {
+	public List<Club> ladeAngemeldeteClubs(Integer rennenID)
+	{
 		String selectStmt = "SELECT DISTINCT club_id, kennung, club_name FROM fahrer_rennen NATURAL JOIN fahrer NATURAL JOIN club WHERE rennen_id = "
 				+ rennenID;
 		List<Club> clubs = new ArrayList<Club>();
 
-		for (Row row : executeSelect(selectStmt)) {
+		for(Row row : executeSelect(selectStmt))
+		{
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
 			String clubKennung = (String) row.getRow().get(1).getKey();
 			String name = (String) row.getRow().get(2).getKey();
@@ -1345,13 +1396,14 @@ public class DBController {
 		}
 		String sql = "INSERT INTO kat_rennen (rennen_id, kategorie_id, gebuehr) VALUES ";
 		int x = 0;
-		for (AltersKategorie kat : rennen.getKategorien()) {
-			if (x > 0)
+		for(AltersKategorie kat : rennen.getKategorien()) 
+		{
+			if(x > 0)
 				sql += ", ";
 			x++;
 			sql += "(" + rennen.getRennenID() + ", " + kat.getAltersKategorieID() + ", " + kat.getGebuehr() + ")";
 		}
-		if (res.isSuccess())
+		if(res.isSuccess())
 			res = executeUpdate(sql);
 		return res.isSuccess();
 	}
@@ -1361,20 +1413,21 @@ public class DBController {
 	 * 
 	 * @return Eine Liste mit Kategorien
 	 */
-	public List<AltersKategorie> ladeKategorien() {
+	public List<AltersKategorie> ladeKategorien() 
+	{
 		return selectKategorieBy(Table_Kategorien.COLUMN_ALL, null);
 	}
 
 	/**
 	 * Liest eine Kategorie zur Datenbank aus
 	 * 
-	 * @param kategorieID
-	 *            Die ID der Kategorie
+	 * @param kategorieID Die ID der Kategorie
 	 * @return Die Kategorie
 	 */
-	public AltersKategorie ladeKategorie(Integer kategorieID) {
+	public AltersKategorie ladeKategorie(Integer kategorieID) 
+	{
 		List<AltersKategorie> kategorien = selectKategorieBy(Table_Kategorien.COLUMN_ID, kategorieID);
-		if (kategorien.size() > 0)
+		if(kategorien.size() > 0)
 			return kategorien.get(0);
 		else
 			return null; // TODO_1 abklären
@@ -1390,7 +1443,8 @@ public class DBController {
 	 * @param rennenID
 	 * @return
 	 */
-	public boolean setzeNeueKategorie(Integer fahrerID, Integer kategorie, Integer neueKategorie, Integer rennenID) {
+	public boolean setzeNeueKategorie(Integer fahrerID, Integer kategorie, Integer neueKategorie, Integer rennenID) 
+	{
 		boolean tmp = fahrerAbmelden(fahrerID, rennenID, kategorie);
 		return tmp && fahrerAnmelden(fahrerID, rennenID, neueKategorie);
 	}
@@ -1398,12 +1452,12 @@ public class DBController {
 	/**
 	 * Gibt die Resultate der Fahrer zu einem Rennen zurück
 	 * 
-	 * @param rennen
-	 *            Das Objekt des Rennens
+	 * @param rennen Das Objekt des Rennens
 	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen
 	 *         Rennen beinhaltet
 	 */
-	public Rangliste ladeRanglisteRennen(Rennen rennen) {
+	public Rangliste ladeRanglisteRennen(Rennen rennen) 
+	{
 		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_RENNEN_ID },
 				new Integer[] { rennen.getRennenID() });
 		Rangliste rl = new Rangliste();
@@ -1415,16 +1469,13 @@ public class DBController {
 	/**
 	 * Gibt die Rangliste einer Kategorie zu einem Rennen zurück
 	 * 
-	 * @param rennen
-	 *            Das Objekt des Rennens
-	 * @param altersKategorieID
-	 *            Die ID der Kategorie
-	 * @return Ein Ranglistenobjekt, das die FahrerResultate zum gegebenen
-	 *         Rennen beinhaltet
+	 * @param rennen Das Objekt des Rennens
+	 * @param altersKategorieID Die ID der Kategorie
+	 * @return Ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
 	 */
-	public Rangliste ladeRanglisteAltersKategorie(Rennen rennen, Integer altersKategorieID) {
-		List<FahrerResultat> resultat = selectRanglisteBy(
-				new Table_Rangliste[] { Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_KATEGORIE },
+	public Rangliste ladeRanglisteAltersKategorie(Rennen rennen, Integer altersKategorieID) 
+	{
+		List<FahrerResultat> resultat = selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_KATEGORIE },
 				new Integer[] { rennen.getRennenID(), altersKategorieID });
 		Rangliste rl = new Rangliste();
 		rl.setRennen(rennen);
@@ -1435,11 +1486,11 @@ public class DBController {
 	/**
 	 * Löscht die Blöcke inkl. deren Kategorien eines Rennens aus der Datenbank
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean loescheBloecke(Integer rennenID) {
+	public boolean loescheBloecke(Integer rennenID) 
+	{
 		ExecuteResult res = executeUpdate("DELETE FROM block_rennen WHERE rennen_id = " + rennenID);
 		return res.isSuccess();
 	}
@@ -1447,11 +1498,11 @@ public class DBController {
 	/**
 	 * Liest zu einem Rennen die Blöcke inkl. Kategorien aus der Datenbank
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return Eine Liste mit Kategorien
 	 */
-	public List<AltersKategorie> ladeBloecke(Integer rennenID) {
+	public List<AltersKategorie> ladeBloecke(Integer rennenID) 
+	{
 		return selectBloeckeBy(Table_Block_Rennen.COLUMN_RENNEN_ID, rennenID);
 	}
 
@@ -1463,11 +1514,13 @@ public class DBController {
 	 * @param kategorien
 	 * @return
 	 */
-	public boolean speichereBlock(Integer rennenID, Integer blockNr, List<Integer> kategorien) {
+	public boolean speichereBlock(Integer rennenID, Integer blockNr, List<Integer> kategorien) 
+	{
 		String sql = "INSERT INTO block_rennen (rennen_id, block_nr, kategorie_id, nr) VALUES ";
 		int x = 0;
-		for (Integer k : kategorien) {
-			if (x > 0)
+		for(Integer k : kategorien) 
+		{
+			if(x > 0)
 				sql += ", ";
 			x++;
 			sql += "(" + rennenID + ", " + blockNr + ", " + k + ", " + x + ")";
@@ -1479,47 +1532,35 @@ public class DBController {
 	/**
 	 * Liest die Strafzeiten zur Datenbank raus.
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param kategorieID
-	 *            Die ID der Kategorie
-	 * @param lauf
-	 *            Der Lauf
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die ID der Kategorie
+	 * @param lauf Der Lauf
 	 * @return Eine Liste mit Strafzeiten (ist die Liste leer, wurde noch nichts
 	 *         erfasst oder der Lauf wurde fehlerfrei durchgeführt)
 	 */
-	public List<Strafzeit> ladeStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf) {
-		return selectStrafzeitBy(
-				new Table_Strafzeit[] { Table_Strafzeit.COLUMN_FAHRER_ID, Table_Strafzeit.COLUMN_RENNEN_ID,
-						Table_Strafzeit.COLUMN_KATEGORIE, Table_Strafzeit.COLUMN_LAUF },
-				new Integer[] { fahrerID, rennenID, kategorieID, lauf });
+	public List<Strafzeit> ladeStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf) 
+	{
+		return selectStrafzeitBy(new Table_Strafzeit[] { Table_Strafzeit.COLUMN_FAHRER_ID, Table_Strafzeit.COLUMN_RENNEN_ID,
+						Table_Strafzeit.COLUMN_KATEGORIE, Table_Strafzeit.COLUMN_LAUF }, new Integer[] { fahrerID, rennenID, kategorieID, lauf });
 	}
 
 	/**
 	 * Speicher eine Strafzeit in der Datenbank; ist für dieses Tor in diesem
 	 * Rennen bereits eine Strafzeit eingetragen, wird diese überschrieben!
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param kategorieID
-	 *            Die Kategorie ID
-	 * @param lauf
-	 *            Der Lauf
-	 * @param tor
-	 *            Das Tor
-	 * @param strafzeit
-	 *            Die Strafzeit (in ms)
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die Kategorie ID
+	 * @param lauf Der Lauf
+	 * @param tor Das Tor
+	 * @param strafzeit Die Strafzeit (in ms)
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean speichereStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf,
-			Integer tor, Integer strafzeit) {
+	public boolean speichereStrafzeit(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tor, Integer strafzeit) 
+	{
 		boolean tmp = speichereStrafzeitIntern(fahrerID, rennenID, kategorieID, lauf, tor, strafzeit);
-		lauf = lauf == 1 ? 2 : 1; // Dummy Eintrag, siehe Beschreibung von
-									// interner Methode
+		lauf = lauf == 1 ? 2 : 1; // Dummy Eintrag, siehe Beschreibung von interner Methode
 		return tmp && speichereStrafzeitIntern(fahrerID, rennenID, kategorieID, lauf, 0, 0);
 	}
 
@@ -1538,10 +1579,9 @@ public class DBController {
 	 * @param strafzeit
 	 * @return
 	 */
-	private boolean speichereStrafzeitIntern(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf,
-			Integer tor, Integer strafzeit) {
-		ExecuteResult res = executeUpdate(
-				"INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES" + " ("
+	private boolean speichereStrafzeitIntern(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tor, Integer strafzeit) 
+	{
+		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES" + " ("
 						+ fahrerID + ", " + rennenID + ", " + kategorieID + ", " + lauf + ", " + tor + ", " + strafzeit
 						+ ") ON DUPLICATE KEY UPDATE" + " strafzeit = " + strafzeit);
 		return res.isSuccess();

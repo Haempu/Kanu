@@ -2,10 +2,12 @@ package ch.bfh.project1.kanu.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.itextpdf.text.DocumentException;
 
+import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.view.RanglistenView;
@@ -25,6 +27,11 @@ public class RanglistenController {
 	private static String[] HEADER = { "Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt" };
 	private DBController dbController;
 	private RanglistenView ranglistenView;
+	
+	public RanglistenController()
+	{
+		dbController = DBController.getInstance();
+	}
 
 	/**
 	 * Gibt die Gesamtrangliste des Rennens zurück.
@@ -34,7 +41,20 @@ public class RanglistenController {
 	 * @return Rangliste
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) {
-		return this.dbController.ladeRanglisteRennen(rennen);
+		Rangliste rl = dbController.ladeRanglisteRennen(rennen);
+		rl.setRennen(dbController.ladeRennen(rl.getRennen().getRennenID()));
+		List<FahrerResultat> zuloeschen = new ArrayList<FahrerResultat>();
+		for(FahrerResultat f : rl.getResultate())
+		{
+			
+			Date d = new Date(f.getZeitErsterLauf());
+			if(d.getTime() == 0)
+				zuloeschen.add(f);
+			else
+				System.out.println(d.getTime());
+		}
+		rl.getResultate().removeAll(zuloeschen);
+		return rl;
 	}
 
 	/**
@@ -59,8 +79,18 @@ public class RanglistenController {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public void generierePDF(String pfad, Rennen rennen, List<Rangliste> rangliste) throws IOException, DocumentException {
-		List<String> tabellentitel = new ArrayList<>();
+	public void generierePDF(String pfad, Rangliste rangliste) {
+		try {
+			PDFController.generierePdfRangliste(pfad, rangliste);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/*List<String> tabellentitel = new ArrayList<>();
 		List<List<String>> tabelle = new ArrayList<>();
 		List<List<List<String>>> daten = new ArrayList<>();
 
@@ -83,7 +113,7 @@ public class RanglistenController {
 				tabelle.add(tabellenzeile);
 			}
 			daten.add(tabelle);
-		}
+		}*/
 		// TODO: Exceptionhandling
 		//PDFController.generierePDF(pfad, rennen, DOKUMENTTITEL_STARTLISTE, tabellentitel, HEADER, daten);
 	}
