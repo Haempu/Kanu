@@ -33,6 +33,7 @@ public class Row {
 		TYPE.put("DATE", Date.class);
 		TYPE.put("TIME", Time.class);
 		TYPE.put("DECIMAL", java.math.BigDecimal.class);
+		TYPE.put("BIGINT", Long.class);
 	}
 
 	public Row() {

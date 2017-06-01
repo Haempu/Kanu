@@ -2,6 +2,9 @@ package ch.bfh.project1.kanu.view;
 
 import java.util.ArrayList;
 
+import ch.bfh.project1.kanu.controller.RechnungsController;
+import ch.bfh.project1.kanu.model.Club;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -10,9 +13,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-
-import ch.bfh.project1.kanu.controller.RechnungsController;
-import ch.bfh.project1.kanu.model.Club;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -107,7 +107,7 @@ public class RechnungsView implements ViewTemplate {
 			});
 
 			pdfGenerieren.addClickListener(event -> {
-				this.rController.rechnungErstellen(club);
+				this.rController.rechnungErstellen(club, 0);
 			});
 
 			row.getItemProperty(COLUMN_CLUB).setValue(club.getName());

@@ -13,6 +13,10 @@ public class FahrerResultat {
 	private Fahrer fahrer;
 	private Integer zeitErsterLauf;
 	private Integer zeitZweiterLauf;
+	private Integer gesamtzeit1;
+	private Integer gesamtzeit2;
+	private Integer strafzeit1;
+	private Integer strafzeit2;
 	private boolean neusterEintrag;
 	private Rennen rennen;
 	private AltersKategorie kategorie;
@@ -41,12 +45,24 @@ public class FahrerResultat {
 		startzeitZwei = s2;
 	}
 
-	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kat) {
+	public FahrerResultat(Fahrer fahrer, Integer gesamtzeit1, Integer gesamtzeit2, Integer zeit1, Integer zeit2, Integer strafzeit1, Integer strafzeit2, Integer startplatz, Rennen rennen, AltersKategorie kat) {
 		this.fahrer = fahrer;
 		this.zeitErsterLauf = zeit1;
 		this.zeitZweiterLauf = zeit2;
+		this.strafzeit1 = strafzeit1;
+		this.strafzeit2 = strafzeit2;
+		this.setGesamtzeit1(gesamtzeit1);
+		this.setGesamtzeit2(gesamtzeit2);
 		this.rennen = rennen;
+		startnummer = startplatz;
 		kategorie = kat;
+	}
+	
+	public FahrerResultat(AltersKategorie kat)
+	{
+		kategorie = kat;
+		zeitErsterLauf = 0;
+		zeitZweiterLauf = 0;
 	}
 
 	public FahrerResultat() {
@@ -69,8 +85,21 @@ public class FahrerResultat {
 		this.zeitErsterLauf = zeitErsterLauf;
 	}
 
-	public Integer getZeitZweiterLauf() {
+	public Integer getZeitZweiterLauf() { //TODO Zeit formatiert für Rangliste geben
 		return zeitZweiterLauf;
+	}
+	
+	public String getZeitTotal() { //TODO formatieren!
+		if(zeitZweiterLauf == 0)
+			return zeitErsterLauf + strafzeit1 + "";
+		return Math.min(zeitErsterLauf + strafzeit1, zeitZweiterLauf + strafzeit2) + "";
+	}
+	
+	public Integer getZeitCompare()
+	{
+		if(zeitZweiterLauf == 0)
+			return zeitErsterLauf;
+		return Math.min(zeitErsterLauf + strafzeit1, zeitZweiterLauf + strafzeit2);
 	}
 
 	public void setZeitZweiterLauf(Integer zeitZweiterLauf) {
@@ -123,5 +152,45 @@ public class FahrerResultat {
 
 	public void setStartzeitZwei(String startzeitZwei) {
 		this.startzeitZwei = startzeitZwei;
+	}
+
+	public Integer getStrafzeit1()
+	{
+		return strafzeit1;
+	}
+
+	public void setStrafzeit1(Integer strafzeit1)
+	{
+		this.strafzeit1 = strafzeit1;
+	}
+
+	public Integer getStrafzeit2()
+	{
+		return strafzeit2;
+	}
+
+	public void setStrafzeit2(Integer strafzeit2)
+	{
+		this.strafzeit2 = strafzeit2;
+	}
+
+	public Integer getGesamtzeit2()
+	{
+		return gesamtzeit2;
+	}
+
+	public void setGesamtzeit2(Integer gesamtzeit2)
+	{
+		this.gesamtzeit2 = gesamtzeit2;
+	}
+
+	public Integer getGesamtzeit1()
+	{
+		return gesamtzeit1;
+	}
+
+	public void setGesamtzeit1(Integer gesamtzeit1)
+	{
+		this.gesamtzeit1 = gesamtzeit1;
 	}
 }
