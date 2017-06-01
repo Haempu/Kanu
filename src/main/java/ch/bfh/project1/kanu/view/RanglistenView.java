@@ -1,5 +1,6 @@
 package ch.bfh.project1.kanu.view;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -9,6 +10,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -53,14 +55,28 @@ public class RanglistenView implements ViewTemplate {
 		if (rennen == null)
 			throw new IllegalArgumentException("Kein Rennen angegeben");
 		layout.removeAllComponents();
+		
+		NativeSelect ns = new NativeSelect();
+		List<Rennen> lrennen = rController.ladeRennen();
+		for(Rennen r : lrennen)
+		{
+			ns.addItem(r.getRennenID());
+			ns.setItemCaption(r.getRennenID(), r.getName());
+		}
+		
 		Label titel = new Label("Rangliste");
 		titel.setStyleName("h2");
 		layout.addComponent(titel);
 		Rangliste rangliste = rController.ladeRanglisteRennen(rennen);
 		Button pdf = new Button("PDF generieren");
 		pdf.addClickListener(event -> {
-			//rController.generierePDF("", rangliste);
+			try {
+				rController.generierePDF(rangliste);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
+		layout.addComponent(pdf);
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
 		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, ""))); //Damit auch die letzte Kategorie angezeigt wird
@@ -91,17 +107,19 @@ public class RanglistenView implements ViewTemplate {
 					{
 						Object id = trangliste.addItem();
 						Item row = trangliste.getItem(id);
+						SimpleDateFormat df = new SimpleDateFormat("mm:ss.S");
 						row.getItemProperty(Tabelle.RANG).setValue(i + "");
 						row.getItemProperty(Tabelle.NAME).setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
 						row.getItemProperty(Tabelle.CLUB).setValue(r.getFahrer().getClub().getName());
 						Date d = new Date(r.getZeitErsterLauf());
-						row.getItemProperty(Tabelle.ZEIT1).setValue(d.getTime() + "");
+						row.getItemProperty(Tabelle.ZEIT1).setValue(df.format(d.getTime()) + "");
 						row.getItemProperty(Tabelle.FEHLER1).setValue(r.getStrafzeit1() + "");
-						row.getItemProperty(Tabelle.TOTAL1).setValue(r.getGesamtzeit1() + "");
-						row.getItemProperty(Tabelle.ZEIT2).setValue(r.getZeitZweiterLauf() + "");
+						row.getItemProperty(Tabelle.TOTAL1).setValue(renderMilli(r.getGesamtzeit1()) + "");
+						d = new Date(r.getZeitZweiterLauf());
+						row.getItemProperty(Tabelle.ZEIT2).setValue(df.format(d.getTime()) + "");
 						row.getItemProperty(Tabelle.FEHLER2).setValue(r.getStrafzeit2() + "");
-						row.getItemProperty(Tabelle.TOTAL2).setValue(r.getGesamtzeit2() + "");
-						row.getItemProperty(Tabelle.TOTAL).setValue(r.getZeitTotal());
+						row.getItemProperty(Tabelle.TOTAL2).setValue(renderMilli(r.getGesamtzeit2()) + "");
+						row.getItemProperty(Tabelle.TOTAL).setValue(renderMilli(r.getZeitTotal()));
 						i++;
 					}
 					trangliste.setPageLength(res.size());
@@ -124,6 +142,15 @@ public class RanglistenView implements ViewTemplate {
 
 	public void setRennen(Rennen rennen) {
 		this.rennen = rennen;
+	}
+	
+	private String renderMilli(Integer zahl)
+	{
+		Integer hs = (zahl % 1000) / 100;
+		Integer s = (zahl / 1000) % 60;
+		Integer m = zahl / 60000;
+		String string = m + ":" + s + "." + hs;
+		return string;
 	}
 	
 	public enum Tabelle {
