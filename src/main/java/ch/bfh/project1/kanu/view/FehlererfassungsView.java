@@ -50,8 +50,8 @@ public class FehlererfassungsView implements ViewTemplate {
 	private List<AltersKategorie> altersKategorieliste;
 	private NativeSelect dropDownRennen = new NativeSelect(NAME_RENNEN);
 	private NativeSelect dropDownAlterskategorie = new NativeSelect(NAME_KATEGORIE);
-	private List<Strafzeit> strafzeitenLauf1 = new ArrayList<>();
-	private List<Strafzeit> strafzeitenLauf2 = new ArrayList<>();
+	private List<Integer> bearbeiteteToreLauf1 = new ArrayList<>();
+	private List<Integer> bearbeiteteToreLauf2 = new ArrayList<>();
 
 	// Statische Variablen
 	private static final String NAME_RENNEN = "Rennen";
@@ -98,6 +98,7 @@ public class FehlererfassungsView implements ViewTemplate {
 		this.popup = new Window("Fehler erfassen");
 		this.popup.center();
 		this.popup.setModal(true);
+		this.popup.setImmediate(true);
 		this.popup.setWidth("580px");
 
 		this.tabelleLayout.addComponent(new Label("Keine angemeldeten Fahrer für das ausgewählte Rennen."));
@@ -105,6 +106,13 @@ public class FehlererfassungsView implements ViewTemplate {
 		this.fehlererfassungslayout.addComponent(this.titel);
 		this.fehlererfassungslayout.addComponent(this.hlAuswahl);
 		this.fehlererfassungslayout.addComponent(this.tabelleLayout);
+
+		CheckBox box = new CheckBox("", false);
+		box.addValueChangeListener(event -> {
+			System.out.println("box event");
+		});
+		this.fehlererfassungslayout.addComponent(box);
+
 		this.init = true;
 
 	}
@@ -171,9 +179,14 @@ public class FehlererfassungsView implements ViewTemplate {
 				// Popup-Fenster
 				bearbeiten.addClickListener(event -> {
 					FormLayout popupLayoutForm = new FormLayout();
+					popupLayoutForm.setImmediate(true);
 					VerticalLayout lauf1 = new VerticalLayout();
+
+					lauf1.setImmediate(true);
 					lauf1.addComponent(new Label("Lauf 1"));
 					Table lauf1Table = generiereTabelleFehlererfassung(fahrerID, 1);
+					lauf1Table.setImmediate(true);
+
 					lauf1Table.setPageLength(ROW_HEIGHT_TORE);
 					lauf1Table.setStyleName("tortable");
 					Table lauf2Table = generiereTabelleFehlererfassung(fahrerID, 2);
@@ -181,6 +194,9 @@ public class FehlererfassungsView implements ViewTemplate {
 
 					lauf1.addComponent(lauf1Table);
 					VerticalLayout lauf2 = new VerticalLayout();
+					lauf2.setImmediate(true);
+					lauf2Table.setImmediate(true);
+
 					lauf2.addComponent(new Label("Lauf 2"));
 					lauf2.addComponent(lauf2Table);
 					HorizontalLayout hl = new HorizontalLayout();
@@ -189,30 +205,42 @@ public class FehlererfassungsView implements ViewTemplate {
 					hl.setMargin(true);
 					Button btnSpeichern = new Button("Speichern");
 					btnSpeichern.addClickListener(speichernEvent -> {
+
 						Container container1 = lauf1Table.getContainerDataSource();
 						for (Object itemId : container1.getItemIds()) {
 							Item item = container1.getItem(itemId);
 							Integer tor = (Integer) item.getItemProperty(COLUMN_TOR).getValue();
-							CheckBox beruehrt = (CheckBox) item.getItemProperty(COLUMN_BERUEHRT).getValue();
-							CheckBox verfehlt = (CheckBox) item.getItemProperty(COLUMN_VERFEHLT).getValue();
-
-							this.fehlererfassungsController.fehlerErfassen(fr.getFahrer().getFahrerID(),
-									fr.getKategorie().getAltersKategorieID(), rennen.getRennenID(), tor, 1,
-									beruehrt.getValue(), verfehlt.getValue());
+							for (Integer t : this.bearbeiteteToreLauf1) {
+								if (t.intValue() == tor) {
+									CheckBox beruehrt = (CheckBox) item.getItemProperty(COLUMN_BERUEHRT).getValue();
+									CheckBox verfehlt = (CheckBox) item.getItemProperty(COLUMN_VERFEHLT).getValue();
+									System.out.println("L1: Tor bearbeitet: " + tor);
+									this.fehlererfassungsController.fehlerErfassen(fr.getFahrer().getFahrerID(),
+											fr.getKategorie().getAltersKategorieID(), rennen.getRennenID(), tor, 1,
+											beruehrt.getValue(), verfehlt.getValue());
+								}
+							}
 						}
 
 						Container container2 = lauf2Table.getContainerDataSource();
 						for (Object itemId : container2.getItemIds()) {
 							Item item = container2.getItem(itemId);
 							Integer tor = (Integer) item.getItemProperty(COLUMN_TOR).getValue();
-							CheckBox beruehrt = (CheckBox) item.getItemProperty(COLUMN_BERUEHRT).getValue();
-							CheckBox verfehlt = (CheckBox) item.getItemProperty(COLUMN_VERFEHLT).getValue();
+							for (Integer t : this.bearbeiteteToreLauf2) {
+								if (t.intValue() == tor) {
+									CheckBox beruehrt = (CheckBox) item.getItemProperty(COLUMN_BERUEHRT).getValue();
+									CheckBox verfehlt = (CheckBox) item.getItemProperty(COLUMN_VERFEHLT).getValue();
 
-							this.fehlererfassungsController.fehlerErfassen(fr.getFahrer().getFahrerID(),
-									fr.getKategorie().getAltersKategorieID(), rennen.getRennenID(), tor, 2,
-									beruehrt.getValue(), verfehlt.getValue());
+									System.out.println("L2: Tor bearbeitet: " + tor);
+									this.fehlererfassungsController.fehlerErfassen(fr.getFahrer().getFahrerID(),
+											fr.getKategorie().getAltersKategorieID(), rennen.getRennenID(), tor, 2,
+											beruehrt.getValue(), verfehlt.getValue());
+								}
+							}
 						}
 
+						this.bearbeiteteToreLauf1.clear();
+						this.bearbeiteteToreLauf2.clear();
 						this.popup.close();
 					});
 
@@ -240,22 +268,27 @@ public class FehlererfassungsView implements ViewTemplate {
 	private Table generiereTabelleFehlererfassung(Integer fahrerID, int lauf) {
 		Table tabelle = new Table();
 		tabelle.setImmediate(true);
+		tabelle.setWidth(100L, Component.UNITS_PERCENTAGE);
+
 		tabelle.addContainerProperty(COLUMN_TOR, Integer.class, null);
 		tabelle.addContainerProperty(COLUMN_BERUEHRT, CheckBox.class, null);
 		tabelle.addContainerProperty(COLUMN_VERFEHLT, CheckBox.class, null);
-		tabelle.setWidth(100L, Component.UNITS_PERCENTAGE);
+
 		List<Strafzeit> strafzeitliste = new ArrayList<Strafzeit>();
-		Rennen aktRennen = (Rennen) dropDownRennen.getValue();
+		Rennen aktRennen = (Rennen) this.dropDownRennen.getValue();
 		int anzTore = aktRennen.getAnzTore();
+
 		AltersKategorie aktKategorie = (AltersKategorie) this.dropDownAlterskategorie.getValue();
 		strafzeitliste = this.fehlererfassungsController.ladeStrafzeitliste(fahrerID, aktRennen.getRennenID(),
 				aktKategorie.getAltersKategorieID(), lauf);
+
 		int j = 0;
 		for (int i = 0; i < anzTore; i++) {
 			boolean beruehrt = false;
 			boolean verpasst = false;
 			Object newItemId = tabelle.addItem();
 			Item row = tabelle.getItem(newItemId);
+			Integer tor = (Integer) i + 1;
 
 			if (strafzeitliste.size() > j && strafzeitliste.get(j).getTorNummer() == i + 1) {
 				beruehrt = strafzeitliste.get(j).isBeruehrt();
@@ -263,17 +296,37 @@ public class FehlererfassungsView implements ViewTemplate {
 				j++;
 			}
 
-			// CheckBox cBeruehrt = new CheckBox("", beruehrt);
-			// CheckBox cVerpasst = new CheckBox("", verpasst);
-			// cBeruehrt.setImmediate(true);
-			// cVerpasst.setImmediate(true);
+			CheckBox cBeruehrt = new CheckBox("", beruehrt);
+			CheckBox cVerpasst = new CheckBox("", verpasst);
 
-			row.getItemProperty(COLUMN_TOR).setValue((Integer) i + 1);
+			cBeruehrt.addValueChangeListener(evt -> {
+				checkBoxEvent(lauf, tor);
+			});
 
-			row.getItemProperty(COLUMN_BERUEHRT).setValue(new CheckBox("", beruehrt));
-			row.getItemProperty(COLUMN_VERFEHLT).setValue(new CheckBox("", verpasst));
+			cVerpasst.addValueChangeListener(evte -> {
+				checkBoxEvent(lauf, tor);
+			});
+
+			cBeruehrt.setImmediate(true);
+			cVerpasst.setImmediate(true);
+
+			row.getItemProperty(COLUMN_TOR).setValue(tor);
+			row.getItemProperty(COLUMN_BERUEHRT).setValue(cBeruehrt);
+			row.getItemProperty(COLUMN_VERFEHLT).setValue(cVerpasst);
 		}
 		return tabelle;
+	}
+
+	private void checkBoxEvent(Integer lauf, Integer tor) {
+		if (lauf.intValue() == 1) {
+			if (!this.bearbeiteteToreLauf1.contains(tor)) {
+				this.bearbeiteteToreLauf1.add(tor);
+			}
+		} else {
+			if (!this.bearbeiteteToreLauf2.contains(tor)) {
+				this.bearbeiteteToreLauf2.add(tor);
+			}
+		}
 	}
 
 	@Override

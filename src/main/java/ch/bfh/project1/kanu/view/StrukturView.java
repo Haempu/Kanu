@@ -65,9 +65,7 @@ public class StrukturView extends UI {
 		DBController db = DBController.getInstance();
 		try {
 			db.connect();
-
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -197,10 +195,10 @@ public class StrukturView extends UI {
 			}
 			this.zeiterfassungsView.viewAnzeigen(this.inhaltPanel);
 		});
-		
+
 		this.menu.addMenuItem("Rangliste ", () -> {
 			if (!this.rlView.istInitialisiert()) {
-				rlView.setRennen(new Rennen(2)); //TODO weg
+				rlView.setRennen(new Rennen(2)); // TODO weg
 				this.rlView.viewInitialisieren();
 			}
 			this.rlView.viewAnzeigen(this.inhaltPanel);
