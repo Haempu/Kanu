@@ -372,13 +372,14 @@ public class DBController {
 	{
 		String where = makeWhere(column, value);
 		
-		String selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort"
+		String selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 				+ " FROM fahrer_rennen JOIN fahrer AS f USING(fahrer_id) JOIN club USING(club_id) JOIN kategorien AS t USING (kategorie_id) "
 				+ where;
 		if (column[0].equals(Table_FahrerRennen.CLOUMN_ALL))
-			selectStmt = "SELECT * FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
+			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
+					+ " FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
 		if (column[0].equals(Table_FahrerRennen.COLUMN_FTS))
-			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort"
+			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 					+ " FROM fahrer_rennen JOIN fahrer AS f USING(fahrer_id) JOIN club USING(club_id) JOIN kategorien AS t USING (kategorie_id) WHERE (rennen_id = "
 					+ value[0] + " AND kategorie_id = " + value[1] + ") AND (f.name LIKE '%" + value[2]
 					+ "%' OR vorname LIKE '%" + value[2] + "%' OR jahrgang = '" + value[2] + "' OR startplatz = '" + value[2] + "')";
@@ -401,6 +402,7 @@ public class DBController {
 			String kat_name = (String) row.getRow().get(11).getKey();
 			Integer plz = (Integer) row.getRow().get(12).getKey();
 			String ort = (String) row.getRow().get(13).getKey();
+			Integer gebuehr = (Integer) row.getRow().get(14).getKey();
 
 			startzeit = startzeit == null ? new Time(0) : startzeit;
 			startzeit2 = startzeit2 == null ? new Time(0) : startzeit2;
@@ -415,7 +417,7 @@ public class DBController {
 			f.setPlz(plz);
 			f.setOrt(ort);
 			f.setClub(new Club(clubID, "", clubName));
-			fahrer.add(new FahrerResultat(f, rennen, new AltersKategorie(kategorieID, kat_name), s1, s2, startplatz));
+			fahrer.add(new FahrerResultat(f, rennen, new AltersKategorie(kategorieID, kat_name, gebuehr), s1, s2, startplatz));
 		}
 		return fahrer;
 	}
@@ -574,7 +576,7 @@ public class DBController {
 		// Gibt die Zeiten beider Läufe aus
 		String where = makeWhere(column, value);
 		selectStmt = "SELECT IFNULL(ges_zeit1, 0), IFNULL(ges_zeit2, 0), fahrer_id, rennen_id, kategorie_id, f.name, vorname, c.club_name, "
-				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0) FROM (SELECT zeit1 + IFNULL(t.strafzeit, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
+				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0), gebuehr FROM (SELECT zeit1 + IFNULL(t.strafzeit, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
 				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit FROM fahrer_rennen "
 				+ "LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t NATURAL JOIN "
 				+ "fahrer_rennen WHERE t.lauf = 1 OR t.lauf IS NULL) as z LEFT JOIN (SELECT zeit2 + IFNULL(t.strafzeit, 0) AS ges_zeit2, zeit2, IFNULL(t.strafzeit, 0) AS sz2, fahrer_id, rennen_id, "
@@ -599,13 +601,14 @@ public class DBController {
 			Integer sz2 = ((java.math.BigDecimal) row.getRow().get(12).getKey()).intValue();
 			String kategorie = (String) row.getRow().get(13).getKey();
 			Integer sp = ((Long) row.getRow().get(14).getKey()).intValue();
+			Integer gebuehr = ((Long) row.getRow().get(15).getKey()).intValue();
 			Club club = new Club(clubID, "", clubname);
 			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, 0, "", "", 0, "");
 			Rennen rennen = new Rennen();
 			rennen.setRennenID(rennenID);
 			Integer z1 = zeit1.intValue();
 			Integer z2 = zeit2.intValue();
-			resultat.add(new FahrerResultat(fahrer, z1, z2, l1, l2, sz1, sz2, sp, rennen, new AltersKategorie(kategorieID, kategorie)));
+			resultat.add(new FahrerResultat(fahrer, z1, z2, l1, l2, sz1, sz2, sp, rennen, new AltersKategorie(kategorieID, kategorie, gebuehr)));
 		}
 		return resultat;
 	}
