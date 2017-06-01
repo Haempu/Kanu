@@ -2,10 +2,12 @@ package ch.bfh.project1.kanu.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.itextpdf.text.DocumentException;
 
+import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.view.RanglistenView;
@@ -25,6 +27,11 @@ public class RanglistenController {
 	private static String[] HEADER = { "Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt" };
 	private DBController dbController;
 	private RanglistenView ranglistenView;
+	
+	public RanglistenController()
+	{
+		dbController = DBController.getInstance();
+	}
 
 	/**
 	 * Gibt die Gesamtrangliste des Rennens zurück.
@@ -34,7 +41,14 @@ public class RanglistenController {
 	 * @return Rangliste
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) {
-		return this.dbController.ladeRanglisteRennen(rennen);
+		Rangliste rl = dbController.ladeRanglisteRennen(rennen);
+		for(FahrerResultat f : rl.getResultate())
+		{
+			Date d = new Date(f.getZeitErsterLauf());
+			if(d.getTime() == 0)
+				rl.getResultate().remove(f);
+		}
+		return rl;
 	}
 
 	/**

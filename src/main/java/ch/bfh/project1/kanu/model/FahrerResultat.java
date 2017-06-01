@@ -24,6 +24,7 @@ public class FahrerResultat {
 	private String startzeitEins;
 	private String startzeitZwei;
 
+	@Deprecated //Wird nirgendwo gebraucht --> löschen!
 	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kategorie,
 			Integer startnummer, String startzeitEins, String startzeitZwei) {
 		this.fahrer = fahrer;
