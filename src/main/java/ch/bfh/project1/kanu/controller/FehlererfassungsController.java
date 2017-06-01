@@ -31,9 +31,8 @@ public class FehlererfassungsController {
 	public List<FahrerResultat> ladeFehlererfassung(Integer rennenID) {
 		return this.dbController.ladeStartliste(rennenID);
 	}
-	
-	public FehlererfassungsController()
-	{
+
+	public FehlererfassungsController() {
 		dbController = DBController.getInstance();
 	}
 
@@ -41,17 +40,31 @@ public class FehlererfassungsController {
 	 * Lädt alle Rennen.
 	 * 
 	 */
-	public void fehlerErfassen(Integer fahrerID, Integer rennenID, int tornummer) {
-		this.dbController.fehlerErfassen(fahrerID, rennenID, tornummer, tornummer, tornummer, tornummer); //TODO
+	public void fehlerErfassen(Integer fahrerID, Integer kategorieID, Integer rennenID, int tornummer, int lauf,
+			boolean beruehrt, boolean verfehlt) {
+		Integer strafzeit = 0;
+		if (beruehrt) {
+			strafzeit += Strafzeit.STRAFZEIT_BERUEHRT;
+		}
+		if (verfehlt) {
+			strafzeit += Strafzeit.STRAFZEIT_VERPASST;
+		}
+
+		if (strafzeit == 0) {
+			strafzeit = null;
+		}
+
+		this.dbController.fehlerErfassen(fahrerID, rennenID, kategorieID, lauf, tornummer, strafzeit);
 	}
+
 	public List<Rennen> ladeRennen() {
 		return dbController.ladeRennen();
 	}
-	
+
 	public List<FahrerResultat> ladeFahrerliste(Integer rennID, Integer kategorieID) {
 		return dbController.ladeStartliste(rennID, kategorieID);
 	}
-	
+
 	public List<Strafzeit> ladeStrafzeitliste(Integer fahrerID, Integer rennenID, Integer kategorieID, int lauf) {
 		return dbController.ladeStrafzeit(fahrerID, rennenID, kategorieID, lauf);
 	}

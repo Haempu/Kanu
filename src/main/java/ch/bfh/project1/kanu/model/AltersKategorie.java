@@ -34,7 +34,7 @@ public class AltersKategorie {
 		this.nr = nr;
 	}
 
-	public int getAltersKategorieID() {
+	public Integer getAltersKategorieID() {
 		return altersKategorieID;
 	}
 
