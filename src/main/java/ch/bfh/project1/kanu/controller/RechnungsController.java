@@ -1,7 +1,10 @@
 package ch.bfh.project1.kanu.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.itextpdf.text.DocumentException;
 
 import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Club;
@@ -36,28 +39,27 @@ public class RechnungsController {
 	public void rechnungErstellen(Club club, Integer rennenID) {
 
 		List<FahrerResultat> fahrer = this.dbController.ladeAngemeldetenFahrerByClub(club.getClubID(), rennenID);
+		
 		AltersKategorie aktuelleKat = null;
 		List<AltersKategorie> angemeldeteKategorien = new ArrayList<AltersKategorie>();
 		List<List<String>> alleFahrer = new ArrayList<List<String>>();
-
-		for (FahrerResultat fr : fahrer) {
-			if (aktuelleKat == null) {
-				aktuelleKat = fr.getKategorie();
-				angemeldeteKategorien.add(aktuelleKat);
-				List<String> fahrerAttribute = new ArrayList<String>();
-				fahrerAttribute.add(Integer.toString(fr.getStartnummer()));
-				fahrerAttribute.add(fr.getFahrer().getName() + " " + fr.getFahrer().getVorname());
-				fahrerAttribute.add(Integer.toString(aktuelleKat.getGebuehr()));
-				alleFahrer.add(fahrerAttribute);
-			} else {
-				if (aktuelleKat.getAltersKategorieID() == fr.getKategorie().getAltersKategorieID()) {
-
-				} else {
-					angemeldeteKategorien.add(aktuelleKat);
-
-				}
-			}
-
+		
+		for (int i = 0; i < fahrer.size(); i++) {
+			List<String> zeile = new ArrayList<>();
+			zeile.add(fahrer.get(i).getKategorie().getName());
+			zeile.add(Integer.toString(fahrer.get(i).getStartnummer()));
+			zeile.add(fahrer.get(i).getFahrer().getName() + " " + fahrer.get(i).getFahrer().getVorname());
+			zeile.add(Integer.toString(fahrer.get(i).getKategorie().getGebuehr()));
+			alleFahrer.add(zeile);
+		}
+		try {
+			PDFController.generierePdfRechnung("C:/Daten/Patrik/", this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -107,7 +107,7 @@ public class RechnungsView implements ViewTemplate {
 			});
 
 			pdfGenerieren.addClickListener(event -> {
-				this.rController.rechnungErstellen(club);
+				this.rController.rechnungErstellen(club, 2);
 			});
 
 			row.getItemProperty(COLUMN_CLUB).setValue(club.getName());

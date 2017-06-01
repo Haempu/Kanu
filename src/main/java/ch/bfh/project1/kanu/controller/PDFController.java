@@ -3,6 +3,7 @@ package ch.bfh.project1.kanu.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.itextpdf.text.BaseColor;
@@ -113,11 +114,14 @@ public class PDFController {
 	private static float SCHRIFT_GR_DOKUMENTNAME = 16;
 	private static float SCHRIFT_GR_TABELLENNAME = 10;
 	private static float SCHRIFT_GR_TABELLENINHALT = 8;
+	private static float SCHRIFT_GR_TABELLENINHALT_GROSS = 16;
+	private static float SCHRIFT_GR_TABELLENNAME_GROSS = 16;
 	
 	// Zellengrössen
 	private static float[] ZELLENGROESSE_RANGLISTE = {5, 3, 20, 7, 7, 7, 7, 5, 7, 7, 7, 5, 7, 6};
 	private static float[] ZELLENGROESSE_STARTLISTE = {3, 20, 7, 20, 10, 10, 10, 10, 10};
-	private static float[] ZELLENGROESSE_RECHNUNG = {10, 30, 20, 20, 20};
+	//private static float[] ZELLENGROESSE_RECHNUNG_TITEL = {40, 20, 40};
+	private static float[] ZELLENGROESSE_RECHNUNG = {5, 5, 50, 20, 20};
 	
 	// Tabellenheaderinhalt
 	private static String[] INHALT_RANGLISTE = {"Rang", "Nr.", "Name", "Club", "Zeit", "Fehler", "Total", "Rang", "Zeit", "Fehler", "Total", "Rang", "Total", "Diff"};
@@ -148,6 +152,9 @@ public class PDFController {
 	private static Font FONT_TABELLENNAME = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENNAME, Font.BOLDITALIC, BaseColor.BLACK);
 	private static Font FONT_TABELLENINHALT = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENINHALT, Font.NORMAL, BaseColor.BLACK);
 	private static Font FONT_TABELLENINHALT_FETT = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENINHALT, Font.BOLD, BaseColor.BLACK);
+	private static Font FONT_TABELLENINHALT_GROSS = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENINHALT_GROSS, Font.NORMAL, BaseColor.BLACK);
+	private static Font FONT_TABELLENINHALT_GROSS_FETT = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENINHALT_GROSS, Font.BOLD, BaseColor.BLACK);
+	private static Font FONT_TABELLENNAME_GROSS = FontFactory.getFont(FontFactory.HELVETICA, SCHRIFT_GR_TABELLENNAME_GROSS, Font.BOLDITALIC, BaseColor.BLACK);
 	
 	/**
 	 * Die innere Klasse "Dokumentheader" erweitert die Klasse
@@ -269,7 +276,7 @@ public class PDFController {
 		dokument.close();
 	}
 	
-	public static void generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<String> tabellenname, List<List<String>> tabelleninhalt) throws IOException, DocumentException {
+	public static void generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<List<String>> daten) throws IOException, DocumentException {
 		// Neues File generieren
 		pfad = pfad + "Abrechnung_" + clubname + ".pdf";
 		File file = new File(pfad);
@@ -277,7 +284,7 @@ public class PDFController {
 		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, INHALT_EINZUG_OBEN + OFFSET_RANGLISTE, INHALT_EINZUG_UNTEN);
 		PdfWriter writer = PdfWriter.getInstance(dokument, new FileOutputStream(pfad));
 		// Dokumentheader definieren
-		Dokumentheader dokumentheader = new Dokumentheader(erstelleStandardheader(rennen), new PdfPTable(1));
+		Dokumentheader dokumentheader = new Dokumentheader(erstelleStandardheader(rennen), erstelleAbrechnungsheader());
 		writer.setPageEvent(dokumentheader);
 		// Dokument erstellen
 		dokument.open();
@@ -288,32 +295,90 @@ public class PDFController {
 		Paragraph paragClubname = new Paragraph(clubname, FONT_DOKUMENTNAME);
 		paragClubname.setSpacingBefore(SPACING_VOR_TABELLENTITEL);
 		dokument.add(paragDokumentname);
-		dokument.add(paragDokumentname);
+		String tabellentitel = "";
+		Paragraph paragTabellenname = null;
+		PdfPTable tabelle = null;
+		boolean neueTabelle = true;
+		int anzZeilen = 0;
+		int gesamtsumme = 0;
 		// Für jede Tabelle...
-		for (int i = 0; i < tabellenname.size(); i++) {
-			Paragraph paragTabellenname = new Paragraph(tabellenname.get(i), FONT_TABELLENNAME);
-			PdfPTable tabelle = new PdfPTable(tabelleninhalt.get(0).size());
-			tabelle.setTotalWidth(TABELLENBREITE);
-			tabelle.setWidths(ZELLENGROESSE_RECHNUNG);
-			tabelle.setWidthPercentage(TABELLENBREITE_PROZENT);
-			tabelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-			// ...zu jeder Zeile...
-			for (int j = 0; j < tabelleninhalt.size(); j ++) {
-				// ...alle Zellen hinzufügen
-				for (int k = 0; k < tabelleninhalt.get(j).size(); k++) {
-					PdfPCell zelle = new PdfPCell();
-					if (k == 12) {
-						zelle.setPhrase(new Phrase(tabelleninhalt.get(j).get(k), FONT_TABELLENINHALT_FETT));
-					} else {
-						zelle.setPhrase(new Phrase(tabelleninhalt.get(j).get(k), FONT_TABELLENINHALT));
-					}
-					zelle.setBorder(Rectangle.NO_BORDER);
-					tabelle.addCell(zelle);
-				}
+		for (int i = 0; i < daten.size(); i++) {
+			// Neue Tabelle mit Titel wenn Rennkategorie gewechselt hat (daten.get(i).get(0) = Rennkategorie)
+			if (!tabellentitel.equals(daten.get(i).get(0))) {
+				anzZeilen = 0;
+				tabellentitel = daten.get(i).get(0);
+				paragTabellenname = new Paragraph(tabellentitel, FONT_TABELLENNAME_GROSS);
+				//PdfPTable tabelleTitel = new PdfPTable(ZELLENGROESSE_RECHNUNG_TITEL);
+				//tabelleTitel.addCell(new PdfPCell(new Phrase(daten.get(i).get(0), FONT_TABELLENNAME)));
+				//tabelleTitel.addCell(new PdfPCell(new Phrase(daten.get(i).get(4), FONT_TABELLENNAME)));
+				tabelle = new PdfPTable(ZELLENGROESSE_RECHNUNG);
+				tabelle.setTotalWidth(TABELLENBREITE);
+				tabelle.setWidthPercentage(TABELLENBREITE_PROZENT);
+				tabelle.setHorizontalAlignment(Element.ALIGN_CENTER);
 			}
-			// Daten zum Dokument hinzufügen
-			paragTabellenname.add(tabelle);
-			dokument.add(paragTabellenname);
+			// Einzelne Zeile abfüllen
+			anzZeilen++;
+			for (int j = 0; j < ZELLENGROESSE_RECHNUNG.length; j ++) {
+				
+				PdfPCell zelle = new PdfPCell();
+				if (j == 0 || j == 4) {
+					// 1. Zelle mit "" abfüllen
+					zelle.setPhrase(new Phrase(""));
+				} else if (j == 3) {
+					zelle.setPhrase(new Phrase(daten.get(i).get(j)+ ".00 CHF", FONT_TABELLENINHALT_GROSS));
+				} else {
+					zelle.setPhrase(new Phrase(daten.get(i).get(j), FONT_TABELLENINHALT_GROSS));
+				}
+				zelle.setBorder(Rectangle.NO_BORDER);
+				tabelle.addCell(zelle);
+			}
+
+			if (i < daten.size()-1) {
+				// Checken, ob nächste Rennkategorie die gleiche ist.
+				if (!tabellentitel.equals(daten.get(i+1).get(0))) {
+					PdfPCell weitereZeile = new PdfPCell(new Phrase(""));
+					weitereZeile.setBorder(Rectangle.NO_BORDER);
+					for (int k = 0; k < ZELLENGROESSE_RECHNUNG.length; k++) {
+						if (k == 3) {
+							// Total der einzelnen Tabelle setzen
+							weitereZeile.setPhrase(new Phrase("" + Integer.parseInt(daten.get(i).get(3)) * anzZeilen + ".00 CHF", FONT_TABELLENINHALT_GROSS_FETT));
+							tabelle.addCell(weitereZeile);
+							weitereZeile.setPhrase(new Phrase(""));
+						} else {
+							tabelle.addCell(weitereZeile);
+						}
+					}
+					gesamtsumme = gesamtsumme + (Integer.parseInt(daten.get(i).get(3)) * anzZeilen);
+					// Daten zum Dokument hinzufügen
+					paragTabellenname.add(tabelle);
+					dokument.add(paragTabellenname);
+				}
+			} else {
+				PdfPCell weitereZeile = new PdfPCell(new Phrase("", FONT_TABELLENINHALT_GROSS_FETT));
+				weitereZeile.setBorder(Rectangle.NO_BORDER);
+				for (int k = 0; k < ZELLENGROESSE_RECHNUNG.length; k++) {
+					if (k == 3) {
+						// Total der einzelnen Tabelle setzen
+						weitereZeile.setPhrase(new Phrase("" + Integer.parseInt(daten.get(i).get(3)) * anzZeilen + ".00 CHF", FONT_TABELLENINHALT_GROSS_FETT));
+						tabelle.addCell(weitereZeile);
+						weitereZeile.setPhrase(new Phrase("", FONT_TABELLENINHALT_GROSS_FETT));
+					} else {
+						tabelle.addCell(weitereZeile);
+					}
+				}
+				gesamtsumme = gesamtsumme + (Integer.parseInt(daten.get(i).get(3)) * anzZeilen);
+				tabelle.addCell(weitereZeile);
+				tabelle.addCell(weitereZeile);
+				weitereZeile.setPhrase(new Phrase("Gesamtrechnung", FONT_TABELLENINHALT_GROSS_FETT));
+				tabelle.addCell(weitereZeile);
+				weitereZeile.setPhrase(new Phrase("", FONT_TABELLENINHALT_GROSS_FETT));
+				tabelle.addCell(weitereZeile);
+				weitereZeile.setPhrase(new Phrase(gesamtsumme + ".00 CHF", FONT_TABELLENINHALT_GROSS_FETT));
+				tabelle.addCell(weitereZeile);
+				// Daten zum Dokument hinzufügen
+				paragTabellenname.add(tabelle);
+				dokument.add(paragTabellenname);
+			}
 		}
 		// Dokument schliessen
 		dokument.close();
@@ -330,14 +395,15 @@ public class PDFController {
 		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
 		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getName() + ", " + rennen.getDatumVon().getTime() + " - " + rennen.getDatumBis().getTime(), FONT_STANDARDHEADER));
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		headerZelle = new PdfPCell(new Phrase(rennen.getName() + ", " + dateFormat.format(rennen.getDatumVon()) + " - " + dateFormat.format(rennen.getDatumBis()), FONT_STANDARDHEADER));
 		headerZelle.setBorder(Rectangle.NO_BORDER);
 		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
 		headerZelle.setPadding(TABELLENPADDING);
 		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
 		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter(), FONT_STANDARDHEADER));
+		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter().getName(), FONT_STANDARDHEADER));
 		headerZelle.setBorder(Rectangle.NO_BORDER);
 		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
 		headerZelle.setPadding(TABELLENPADDING);
@@ -398,6 +464,19 @@ public class PDFController {
 			ranglistenheader.addCell(zelle);
 		}
 		return ranglistenheader;
+	}
+
+	private static PdfPTable erstelleAbrechnungsheader() throws DocumentException {
+		PdfPTable tabelleHeader = new PdfPTable(1);
+		tabelleHeader.setTotalWidth(TABELLENBREITE);
+		tabelleHeader.setWidthPercentage(TABELLENBREITE_PROZENT);
+		PdfPCell headerZelle = new PdfPCell(new Phrase(""));
+		headerZelle = new PdfPCell(new Phrase());
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 2.0f);
+		headerZelle.setBackgroundColor(HEADER_HINTERGRUNDFARBE);
+		tabelleHeader.addCell(headerZelle);
+		return tabelleHeader;
 	}
 	
 }

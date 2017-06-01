@@ -54,7 +54,7 @@ public class RanglistenView implements ViewTemplate {
 		Rangliste rangliste = db.ladeRanglisteRennen(rennen);
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
-		rangliste.getResultate().add(new FahrerResultat(null, null, null, null, new AltersKategorie(-2, "")));
+		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, "")));
 		for (FahrerResultat f : rangliste.getResultate()) {
 			if (altKat != f.getKategorie().getAltersKategorieID()) {
 				altKat = f.getKategorie().getAltersKategorieID();
