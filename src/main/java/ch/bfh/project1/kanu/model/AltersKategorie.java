@@ -26,7 +26,7 @@ public class AltersKategorie {
 		this.name = name;
 		this.gebuehr = gebuehr;
 	}
-	
+
 	public AltersKategorie(Integer altersKategorieID, String name, Integer block, Integer nr) {
 		this.altersKategorieID = altersKategorieID;
 		this.name = name;
@@ -83,23 +83,20 @@ public class AltersKategorie {
 
 		return true;
 	}
-	public Integer getBlock()
-	{
+
+	public Integer getBlock() {
 		return block;
 	}
 
-	public void setBlock(Integer block)
-	{
+	public void setBlock(Integer block) {
 		this.block = block;
 	}
 
-	public Integer getNr()
-	{
+	public Integer getNr() {
 		return nr;
 	}
 
-	public void setNr(Integer nr)
-	{
+	public void setNr(Integer nr) {
 		this.nr = nr;
 
 	}

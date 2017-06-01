@@ -56,7 +56,8 @@ public class RechnungsView implements ViewTemplate {
 
 		this.allePDFgenerieren.addClickListener(event -> {
 			for (Club club : this.clubs) {
-				this.rController.rechnungErstellen(club);
+				// TODO: rennenID
+				// this.rController.rechnungErstellen(club);
 			}
 		});
 

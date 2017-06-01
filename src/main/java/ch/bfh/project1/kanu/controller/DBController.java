@@ -86,7 +86,8 @@ public class DBController {
 	}
 
 	public enum Table_Rangliste {
-		COLUMN_RENNEN_ID("rennen_id"), COLUMN_FAHRER_ID("fahrer_id"), COLUMN_KATEGORIE("kategorie_id"), CLOUMN_ALL("*");
+		COLUMN_RENNEN_ID("rennen_id"), COLUMN_FAHRER_ID("fahrer_id"), COLUMN_KATEGORIE("kategorie_id"), COLUMN_CLUB_ID(
+				"c.club_id"), CLOUMN_ALL("*");
 
 		private final String column;
 
@@ -1216,6 +1217,12 @@ public class DBController {
 
 	public List<Fahrer> ladeFahrermutationslisteAlleMitSuche(String suche) {
 		return selectFahrerBy(Table_Fahrer.COLUMN_FTS, suche);
+	}
+
+	public List<FahrerResultat> ladeAngemeldetenFahrerByClub(Integer clubID, Integer rennenID) {
+		return selectRanglisteBy(
+				new Table_Rangliste[] { Table_Rangliste.COLUMN_CLUB_ID, Table_Rangliste.COLUMN_RENNEN_ID },
+				new Integer[] { clubID, rennenID });
 	}
 
 	/**

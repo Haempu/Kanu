@@ -20,7 +20,6 @@ public class FahrerResultat {
 	private String startzeitEins;
 	private String startzeitZwei;
 
-
 	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kategorie,
 			Integer startnummer, String startzeitEins, String startzeitZwei) {
 		this.fahrer = fahrer;
@@ -32,9 +31,8 @@ public class FahrerResultat {
 		this.setStartzeitEins(startzeitEins);
 		this.setStartzeitZwei(startzeitZwei);
 	}
-	
-	public FahrerResultat(Fahrer fahrer, Rennen rennen, AltersKategorie kat, String s1, String s2, Integer sn)
-	{
+
+	public FahrerResultat(Fahrer fahrer, Rennen rennen, AltersKategorie kat, String s1, String s2, Integer sn) {
 		this.fahrer = fahrer;
 		this.rennen = rennen;
 		kategorie = kat;
@@ -42,9 +40,8 @@ public class FahrerResultat {
 		startzeitEins = s1;
 		startzeitZwei = s2;
 	}
-	
-	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kat)
-	{
+
+	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kat) {
 		this.fahrer = fahrer;
 		this.zeitErsterLauf = zeit1;
 		this.zeitZweiterLauf = zeit2;
@@ -104,11 +101,11 @@ public class FahrerResultat {
 		this.kategorie = kategorie;
 	}
 
-	public int getStartnummer() {
+	public Integer getStartnummer() {
 		return startnummer;
 	}
 
-	public void setStartnummer(int startnummer) {
+	public void setStartnummer(Integer startnummer) {
 		this.startnummer = startnummer;
 	}
 
