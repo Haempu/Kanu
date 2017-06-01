@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -56,10 +57,13 @@ public class RanglistenView implements ViewTemplate {
 		titel.setStyleName("h2");
 		layout.addComponent(titel);
 		Rangliste rangliste = rController.ladeRanglisteRennen(rennen);
+		Button pdf = new Button("PDF generieren");
+		pdf.addClickListener(event -> {
+			//rController.generierePDF("", rangliste);
+		});
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
 		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, ""))); //Damit auch die letzte Kategorie angezeigt wird
-		System.out.println(rangliste.getResultate().size());
 		for(FahrerResultat f : rangliste.getResultate()) 
 		{
 			if(altKat != f.getKategorie().getAltersKategorieID()) 
