@@ -1,10 +1,13 @@
 package ch.bfh.project1.kanu.view;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -14,6 +17,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -22,6 +26,7 @@ import com.vaadin.ui.Window;
 
 import ch.bfh.project1.kanu.controller.RennverwaltungsController;
 import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Rennen;
 
 /**
@@ -35,7 +40,7 @@ public class RennVerwaltungsView implements ViewTemplate {
 
 	private boolean init = false;
 
-	private UI ui; // Haupt GUI
+	//private UI ui; // Haupt GUI
 
 	private FormLayout rennenLayout = new FormLayout();
 
@@ -44,24 +49,28 @@ public class RennVerwaltungsView implements ViewTemplate {
 	// member variabeln
 	private Label titel = new Label("Rennen Verwaltung");
 	private Label lname = new Label("Name");
+	private Label ltitel = new Label("Titel");
 	private Label lort = new Label("Ort");
 	private Label ldatum = new Label("Datum");
 	private Label lzeit = new Label("Zeit");
 	private Label ltore = new Label("Anzahl Tore");
 	private Label lkategorie = new Label("Kategorien");
 	private Label lposten = new Label("Anzahl Posten");
+	private Label lveranstalter = new Label("Veranstalter");
 
 	private TextField tname = new TextField();
+	private TextField ttitel = new TextField();
 	private TextField tort = new TextField();
 	private DateField ddatum = new DateField();
 	private DateField dzeit = new DateField();
 	private TextField ttore = new TextField();
 	private TextField tposten = new TextField();
+	private NativeSelect nveranstalter = new NativeSelect();
 
 	private ListSelect likategorie = new ListSelect();
 
 	// member variabel: Popup fenster
-	private Rennen rennen;
+	//private Rennen rennen;
 
 	// Controller
 	private RennverwaltungsController rController = new RennverwaltungsController();
@@ -73,15 +82,17 @@ public class RennVerwaltungsView implements ViewTemplate {
 	 * 
 	 * @param ui
 	 */
-	public RennVerwaltungsView(UI ui) {
-		this.ui = ui;
+	public RennVerwaltungsView(UI ui) 
+	{
+		//this.ui = ui;
 	}
 
 	/**
 	 * Die Funktion initialisiert die View
 	 */
 	@Override
-	public void viewInitialisieren() {
+	public void viewInitialisieren() 
+	{
 		titel.setStyleName("h2");
 		rennenLayout.addComponent(titel);
 		this.init = true;
@@ -91,18 +102,19 @@ public class RennVerwaltungsView implements ViewTemplate {
 	 * Die Funktion zeigt die View an.
 	 */
 	@Override
-	public void viewAnzeigen(Component inhalt) {
+	public void viewAnzeigen(Component inhalt) 
+	{
 		updateRennen();
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(rennenLayout);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void showPopup(final Rennen rennen) {
-		this.rennen = rennen;
+	private void showPopup(final Rennen rennen) 
+	{
 		boolean neu = rennen.getRennenID() < 1 ? true : false;
 		Button speichern = new Button("Speichern");
-		final GridLayout layout = new GridLayout(2, 8);
+		final GridLayout layout = new GridLayout(2, 10);
 
 		popUpWindow = new Window();
 		popUpWindow.center();
@@ -114,68 +126,98 @@ public class RennVerwaltungsView implements ViewTemplate {
 			rennen.setName(tname.getValue());
 			rennen.setDatumVon(ddatum.getValue());
 			rennen.setDatumBis(dzeit.getValue());
+			rennen.setTitel(ttitel.getValue());
+			rennen.setVeranstalter(new Club((Integer) nveranstalter.getValue(), "", ""));
 			Set<Integer> temp = (Set<Integer>) likategorie.getValue();
 			List<AltersKategorie> kategorien = new ArrayList<AltersKategorie>();
-			for (int id : temp) {
+			for(int id : temp) 
+			{
 				kategorien.add(new AltersKategorie(id, likategorie.getItemCaption(id)));
 			}
 			rennen.setKategorien(kategorien);
-			if (rController.speichereRennen(rennen)) {
+			if (rController.speichereRennen(rennen)) 
+			{
 				updateRennen();
 				popUpWindow.close();
 			}
 		});
 		ddatum.setDateFormat("dd.MM.yyyy HH:mm");
 		dzeit.setDateFormat("dd.MM.yyyy HH:mm");
+		ddatum.setLocale(VaadinSession.getCurrent().getLocale());
+		dzeit.setLocale(VaadinSession.getCurrent().getLocale());
+		ddatum.setResolution(Resolution.MINUTE);
+		dzeit.setResolution(Resolution.MINUTE);
+		nveranstalter.clear();
+		for(Club c : rController.ladeClubs())
+		{
+			nveranstalter.addItem(c.getClubID());
+			nveranstalter.setItemCaption(c.getClubID(), c.getName());
+		}
 		likategorie.clear();
-		for (AltersKategorie kat : rController.ladeKategorien()) {
+		for(AltersKategorie kat : rController.ladeKategorien()) 
+		{
 			likategorie.addItem(kat.getAltersKategorieID());
 			likategorie.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 		}
 		likategorie.setMultiSelect(true);
 		likategorie.setRows(10);
-		if (likategorie.size() == 0) {
+		if(likategorie.size() == 0) 
+		{
 			likategorie.setEnabled(false);
 			likategorie.addItem(-1);
 			likategorie.setItemCaption(-1, "Keine Kategorien");
 			likategorie.setRows(1);
 			speichern.setEnabled(false);
-		} else if (!neu) {
-			for (AltersKategorie ak : rennen.getKategorien()) {
+		} 
+		else if(!neu) 
+		{
+			for (AltersKategorie ak : rennen.getKategorien()) 
+			{
 				likategorie.select(ak.getAltersKategorieID());
 			}
 		}
-		if (!neu) {
+		if(!neu) 
+		{
 			tname.setValue(rennen.getName());
 			ddatum.setValue(rennen.getDatumVon());
 			dzeit.setValue(rennen.getDatumBis());
 			tort.setValue(rennen.getOrt());
 			tposten.setValue(rennen.getAnzPosten() + "");
 			ttore.setValue(rennen.getAnzTore() + "");
-		} else {
+			ttitel.setValue(rennen.getTitel());
+			nveranstalter.select(rennen.getVeranstalter().getClubID());
+		} 
+		else 
+		{
 			tname.setValue("");
 			ddatum.setValue(null);
 			dzeit.setValue(null);
 			tort.setValue("");
 			tposten.setValue("");
 			ttore.setValue("");
+			ttitel.setValue("");
+			nveranstalter.select(nveranstalter.getNullSelectionItemId());
 		}
 
 		layout.addComponent(lname, 0, 0);
 		layout.addComponent(tname, 1, 0);
-		layout.addComponent(ldatum, 0, 1);
-		layout.addComponent(ddatum, 1, 1);
-		layout.addComponent(lzeit, 0, 2);
-		layout.addComponent(dzeit, 1, 2);
-		layout.addComponent(lort, 0, 3);
-		layout.addComponent(tort, 1, 3);
-		layout.addComponent(ltore, 0, 4);
-		layout.addComponent(ttore, 1, 4);
-		layout.addComponent(lposten, 0, 5);
-		layout.addComponent(tposten, 1, 5);
-		layout.addComponent(lkategorie, 0, 6);
-		layout.addComponent(likategorie, 1, 6);
-		layout.addComponent(speichern, 0, 7);
+		layout.addComponent(ltitel, 0, 1);
+		layout.addComponent(ttitel, 1, 1);
+		layout.addComponent(ldatum, 0, 2);
+		layout.addComponent(ddatum, 1, 2);
+		layout.addComponent(lzeit, 0, 3);
+		layout.addComponent(dzeit, 1, 3);
+		layout.addComponent(lveranstalter, 0, 4);
+		layout.addComponent(nveranstalter, 1, 4);
+		layout.addComponent(lort, 0, 5);
+		layout.addComponent(tort, 1, 5);
+		layout.addComponent(ltore, 0, 6);
+		layout.addComponent(ttore, 1, 6);
+		layout.addComponent(lposten, 0, 7);
+		layout.addComponent(tposten, 1, 7);
+		layout.addComponent(lkategorie, 0, 8);
+		layout.addComponent(likategorie, 1, 8);
+		layout.addComponent(speichern, 0, 9);
 
 		layout.setSpacing(true);
 		layout.setMargin(true);
@@ -187,7 +229,9 @@ public class RennVerwaltungsView implements ViewTemplate {
 		UI.getCurrent().addWindow(popUpWindow);
 	}
 
-	private void updateRennen() {
+	@SuppressWarnings("unchecked")
+	private void updateRennen() 
+	{
 		rennenLayout.removeAllComponents();
 		List<Rennen> lrennen = rController.ladeRennen();
 		Label larennen = new Label("Bereits erfasste Rennen:");
@@ -198,15 +242,14 @@ public class RennVerwaltungsView implements ViewTemplate {
 		trennen.addContainerProperty("Ort", String.class, null);
 		trennen.addContainerProperty("Datum", String.class, null);
 		trennen.addContainerProperty("Bearbeiten", Button.class, null);
-		for (Rennen r : lrennen) {
-			// TODO: Rennen ausgeben
-			// Wenn auf Rennen geklickt wird, showPopup mit dem Rennen Objekt
-			// aufrufen (Popup zum Rennen bearbeiten)
+		for (Rennen r : lrennen) 
+		{
 			Object id = trennen.addItem();
 			Item row = trennen.getItem(id);
 			row.getItemProperty("Name").setValue(r.getName());
 			row.getItemProperty("Ort").setValue(r.getOrt());
-			row.getItemProperty("Datum").setValue(r.getDatumVon().toGMTString()); // TODO
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+			row.getItemProperty("Datum").setValue(sdf.format(r.getDatumVon()));
 			Button bbearbeiten = new Button("Bearbeiten");
 			bbearbeiten.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;

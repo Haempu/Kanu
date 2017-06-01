@@ -19,7 +19,7 @@ public class Rennen {
 	private String name;
 	private Date datumVon;
 	private Date datumBis;
-	private String veranstalter; //Kann auch Integer sein (Club ID); falls überhaupt benötigt
+	private Club veranstalter;
 	private String ort;
 	private int anzTore;
 	private int anzPosten;
@@ -28,17 +28,24 @@ public class Rennen {
 	public Rennen() {
 
 	}
-@Deprecated
-	public Rennen(Integer rennenID, String name, Date datum, String ort, Integer anzTore, Integer anzPosten,
+	
+	public Rennen(Integer rennenID)
+	{
+		this.rennenID = rennenID;
+	}
+	
+	public Rennen(Integer rennenID, String name, String titel, Club club, Date datumVon, Date datumBis, String ort, Integer anzTore, Integer anzPosten,
 			List<AltersKategorie> kategorien) {
 		this.rennenID = rennenID;
 		this.name = name;
-		this.datumBis = datum;
-		this.datumVon = datum;
+		this.datumBis = datumBis;
+		this.datumVon = datumVon;
 		this.ort = ort;
 		this.anzPosten = anzPosten;
 		this.anzTore = anzTore;
 		this.kategorien = kategorien;
+		this.titel = titel;
+		veranstalter = club;
 	}
 
 	public Integer getRennenID() {
@@ -83,11 +90,11 @@ public class Rennen {
 		this.datumBis = datum;
 	}
 
-	public String getVeranstalter() {
+	public Club getVeranstalter() {
 		return veranstalter;
 	}
 
-	public void setVeranstalter(String veranstalter) {
+	public void setVeranstalter(Club veranstalter) {
 		this.veranstalter = veranstalter;
 	}
 

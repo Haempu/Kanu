@@ -337,7 +337,7 @@ public class PDFController {
 		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
 		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter(), FONT_STANDARDHEADER));
+		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter().getName(), FONT_STANDARDHEADER));
 		headerZelle.setBorder(Rectangle.NO_BORDER);
 		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
 		headerZelle.setPadding(TABELLENPADDING);

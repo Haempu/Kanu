@@ -200,7 +200,7 @@ public class StrukturView extends UI {
 		
 		this.menu.addMenuItem("Rangliste ", () -> {
 			if (!this.rlView.istInitialisiert()) {
-				rlView.setRennen(new Rennen(2, "", null, "", 0, 0, null)); //TODO weg
+				rlView.setRennen(new Rennen(2)); //TODO weg
 				this.rlView.viewInitialisieren();
 			}
 			this.rlView.viewAnzeigen(this.inhaltPanel);

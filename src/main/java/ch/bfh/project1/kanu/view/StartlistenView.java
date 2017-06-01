@@ -1,5 +1,6 @@
 package ch.bfh.project1.kanu.view;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,10 +35,10 @@ public class StartlistenView implements ViewTemplate {
 
 	private boolean init = false;
 
-	private UI ui; // Haupt GUI
+	//private UI ui; // Haupt GUI
 	private Label titel = new Label("Startlistenverwaltung");
 	private VerticalLayout vLayout = new VerticalLayout();
-	private Button gesamteStartlisteAlsPDF = new Button("Gesamte Startliste als PDF herunterladen");
+	//private Button gesamteStartlisteAlsPDF = new Button("Gesamte Startliste als PDF herunterladen");
 	private StartlistenController sController = new StartlistenController();
 	private Rennen rennen;
 	private List<Rennen> lrennen;
@@ -50,7 +51,7 @@ public class StartlistenView implements ViewTemplate {
 	private ClickListener cladd, clrem;
 
 	public StartlistenView(UI ui) {
-		this.ui = ui;
+		//this.ui = ui;
 	}
 
 	/**
@@ -103,33 +104,32 @@ public class StartlistenView implements ViewTemplate {
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		vLayout.removeAllComponents();
-		layout.removeAllComponents();
-		if (rennen == null) {
+		if (rennen == null) 
+		{
 			lrennen = sController.ladeAlleRennen();
 			zeigeRennen(inhalt);
-		} else if (rennen.getRennenID() == null)
-			throw new IllegalArgumentException("Kein gültiges Rennen angegeben"); // TODO
-																					// Fehlermeldung
-																					// ausgeben
-		else {
-			int i = 0;
+		} 
+		else if(rennen.getRennenID() == null)
+			throw new IllegalArgumentException("Kein gültiges Rennen angegeben");
+		else
+		{
 			block.clear();
-			layout.setRows(3);
 			List<Integer> kats = new ArrayList<Integer>();
 			List<ListSelect> bloecke = sController.ladeBloecke(rennen.getRennenID(), kats);
 			kategorien.clear();
-			for (AltersKategorie kat : rennen.getKategorien()) {
+			for (AltersKategorie kat : rennen.getKategorien()) 
+			{
 				kategorien.addItem(kat.getAltersKategorieID());
 				kategorien.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 			}
-			for (Integer k : kats) {
+			for(Integer k : kats) 
+			{
 				kategorien.removeItem(k);
 			}
-			for (ListSelect ls : bloecke) {
-				if (i > 0) {
-					int rows = layout.getRows();
-					layout.setRows(rows + 2);
-				}
+			int i = 1;
+			for(ListSelect ls : bloecke) 
+			{
+				GridLayout layout = new GridLayout(2, 3);
 				Button tmp = new Button("<<");
 				tmp.setData(ls);
 				tmp.addClickListener(cladd);
@@ -137,14 +137,18 @@ public class StartlistenView implements ViewTemplate {
 				tmp2.setData(ls);
 				tmp2.addClickListener(clrem);
 				block.add(ls);
-				layout.addComponent(ls, 0, i * 2, 0, i * 2 + 1);
-				layout.addComponent(tmp, 1, i * 2);
-				layout.addComponent(tmp2, 1, i * 2 + 1);
+				layout.addComponent(ls, 0, 0, 0, 1);
+				layout.addComponent(tmp, 1, 0);
+				layout.addComponent(tmp2, 1, 1);
 				layout.setComponentAlignment(tmp, Alignment.BOTTOM_CENTER);
 				layout.setComponentAlignment(tmp2, Alignment.TOP_CENTER);
-				i++;
+				Label lblock = new Label("Block " + i);
+				lblock.setStyleName("h2");
+				vLayout.addComponent(lblock);
+				vLayout.addComponent(layout);
 			}
-			if (i == 0) {
+			if(bloecke.size() == 0)
+			{
 				ListSelect tmp1 = new ListSelect();
 				tmp1.setMultiSelect(true);
 				Button tmp = new Button("<<");
@@ -154,21 +158,24 @@ public class StartlistenView implements ViewTemplate {
 				tmp2.setData(tmp1);
 				tmp2.addClickListener(clrem);
 				block.add(tmp1);
+				GridLayout layout = new GridLayout(2, 3);
 				layout.addComponent(tmp1, 0, 0, 0, 1);
 				layout.addComponent(tmp, 1, 0);
 				layout.addComponent(tmp2, 1, 1);
 				layout.setComponentAlignment(tmp, Alignment.BOTTOM_CENTER);
 				layout.setComponentAlignment(tmp2, Alignment.TOP_CENTER);
+				Label lblock = new Label("Block 1");
+				lblock.setStyleName("h2");
+				vLayout.addComponent(lblock);
+				vLayout.addComponent(layout);
 			}
-			if (i > 0)
-				i--;
 
 			// kategorien.setRows(kategorien.size());
 			layout.addComponent(kategorien, 2, 0, 2, layout.getRows() - 1);
 			layout.setComponentAlignment(kategorien, Alignment.MIDDLE_CENTER);
 
 			Button bneu = new Button("Block hinzufügen");
-			layout.addComponent(bneu, 1, i * 2 + 2);
+			layout.addComponent(bneu, 1, 2);
 
 			bneu.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -196,19 +203,23 @@ public class StartlistenView implements ViewTemplate {
 		inhaltsPanel.setContent(vLayout);
 	}
 
-	private void zeigeRennen(Component inhalt) {
+	@SuppressWarnings("unchecked")
+	private void zeigeRennen(Component inhalt)
+	{
 		Table trennen = new Table();
 		trennen.addContainerProperty("Name", String.class, null);
 		trennen.addContainerProperty("Ort", String.class, null);
 		trennen.addContainerProperty("Datum", String.class, null);
 		trennen.addContainerProperty("Blöcke", Button.class, null);
 		trennen.addContainerProperty("Startliste", Button.class, null);
-		for (Rennen r : lrennen) {
+		for (Rennen r : lrennen) 
+		{
 			Object id = trennen.addItem();
 			Item row = trennen.getItem(id);
 			row.getItemProperty("Name").setValue(r.getName());
 			row.getItemProperty("Ort").setValue(r.getOrt());
-			row.getItemProperty("Datum").setValue(r.getDatumVon().toGMTString()); // TODO
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+			row.getItemProperty("Datum").setValue(sdf.format(r.getDatumVon()));
 			Button bbearbeiten = new Button("Blöcke");
 			bbearbeiten.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -237,7 +248,8 @@ public class StartlistenView implements ViewTemplate {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void zeigeStartliste() {
+	private void zeigeStartliste() 
+	{
 		layout.removeAllComponents();
 		List<FahrerResultat> fahrer = sController.ladeStartliste(rennen.getRennenID());
 		Table sl = new Table();
@@ -247,8 +259,10 @@ public class StartlistenView implements ViewTemplate {
 		sl.addContainerProperty("Name", String.class, null);
 		int altKat = -1;
 		int kats = 0;
-		for (FahrerResultat f : fahrer) {
-			if (altKat != f.getKategorie().getAltersKategorieID()) {
+		for(FahrerResultat f : fahrer)
+		{
+			if(altKat != f.getKategorie().getAltersKategorieID()) 
+			{
 				altKat = f.getKategorie().getAltersKategorieID();
 				Object id = sl.addItem();
 				Item row = sl.getItem(id);
@@ -266,13 +280,14 @@ public class StartlistenView implements ViewTemplate {
 			row.getItemProperty("Name").setValue(f.getFahrer().getVorname() + " " + f.getFahrer().getName()); // TODO
 		}
 		sl.setPageLength(fahrer.size() + kats);
-		if (fahrer.size() == 0)
+		if(fahrer.size() == 0)
 			layout.addComponent(new Label("Noch keine Startliste vorhanden"));
 		else
 			layout.addComponent(sl);
 	}
 
-	private void addBox() {
+	private void addBox() 
+	{
 		ListSelect tmp = new ListSelect();
 		tmp.setMultiSelect(true);
 		Button badd = new Button("<<");

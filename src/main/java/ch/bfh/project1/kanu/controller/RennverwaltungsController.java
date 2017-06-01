@@ -3,6 +3,7 @@ package ch.bfh.project1.kanu.controller;
 import java.util.List;
 
 import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Rennen;
 
 public class RennverwaltungsController {
@@ -29,6 +30,11 @@ public class RennverwaltungsController {
 	public List<Rennen> ladeRennen()
 	{
 		return db.ladeRennen();
+	}
+	
+	public List<Club> ladeClubs()
+	{
+		return db.ladeClubs();
 	}
 	
 	/**

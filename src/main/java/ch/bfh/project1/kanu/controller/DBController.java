@@ -429,23 +429,26 @@ public class DBController {
 	 */
 	public <T> List<Rennen> selectRennenBy(Table_Rennen column, T value) 
 	{
-		String selectStmt = "SELECT * FROM rennen where " + column.getValue();
+		String selectStmt = "SELECT * FROM rennen JOIN club USING(club_id) where " + column.getValue();
 		if (value != null)
 			selectStmt += " = '" + value + "'";
 		else
 			selectStmt += " IS NULL";
 		if (column.equals(Table_Rennen.COLUMN_ALL))
-			selectStmt = "SELECT * FROM rennen";
+			selectStmt = "SELECT * FROM rennen JOIN club USING(club_id)";
 		List<Rennen> rennen = new ArrayList<Rennen>();
 		for (Row row : executeSelect(selectStmt)) {
-			Integer rennenID = (Integer) row.getRow().get(0).getKey();
-			String name = (String) row.getRow().get(1).getKey();
-			Date datum = (Date) row.getRow().get(2).getKey();
-			Time zeit = (Time) row.getRow().get(3).getKey();
-			String ort = (String) row.getRow().get(4).getKey();
-			Integer anzTore = (Integer) row.getRow().get(5).getKey();
-			Integer anzPosten = (Integer) row.getRow().get(6).getKey();
-			// Zeit berechnen //TODO titel, veranstalter etc.
+			Integer clubID = (Integer) row.getRow().get(0).getKey();
+			Integer rennenID = (Integer) row.getRow().get(1).getKey();
+			String name = (String) row.getRow().get(2).getKey();
+			String titel = (String) row.getRow().get(3).getKey();
+			Date datum = (Date) row.getRow().get(4).getKey();
+			Date datum_bis = (Date) row.getRow().get(5).getKey();
+			Time zeit = (Time) row.getRow().get(6).getKey();
+			String ort = (String) row.getRow().get(7).getKey();
+			Integer anzTore = (Integer) row.getRow().get(8).getKey();
+			Integer anzPosten = (Integer) row.getRow().get(9).getKey();
+			String club = (String) row.getRow().get(12).getKey();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(datum);
 			Calendar temp = Calendar.getInstance();
@@ -453,7 +456,9 @@ public class DBController {
 			cal.set(Calendar.HOUR_OF_DAY, temp.get(Calendar.HOUR_OF_DAY));
 			cal.set(Calendar.MINUTE, temp.get(Calendar.MINUTE));
 			cal.set(Calendar.SECOND, temp.get(Calendar.SECOND));
-			rennen.add(new Rennen(rennenID, name, cal.getTime(), ort, anzTore, anzPosten,
+			Calendar bis = Calendar.getInstance();
+			bis.setTime(datum_bis);
+			rennen.add(new Rennen(rennenID, name, titel, new Club(clubID, club, false), cal.getTime(), bis.getTime(), ort, anzTore, anzPosten,
 					selectKategorieRennenBy(rennenID)));
 		}
 		return rennen;
@@ -574,7 +579,6 @@ public class DBController {
 				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2 OR t.lauf IS NULL) as b USING(fahrer_id, rennen_id, kategorie_id) JOIN "
 				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) JOIN kategorien AS k USING(kategorie_id) " + where + " ORDER BY kategorie_id;";
 		List<FahrerResultat> resultat = new ArrayList<FahrerResultat>();
-		System.out.println(selectStmt);
 		for (Row row : executeSelect(selectStmt)) {
 			java.math.BigDecimal zeit1 = row.getRow().get(0).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(0).getKey();
 			java.math.BigDecimal zeit2 = row.getRow().get(1).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(1).getKey();
@@ -1323,19 +1327,19 @@ public class DBController {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.setTime(rennen.getDatumVon());
 		String zeit = String.format("%02d:%02d:00", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-		System.out.println(zeit); //TODO zeit, titel, veranstalter (db anpassen!)
+		System.out.println(zeit);
 		if (rennen.getRennenID() < 1) {
-			res = executeUpdate("INSERT INTO rennen (name, datum, zeit, ort, anz_tore, anz_posten) VALUES " + "('"
-					+ rennen.getName() + "', FROM_UNIXTIME(" + rennen.getDatumVon().getTime() / 1000 + "), '" + zeit
-					+ "', " + "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten()
+			res = executeUpdate("INSERT INTO rennen (name, titel, club_id, datum, datum_bis, zeit, ort, anz_tore, anz_posten) VALUES " + "('"
+					+ rennen.getName() + "', '" + rennen.getTitel() + "', '" + rennen.getVeranstalter().getClubID() + "', FROM_UNIXTIME(" + rennen.getDatumVon().getTime() / 1000 + "), "
+					+ "FROM_UNIXTIME(" + rennen.getDatumBis().getTime() / 1000 + "), '" + zeit + "', " + "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten()
 					+ ");");
 			if (res.isSuccess())
 				rennen.setRennenID(res.generatedIDs.get(0));
 		} else {
-			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', datum = FROM_UNIXTIME("
+			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', titel = '" + rennen.getTitel() +"', datum = FROM_UNIXTIME("
 					+ rennen.getDatumVon().getTime() / 1000 + "), " + "zeit = '" + zeit + "', ort = '" + rennen.getOrt()
-					+ "', anz_tore = " + rennen.getAnzTore() + ", " + "anz_posten = " + rennen.getAnzPosten()
-					+ " WHERE rennen_id = " + rennen.getRennenID() + ";");
+					+ "', anz_tore = " + rennen.getAnzTore() + ", " + "anz_posten = " + rennen.getAnzPosten() + ", datum_bis = FROM_UNIXTIME("
+					+ rennen.getDatumVon().getTime() / 1000 + "), club_id = " + rennen.getVeranstalter().getClubID() + " WHERE rennen_id = " + rennen.getRennenID() + ";");
 			if (res.isSuccess())
 				res = executeUpdate("DELETE FROM kat_rennen WHERE rennen_id = " + rennen.getRennenID());
 		}
