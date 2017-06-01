@@ -31,8 +31,42 @@ public class RechnungsController {
 	}
 
 	public void rechnungErstellen(Club club) {
-		// dbController.
-		// PDFController.generierePDF(pfad, tabellentitel, HEADER, daten);
+		//TODO: aus DB laden
+	/*	String pfad = "C:/Daten/Patrik/";
+		Rennen rennen = dbController.getInstance().ladeRennen(2);
+		List<String> tabellenname = new ArrayList<String>();
+		tabellenname.add("K1-Damen Benjamin");
+		tabellenname.add("K1-Damen Schüler");
+		tabellenname.add("K1-Herren Schüler");
+		List<List<String>> fahrerliste = new ArrayList<>();
+		List<String> fahrerZeile = new ArrayList<>();
+		fahrerZeile.add("76");
+		fahrerZeile.add("");
+		fahrerZeile.add("Huber Wayra");
+		fahrerZeile.add("20.00CHF");
+		fahrerZeile.add("");
+		fahrerliste.add(fahrerZeile);
+		fahrerZeile.add("78");
+		fahrerZeile.add("");
+		fahrerZeile.add("Huber Nina");
+		fahrerZeile.add("20.00CHF");
+		fahrerZeile.add("");
+		fahrerliste.add(fahrerZeile);
+		/*fahrerZeile.add("78");
+		fahrerZeile.add("");
+		fahrerZeile.add("Huber Nina");
+		fahrerZeile.add("20.00CHF");
+		fahrerZeile.add("");
+		fahrerliste.add(fahrerZeile);
+		try {
+			PDFController.generierePdfRechnung(pfad, rennen, club.getName(), tabellenname, fahrerliste);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	public void rechnungBezahlen(Club club, boolean bezahlt) {

@@ -3,8 +3,6 @@ package ch.bfh.project1.kanu.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.itextpdf.text.BaseColor;
@@ -35,7 +33,7 @@ import ch.bfh.project1.kanu.model.Rennen;
  */
 public class PDFController {
 	// TODO: Nur zum testen.
-	public static void main(String args[]) throws IOException, DocumentException { 
+	/*public static void main(String args[]) throws IOException, DocumentException { 
 		Rennen rennen = new Rennen();
 	  rennen.setTitel("45. Aaremeisterschaft"); 
 	  rennen.setName("Kanuslalom");
@@ -95,7 +93,7 @@ public class PDFController {
 	  tabelleninhalt.add(fahrer);
 	  tabelleninhalt.add(fahrer1);
 	  new PDFController().generierePdfRangliste(dest, rennen, tabellenname, tabelleninhalt);
-	  }
+	  }*/
 	
 	// Allgemein
 	private static float LAENGE_A4_SEIT = 842;
@@ -119,6 +117,7 @@ public class PDFController {
 	// Zellengrössen
 	private static float[] ZELLENGROESSE_RANGLISTE = {5, 3, 20, 7, 7, 7, 7, 5, 7, 7, 7, 5, 7, 6};
 	private static float[] ZELLENGROESSE_STARTLISTE = {3, 20, 7, 20, 10, 10, 10, 10, 10};
+	private static float[] ZELLENGROESSE_RECHNUNG = {10, 30, 20, 20, 20};
 	
 	// Tabellenheaderinhalt
 	private static String[] INHALT_RANGLISTE = {"Rang", "Nr.", "Name", "Club", "Zeit", "Fehler", "Total", "Rang", "Zeit", "Fehler", "Total", "Rang", "Total", "Diff"};
@@ -175,43 +174,6 @@ public class PDFController {
 			this.tabellenheader.writeSelectedRows(HEADER_STARTZEILE, HEADER_ENDZEILE, EINZUG_OBEN, HEADER_Y_POS - standardheader.getTotalHeight(), writer.getDirectContent());
 		}
 	}	 
-
-	private static PdfPTable erstelleStandardheader(Rennen rennen) {
-		PdfPTable tabelleHeader = new PdfPTable(1);
-		tabelleHeader.setTotalWidth(TABELLENBREITE);
-		tabelleHeader.setWidthPercentage(TABELLENBREITE_PROZENT);
-		PdfPCell headerZelle = new PdfPCell(new Phrase(rennen.getTitel(), FONT_STANDARDHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
-		headerZelle.setPadding(TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getName() + ", " + rennen.getDatumVon().getTime() + " - " + rennen.getDatumBis().getTime(), FONT_STANDARDHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
-		headerZelle.setPadding(TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter(), FONT_STANDARDHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
-		headerZelle.setPadding(TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase());
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.75f);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase());
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.25f);
-		headerZelle.setBackgroundColor(HEADER_HINTERGRUNDFARBE);
-		tabelleHeader.addCell(headerZelle);
-		return tabelleHeader;
-	}
 	
 	public static void generierePdfRangliste(String pfad, Rennen rennen, List<String> tabellenname, List<List<String>> tabelleninhalt) throws IOException, DocumentException {
 		// Neues File generieren
@@ -307,6 +269,93 @@ public class PDFController {
 		dokument.close();
 	}
 	
+	public static void generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<String> tabellenname, List<List<String>> tabelleninhalt) throws IOException, DocumentException {
+		// Neues File generieren
+		pfad = pfad + "Abrechnung_" + clubname + ".pdf";
+		File file = new File(pfad);
+		file.getParentFile().mkdirs();
+		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, INHALT_EINZUG_OBEN + OFFSET_RANGLISTE, INHALT_EINZUG_UNTEN);
+		PdfWriter writer = PdfWriter.getInstance(dokument, new FileOutputStream(pfad));
+		// Dokumentheader definieren
+		Dokumentheader dokumentheader = new Dokumentheader(erstelleStandardheader(rennen), new PdfPTable(1));
+		writer.setPageEvent(dokumentheader);
+		// Dokument erstellen
+		dokument.open();
+		// Dokumentinhalt definieren
+		Paragraph paragDokumentname = new Paragraph("Abrechnung", FONT_DOKUMENTNAME);
+		paragDokumentname.setSpacingBefore(SPACING_VOR_TABELLENTITEL);
+		paragDokumentname.setAlignment(Element.ALIGN_CENTER);
+		Paragraph paragClubname = new Paragraph(clubname, FONT_DOKUMENTNAME);
+		paragClubname.setSpacingBefore(SPACING_VOR_TABELLENTITEL);
+		dokument.add(paragDokumentname);
+		dokument.add(paragDokumentname);
+		// Für jede Tabelle...
+		for (int i = 0; i < tabellenname.size(); i++) {
+			Paragraph paragTabellenname = new Paragraph(tabellenname.get(i), FONT_TABELLENNAME);
+			PdfPTable tabelle = new PdfPTable(tabelleninhalt.get(0).size());
+			tabelle.setTotalWidth(TABELLENBREITE);
+			tabelle.setWidths(ZELLENGROESSE_RECHNUNG);
+			tabelle.setWidthPercentage(TABELLENBREITE_PROZENT);
+			tabelle.setHorizontalAlignment(Element.ALIGN_CENTER);
+			// ...zu jeder Zeile...
+			for (int j = 0; j < tabelleninhalt.size(); j ++) {
+				// ...alle Zellen hinzufügen
+				for (int k = 0; k < tabelleninhalt.get(j).size(); k++) {
+					PdfPCell zelle = new PdfPCell();
+					if (k == 12) {
+						zelle.setPhrase(new Phrase(tabelleninhalt.get(j).get(k), FONT_TABELLENINHALT_FETT));
+					} else {
+						zelle.setPhrase(new Phrase(tabelleninhalt.get(j).get(k), FONT_TABELLENINHALT));
+					}
+					zelle.setBorder(Rectangle.NO_BORDER);
+					tabelle.addCell(zelle);
+				}
+			}
+			// Daten zum Dokument hinzufügen
+			paragTabellenname.add(tabelle);
+			dokument.add(paragTabellenname);
+		}
+		// Dokument schliessen
+		dokument.close();
+	}
+	
+	private static PdfPTable erstelleStandardheader(Rennen rennen) {
+		PdfPTable tabelleHeader = new PdfPTable(1);
+		tabelleHeader.setTotalWidth(TABELLENBREITE);
+		tabelleHeader.setWidthPercentage(TABELLENBREITE_PROZENT);
+		PdfPCell headerZelle = new PdfPCell(new Phrase(rennen.getTitel(), FONT_STANDARDHEADER));
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
+		headerZelle.setPadding(TABELLENPADDING);
+		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
+		tabelleHeader.addCell(headerZelle);
+		headerZelle = new PdfPCell(new Phrase(rennen.getName() + ", " + rennen.getDatumVon().getTime() + " - " + rennen.getDatumBis().getTime(), FONT_STANDARDHEADER));
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
+		headerZelle.setPadding(TABELLENPADDING);
+		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
+		tabelleHeader.addCell(headerZelle);
+		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter(), FONT_STANDARDHEADER));
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(SCHRIFT_GR_STANDARDHEADER + 2 * TABELLENPADDING);
+		headerZelle.setPadding(TABELLENPADDING);
+		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
+		tabelleHeader.addCell(headerZelle);
+		headerZelle = new PdfPCell(new Phrase());
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.75f);
+		tabelleHeader.addCell(headerZelle);
+		headerZelle = new PdfPCell(new Phrase());
+		headerZelle.setBorder(Rectangle.NO_BORDER);
+		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.25f);
+		headerZelle.setBackgroundColor(HEADER_HINTERGRUNDFARBE);
+		tabelleHeader.addCell(headerZelle);
+		return tabelleHeader;
+	}
+	
 	private static PdfPTable erstelleRanglistenheader() throws DocumentException {
 		PdfPTable ranglistenheader = new PdfPTable(INHALT_RANGLISTE.length);
 		ranglistenheader.setTotalWidth(TABELLENBREITE);
@@ -351,124 +400,4 @@ public class PDFController {
 		return ranglistenheader;
 	}
 	
-	/**
-	 * Generiert eine oder mehrere Tabellen in einem PDF-Dokument.
-	 * 
-	 * @param pfad
-	 *            - Speicherort des Dokuments
-	 * @param rennen
-	 *            - Aktuelles Rennen
-	 * @param dokumenttitel
-	 *            - Titel des Dokuments
-	 * @param tabellentitel
-	 *            - Liste von Strings mit den jeweiligen Tabellentiteln.
-	 *            ACHTUNG: Muss gleich viele Einträge haben wie @param daten!
-	 * @param header
-	 *            - Enthält den Header der Tabellen. Ist immer bei allen
-	 *            Tabellen der gleiche. ACHTUNG: Muss so viele Einträge haben
-	 *            wie eine Tabelle Spalten hat!
-	 * @param daten
-	 *            - Enthält die Daten der Tabellen in drei Ebenen. Ebene 1
-	 *            ("Daten"): Liste von Tabellen. Jeder Eintrag ist eine ganze
-	 *            Tabelle. Muss gleich viele Einträge haben wie @param
-	 *            tabellentitel. Ebene 2 ("Tabelle"): Liste von einzelnen
-	 *            Tabelleneinträgen. Jeder Eintrag ist eine Tabellenzeile. Ebene
-	 *            3 ("Zeile"): Liste von Zelleneinträgen. Jeder Eintrag ist ein
-	 *            String, der Schlussendlich in einer einzelnen Zelle steht.
-	 * @throws IOException
-	 * @throws DocumentException
-	 *//*
-	public static void generierePDF(String pfad, Rennen rennen, String dokumenttitel, List<String> tabellentitel,
-			String[] header, List<List<List<String>>> daten) throws IOException, DocumentException {
-		// Daten bereitstellen
-		int anzTabellen = daten.size();
-		int anzSpalten = header.length;
-		int anzZeilen = daten.get(0).size();
-
-		// Neues File generieren
-		File file = new File(pfad);
-		file.getParentFile().mkdirs();
-		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, EINZUG_INHALT_OBEN, EINZUG_UNTEN);
-		PdfWriter writer = PdfWriter.getInstance(dokument, new FileOutputStream(pfad));
-
-		// Dokument erstellen
-		dokument.open();
-
-		// Dokumentheader
-		PdfPTable tabelleHeader = new PdfPTable(1);
-		tabelleHeader.setTotalWidth(HEADER_TABELLENBREITE);
-		PdfPCell headerZelle = new PdfPCell(new Phrase(rennen.getTitel(), FONT_DOKUMENTHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_TABELLENSCHRIFTGROESSE + 2 * HEADER_TABELLENPADDING);
-		headerZelle.setPadding(HEADER_TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getName() + ", " + rennen.getDatumVon().getTime() + " - " + rennen.getDatumBis().getTime(), FONT_DOKUMENTHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_TABELLENSCHRIFTGROESSE + 2 * HEADER_TABELLENPADDING);
-		headerZelle.setPadding(HEADER_TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase(rennen.getVeranstalter(), FONT_DOKUMENTHEADER));
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_TABELLENSCHRIFTGROESSE + 2 * HEADER_TABELLENPADDING);
-		headerZelle.setPadding(HEADER_TABELLENPADDING);
-		headerZelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		headerZelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase());
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.75f);
-		tabelleHeader.addCell(headerZelle);
-		headerZelle = new PdfPCell(new Phrase());
-		headerZelle.setBorder(Rectangle.NO_BORDER);
-		headerZelle.setFixedHeight(HEADER_ABSCHLUSS * 0.25f);
-		headerZelle.setBackgroundColor(HINTERGRUNDFARBE);
-		tabelleHeader.addCell(headerZelle);
-		// Titel zum Header hinzufügen
-		
-		
-		// Daten an Header übergeben
-		Dokumentheader dokumentheader = new Dokumentheader(tabelleHeader);
-		writer.setPageEvent(dokumentheader);
-
-		// Dokumenttitel
-		Paragraph paragDokumenttitel = new Paragraph(dokumenttitel, FONT_DOKUMENTTITEL);
-		paragDokumenttitel.setSpacingBefore(1);
-		paragDokumenttitel.setAlignment(Element.ALIGN_CENTER);
-		dokument.add(paragDokumenttitel);
-
-		// Tabellen erstellen
-		// Ebene "Daten"
-		for (int i = 0; i < anzTabellen; i++) {
-			// Ebene "Tabelle"
-			PdfPTable tabelle = new PdfPTable(anzSpalten);
-			for (int j = 0; j < anzSpalten; j++) {
-				// Ebene "Zeile"
-				PdfPCell zelle = new PdfPCell(new Phrase(header[j], FONT_TABELLENHEADER));
-				zelle.setBackgroundColor(HINTERGRUNDFARBE);
-				zelle.setBorder(Rectangle.NO_BORDER);
-				zelle.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				zelle.setHorizontalAlignment(Element.ALIGN_CENTER);
-				tabelle.addCell(zelle);
-			}
-			for (int k = 0; k < anzZeilen; k++) {
-				// Ebene "Tabelle"
-				for (int l = 0; l < anzSpalten; l++) {
-					// Ebene "Zeile"
-					tabelle.addCell(daten.get(i).get(k).get(l));
-				}
-			}
-
-			// Tabellentitel und Tabelle an Dokument übergeben
-			Paragraph paragTabellentitel = new Paragraph(tabellentitel.get(i), FONT_TABELLENTITEL);
-			paragTabellentitel.setSpacingBefore(SPACING_VOR_TABELLENTITEL);
-			dokument.add(paragTabellentitel);
-			tabelle.setSpacingBefore(SPACING_VOR_TABELLE);
-			dokument.add(tabelle);
-		}
-		dokument.close();
-	}*/
 }

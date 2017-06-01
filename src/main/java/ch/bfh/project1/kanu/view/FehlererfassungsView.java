@@ -172,6 +172,9 @@ public class FehlererfassungsView implements ViewTemplate {
 					hl.addComponent(lauf2);
 					hl.setMargin(true);
 					Button btnSpeichern = new Button("Speichern");
+					btnSpeichern.addClickListener(speichernEvent -> {
+						
+					});
 					popupLayoutForm.addComponent(hl);
 					popupLayoutForm.addComponent(btnSpeichern);
 					popupLayoutForm.addStyleName("popup");
@@ -185,12 +188,7 @@ public class FehlererfassungsView implements ViewTemplate {
 				row.getItemProperty(COLUMN_BEARBEITEN).setValue(bearbeiten);
 			}
 	}
-
-	@Override
-	public boolean istInitialisiert() {
-		return this.init;
-	}
-
+	
 	private Table generiereTabelleFehlererfassung(Integer fahrerID, int lauf) {
 		Table tabelle = new Table();
 		tabelle.setImmediate(true);
@@ -219,6 +217,11 @@ public class FehlererfassungsView implements ViewTemplate {
 			row.getItemProperty(COLUMN_VERFEHLT).setValue(new CheckBox("", verpasst));
 		}
 		return tabelle;
+	}
+	
+	@Override
+	public boolean istInitialisiert() {
+		return this.init;
 	}
 }
 
