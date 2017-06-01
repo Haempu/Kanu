@@ -24,6 +24,7 @@ public class FahrerResultat {
 	private String startzeitEins;
 	private String startzeitZwei;
 
+	@Deprecated //Wird nirgendwo gebraucht --> löschen!
 	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kategorie,
 			Integer startnummer, String startzeitEins, String startzeitZwei) {
 		this.fahrer = fahrer;
@@ -89,10 +90,10 @@ public class FahrerResultat {
 		return zeitZweiterLauf;
 	}
 	
-	public String getZeitTotal() { //TODO formatieren!
-		if(zeitZweiterLauf == 0)
-			return zeitErsterLauf + strafzeit1 + "";
-		return Math.min(zeitErsterLauf + strafzeit1, zeitZweiterLauf + strafzeit2) + "";
+	public Integer getZeitTotal() { //TODO formatieren!
+		if(gesamtzeit2 == 0)
+			return gesamtzeit1;
+		return Math.min(gesamtzeit1, gesamtzeit2);
 	}
 	
 	public Integer getZeitCompare()

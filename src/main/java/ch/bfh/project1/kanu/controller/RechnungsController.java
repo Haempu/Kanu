@@ -54,6 +54,7 @@ public class RechnungsController {
 		}
 		try {
 			PDFController.generierePdfRechnung("C:/Daten/Patrik/", this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
+//			PDFController.generierePdfRechnung(pfad, this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
