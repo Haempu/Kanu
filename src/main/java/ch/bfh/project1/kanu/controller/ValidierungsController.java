@@ -98,11 +98,13 @@ public class ValidierungsController {
 
 			@Override
 			public void validate(Object value) throws InvalidValueException {
-				SimpleDateFormat df = new SimpleDateFormat("mm:ss.SSS");
-				try {
-					df.parse(textfield.getValue());
-				} catch (ParseException e) {
-					throw new InvalidValueException("Format muss 'Minuten:Sekunden.Milisekunden' sein");
+				if (textfield.getValue() != null && !textfield.getValue().equals("")) {
+					SimpleDateFormat df = new SimpleDateFormat("mm:ss.SSS");
+					try {
+						df.parse(textfield.getValue());
+					} catch (ParseException e) {
+						throw new InvalidValueException("Format muss 'Minuten:Sekunden.Milisekunden' sein");
+					}
 				}
 			}
 		});

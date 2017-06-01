@@ -48,21 +48,18 @@ public class RanglistenView implements ViewTemplate {
 	 */
 	@Override
 	public void viewAnzeigen(Component inhalt) {
-		if(rennen == null)
+		if (rennen == null)
 			throw new IllegalArgumentException("Kein Rennen angegeben");
 		layout.removeAllComponents();
 		Rangliste rangliste = db.ladeRanglisteRennen(rennen);
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
 		rangliste.getResultate().add(new FahrerResultat(null, null, null, null, new AltersKategorie(-2, "")));
-		for(FahrerResultat f : rangliste.getResultate())
-		{
-			if(altKat != f.getKategorie().getAltersKategorieID())
-			{
+		for (FahrerResultat f : rangliste.getResultate()) {
+			if (altKat != f.getKategorie().getAltersKategorieID()) {
 				altKat = f.getKategorie().getAltersKategorieID();
-				if(res.size() > 0)
-				{
-					//Tabelle anzeigen
+				if (res.size() > 0) {
+					// Tabelle anzeigen
 					Collections.sort(res, new ResultatComparator());
 					Table trangliste = new Table();
 					trangliste.addContainerProperty("#", String.class, null);
@@ -70,14 +67,14 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.addContainerProperty("Name", String.class, null);
 					trangliste.addContainerProperty("Zeit", String.class, null);
 					int i = 1;
-					for (FahrerResultat r : res)
-					{
+					for (FahrerResultat r : res) {
 						Object id = trangliste.addItem();
 						Item row = trangliste.getItem(id);
 						row.getItemProperty("#").setValue(i + "");
 						row.getItemProperty("Vorname").setValue(r.getFahrer().getVorname());
 						row.getItemProperty("Name").setValue(r.getFahrer().getName());
-						row.getItemProperty("Zeit").setValue(Math.min(r.getZeitErsterLauf(), r.getZeitZweiterLauf()) + "");
+						row.getItemProperty("Zeit")
+								.setValue(Math.min(r.getZeitErsterLauf(), r.getZeitZweiterLauf()) + "");
 						i++;
 					}
 					trangliste.setPageLength(res.size());
@@ -88,7 +85,7 @@ public class RanglistenView implements ViewTemplate {
 			}
 			res.add(f);
 		}
-		
+
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(layout);
 	}

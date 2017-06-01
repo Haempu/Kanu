@@ -195,8 +195,14 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 				speichern.addClickListener(event -> {
 					if (this.laufzeitEins.isValid() && this.laufzeitZwei.isValid()) {
-						int zeit1 = this.zController.getLaufzeitInMilisekunden(this.laufzeitEins.getValue());
-						int zeit2 = this.zController.getLaufzeitInMilisekunden(this.laufzeitZwei.getValue());
+						Integer zeit1 = null;
+						Integer zeit2 = null;
+						if (!this.laufzeitEins.getValue().equals("")) {
+							zeit1 = this.zController.getLaufzeitInMilisekunden(this.laufzeitEins.getValue());
+						}
+						if (!this.laufzeitZwei.getValue().equals("")) {
+							zeit2 = this.zController.getLaufzeitInMilisekunden(this.laufzeitZwei.getValue());
+						}
 
 						fr.setZeitErsterLauf(zeit1);
 						fr.setZeitZweiterLauf(zeit2);
@@ -211,6 +217,9 @@ public class ZeiterfassungsView implements ViewTemplate {
 
 				zeitErfassen.addClickListener(event -> {
 
+					FahrerResultat newFahrerResultat = this.zController.ladeAngemeldetenFahrer(f.getFahrerID(),
+							kategorieID, rennenID);
+
 					FormLayout popupLayoutForm = new FormLayout();
 					this.startnummerText.setValue(Integer.toString(fr.getStartnummer()));
 					this.vornameText.setValue(f.getVorname());
@@ -218,12 +227,14 @@ public class ZeiterfassungsView implements ViewTemplate {
 					this.clubText.setValue(f.getClub().getName());
 
 					if (fr.getZeitErsterLauf() != null) {
-						this.laufzeitEins.setValue(this.zController.getLaufzeitInFormat(fr.getZeitErsterLauf()));
+						this.laufzeitEins
+								.setValue(this.zController.getLaufzeitInFormat(newFahrerResultat.getZeitErsterLauf()));
 					} else {
 						this.laufzeitEins.setValue("");
 					}
 					if (fr.getZeitErsterLauf() != null) {
-						this.laufzeitZwei.setValue(this.zController.getLaufzeitInFormat(fr.getZeitZweiterLauf()));
+						this.laufzeitZwei
+								.setValue(this.zController.getLaufzeitInFormat(newFahrerResultat.getZeitZweiterLauf()));
 					} else {
 						this.laufzeitZwei.setValue("");
 					}
