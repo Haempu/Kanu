@@ -63,7 +63,7 @@ public class PDFController {
 	private static float[] ZELLENGROESSE_RECHNUNG = {5, 5, 50, 20, 20};
 	
 	// Tabellenheaderinhalt
-	private static String[] INHALT_RANGLISTE = {"Rang", "Nr.", "Name", "Club", "Zeit", "Fehler", "Total", "Zeit", "Fehler", "Total", "Total", "Diff"};
+	private static String[] INHALT_RANGLISTE = {"Rang", "Nr.", "Name", "Club", "Zeit", "Fehler", "Total", "Zeit", "Fehler", "Total", "Total", "Differenz"};
 	private static String[] INHALT_STARTLISTE = {"Nr.", "Name", "Club", "Wohnort", "Block", "1. Lauf", "", "2. Lauf", ""}; // Leerstrings weil die Anzahl der Objekte im Array die Anzahl Tabellenspalten bestimmt
 	
 	// Tabellenoffset
@@ -152,6 +152,8 @@ public class PDFController {
 		paragDokumentname.setAlignment(Element.ALIGN_CENTER);
 		dokument.add(paragDokumentname);
 		String tabellentitel = "";
+		int tabellenerster = 0;
+		int rang = 0;
 		Paragraph paragTabellenname = null;
 		PdfPTable tabelle = null;
 		List<FahrerResultat> resultate = rangliste.getResultate();
@@ -159,6 +161,8 @@ public class PDFController {
 			FahrerResultat fr = resultate.get(i);
 			// Neue Tabelle mit Titel wenn Rennkategorie gewechselt hat (daten.get(i).get(0) = Rennkategorie)
 			if (!tabellentitel.equals(fr.getKategorie().getName())) {
+				rang = 1;
+				tabellenerster = i;
 				tabellentitel = fr.getKategorie().getName();
 				paragTabellenname = new Paragraph(tabellentitel, FONT_TABELLENNAME);
 				tabelle = new PdfPTable(ZELLENGROESSE_RANGLISTE);
@@ -170,7 +174,7 @@ public class PDFController {
 			SimpleDateFormat sdfMin = new SimpleDateFormat("mm:ss.S");
 			SimpleDateFormat sdfSek = new SimpleDateFormat("ss.S");
 			PdfPCell zelle = new PdfPCell();
-			zelle.setPhrase(new Phrase("" + i, FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(""+rang, FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
 			zelle.setPhrase(new Phrase("" + fr.getStartnummer(), FONT_TABELLENINHALT));
@@ -185,27 +189,28 @@ public class PDFController {
 			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getZeitErsterLauf())), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getStrafzeit1())), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(fr.getStrafzeit1().toString(), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getGesamtzeit1())), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(renderMilli(fr.getGesamtzeit1()), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
 			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getZeitZweiterLauf())), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getStrafzeit2())), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(fr.getStrafzeit2().toString(), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getGesamtzeit2())), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(renderMilli(fr.getGesamtzeit2()), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date(fr.getZeitTotal())), FONT_TABELLENINHALT_FETT));
+			zelle.setPhrase(new Phrase(renderMilli(fr.getZeitTotal()), FONT_TABELLENINHALT_FETT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(sdfMin.format(new Date((resultate.get(0).getZeitTotal() - fr.getZeitTotal()))), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(renderMilli((resultate.get(tabellenerster).getZeitTotal() - fr.getZeitTotal())), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
+			rang++;
 			// Checken ob Abschluss der Tabelle erreicht
 			if (!tabellentitel.equals(resultate.get(i+1).getKategorie().getName())) {
 				paragTabellenname.add(tabelle);
@@ -420,5 +425,19 @@ public class PDFController {
 		tabelleHeader.addCell(headerZelle);
 		return tabelleHeader;
 	}
+	
+	/**
+	 * Gibt eine Zahl in ms im Format mm:ss.S aus.
+	 * @param zahl - Zahl in ms
+	 * @return
+	 */
+	private static String renderMilli(Integer zahl)
+	 {
+	  Integer hs = (zahl % 1000) / 100;
+	  Integer s = (zahl / 1000) % 60;
+	  Integer m = zahl / 60000;
+	  String string = String.format("%02d:%02d.%d", m, s, hs);
+	  return string;
+	 }
 	
 }
