@@ -7,16 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.itextpdf.text.DocumentException;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-
 import ch.bfh.project1.kanu.controller.RanglistenController;
 import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.FahrerResultat;
@@ -26,6 +16,16 @@ import ch.bfh.project1.kanu.util.KanuFileDownloader;
 import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
 import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
 import ch.bfh.project1.kanu.util.ResultatComparator;
+
+import com.itextpdf.text.DocumentException;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -70,14 +70,17 @@ public class RanglistenView implements ViewTemplate {
 		}
 		ns.select(rennen.getRennenID());
 		ns.addValueChangeListener(event -> {
+			if(ns.getValue() == null)
+				return;
 			setRennen(rController.ladeRennen((Integer) ns.getValue()));
 			viewAnzeigen(inhalt);
 		});
-		layout.addComponent(ns);
+		
 		Label titel = new Label("Rangliste");
 		titel.setStyleName("h2");
+		layout.setSpacing(true);
 		layout.addComponent(titel);
-		
+		layout.addComponent(ns);
 		Rangliste rangliste = rController.ladeRanglisteRennen(rennen);
 		
 		Button pdf = new Button("PDF generieren");
@@ -124,6 +127,7 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.addContainerProperty(Tabelle.TOTAL, String.class, null);
 					trangliste.addContainerProperty(Tabelle.DIFF, String.class, null);
 					int i = 1;
+					int zeitErster = res.get(0).getZeitTotal();
 					for(FahrerResultat r : res) //Die einzelnen Fahrer zur Tabelle hinzufügen
 					{
 						Object id = trangliste.addItem();
@@ -141,6 +145,7 @@ public class RanglistenView implements ViewTemplate {
 						row.getItemProperty(Tabelle.FEHLER2).setValue(r.getStrafzeit2() + "");
 						row.getItemProperty(Tabelle.TOTAL2).setValue(renderMilli(r.getGesamtzeit2()) + "");
 						row.getItemProperty(Tabelle.TOTAL).setValue(renderMilli(r.getZeitTotal()));
+						row.getItemProperty(Tabelle.DIFF).setValue(renderMilli(zeitErster - r.getZeitTotal()));
 						i++;
 					}
 					trangliste.setPageLength(res.size());
@@ -179,7 +184,9 @@ public class RanglistenView implements ViewTemplate {
 		Integer hs = (zahl % 1000) / 100;
 		Integer s = (zahl / 1000) % 60;
 		Integer m = zahl / 60000;
-		String string = String.format("%02d:%02d.%d", m, s, hs);
+		String string = String.format("%02d:%02d.%d", Math.abs(m), Math.abs(s), Math.abs(hs));
+		if(zahl < 0)
+			string = "-" + string;
 		return string;
 	}
 	

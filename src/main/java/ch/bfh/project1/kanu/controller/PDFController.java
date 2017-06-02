@@ -440,7 +440,9 @@ public class PDFController {
 	  Integer hs = (zahl % 1000) / 100;
 	  Integer s = (zahl / 1000) % 60;
 	  Integer m = zahl / 60000;
-	  String string = String.format("%02d:%02d.%d", m, s, hs);
+	  String string = String.format("%02d:%02d.%d", Math.abs(m), Math.abs(s), Math.abs(hs));
+	  if(zahl < 0)
+		  string = "-" + string;
 	  return string;
 	 }
 }
