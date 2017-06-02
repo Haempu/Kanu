@@ -1456,12 +1456,7 @@ public class DBController {
 	 * Gibt die Resultate der Fahrer zu einem Rennen zurück
 	 * 
 	 * @param rennen Das Objekt des Rennens
-<<<<<<< HEAD
-	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen
-	 *         Rennen beinhaltet
-=======
 	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
->>>>>>> refs/remotes/origin/gestl
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) 
 	{
