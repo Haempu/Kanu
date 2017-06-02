@@ -339,7 +339,7 @@ public class DBController {
 			selectStmt += " IS NULL";
 		if (column.equals(Table_Fahrer.CLOUMN_ALL))
 			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id)";
-		if (column.equals(Table_Fahrer.COLUMN_FTS))
+		if (column.equals(Table_Fahrer.COLUMN_FTS)) //TODO Encode value! SQL Injection...
 			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id) WHERE name LIKE '%" + value + "%' OR "
 					+ "vorname LIKE '%" + value + "%' OR jahrgang LIKE '%" + value + "%'";
 		List<Fahrer> fahrer = new ArrayList<Fahrer>();
@@ -379,7 +379,7 @@ public class DBController {
 		if (column[0].equals(Table_FahrerRennen.CLOUMN_ALL))
 			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 					+ " FROM fahrer_rennen JOIN fahrer USING(fahrer_id) JOIN club USING(club_id)";
-		if (column[0].equals(Table_FahrerRennen.COLUMN_FTS))
+		if (column[0].equals(Table_FahrerRennen.COLUMN_FTS)) //TODO value encode wegen SQL Injection!
 			selectStmt = "SELECT fahrer_id, rennen_id, kategorie_id, startplatz, startzeit1, startzeit2, f.name, vorname, jahrgang, club_id, club_name, t.name AS kat_name, plz, ort, gebuehr"
 					+ " FROM fahrer_rennen JOIN fahrer AS f USING(fahrer_id) JOIN club USING(club_id) JOIN kategorien AS t USING (kategorie_id) WHERE (rennen_id = "
 					+ value[0] + " AND kategorie_id = " + value[1] + ") AND (f.name LIKE '%" + value[2]
