@@ -6,6 +6,12 @@ import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.teemusa.sidemenu.SideMenu;
 
+import ch.bfh.project1.kanu.controller.DBController;
+import ch.bfh.project1.kanu.controller.LoginController;
+import ch.bfh.project1.kanu.controller.SessionController;
+import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.FontAwesome;
@@ -19,12 +25,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.Reindeer;
 
-import ch.bfh.project1.kanu.controller.DBController;
-import ch.bfh.project1.kanu.controller.LoginController;
-import ch.bfh.project1.kanu.controller.SessionController;
-import ch.bfh.project1.kanu.model.Benutzer.BenutzerRolle;
-import ch.bfh.project1.kanu.model.Rennen;
-
 /**
  * 
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -35,7 +35,8 @@ import ch.bfh.project1.kanu.model.Rennen;
 
 @Theme("mytheme")
 public class StrukturView extends UI {
-
+	
+	private static final long serialVersionUID = 45414737315612832L;
 	// UI Komponenten
 	private GridLayout seite = new GridLayout(1, 1);
 	private Label logo = new Label("Kanu");
@@ -198,7 +199,7 @@ public class StrukturView extends UI {
 
 		this.menu.addMenuItem("Rangliste ", () -> {
 			if (!this.rlView.istInitialisiert()) {
-				rlView.setRennen(new Rennen(2)); // TODO weg
+				rlView.setRennen(new Rennen(2)); //Standardrennen angeben (nicht sauber, nur zu Demozwecke)
 				this.rlView.viewInitialisieren();
 			}
 			this.rlView.viewAnzeigen(this.inhaltPanel);
@@ -218,5 +219,10 @@ public class StrukturView extends UI {
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = StrukturView.class, productionMode = false)
 	public static class MyUIServlet extends VaadinServlet {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6470470426807854214L;
 	}
 }

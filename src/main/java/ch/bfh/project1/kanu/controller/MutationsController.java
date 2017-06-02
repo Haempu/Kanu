@@ -6,7 +6,6 @@ import java.util.List;
 import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.view.MutationsView;
 
 /**
  * Die Klasse MutationsController beinhaltet die Logik der Klasse MutationsView.
@@ -21,7 +20,6 @@ public class MutationsController {
 
 	// Membervariablen
 	private DBController dbController;
-	private MutationsView mutationsView;
 
 	/**
 	 * Konstruktor: MutationsController
@@ -60,7 +58,7 @@ public class MutationsController {
 	 *         haben.
 	 */
 	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) {
-		return this.dbController.ladeFahrermutationslisteClub(clubID);
+		return this.dbController.fahrerlisteClub(clubID);
 	}
 
 	/**

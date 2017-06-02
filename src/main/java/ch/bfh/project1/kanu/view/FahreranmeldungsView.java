@@ -2,6 +2,12 @@ package ch.bfh.project1.kanu.view;
 
 import java.util.List;
 
+import ch.bfh.project1.kanu.controller.FahreranmeldungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -14,12 +20,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.FahreranmeldungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Fahrer;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * Hier kann man alle Fahrer an- und auch wieder abmelden. Der Benutzer hat
@@ -111,8 +111,8 @@ public class FahreranmeldungsView implements ViewTemplate {
 		this.angemeldeteFahrerTable.addContainerProperty(COLUMN_ALTERSKATEGORIE, NativeSelect.class, null);
 		this.angemeldeteFahrerTable.addContainerProperty(COLUMN_ABMELDEN, Button.class, null);
 
-		this.fahrerTable.setWidth(100L, Component.UNITS_PERCENTAGE);
-		this.angemeldeteFahrerTable.setWidth(100L, Component.UNITS_PERCENTAGE);
+		this.fahrerTable.setWidth("100%");
+		this.angemeldeteFahrerTable.setWidth("100%");
 
 		this.altersKategorien.setRequired(true);
 		this.altersKategorien.setNullSelectionAllowed(false);
@@ -204,6 +204,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 	 * @return - Wenn keine Werte in die Tabelle geschrieben werden, wird false
 	 *         zurückgegeben
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand" --> gelbe Markierung nicht schön!
 	private boolean fahrerTabelleAbfuellen(Integer rennenID) {
 		this.fahrerTable.removeAllItems();
 		List<Fahrer> fahrer = null;
@@ -290,6 +291,7 @@ public class FahreranmeldungsView implements ViewTemplate {
 	 * @return - Wenn keine Werte in die Tabelle geschrieben werden, wird false
 	 *         zurückgegeben
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand" --> gelbe Markierung nicht schön
 	private boolean angemeldeteFahrerTabelleAbfuellen(Integer rennenID) {
 		this.angemeldeteFahrerTable.removeAllItems();
 

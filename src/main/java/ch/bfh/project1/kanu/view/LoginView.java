@@ -1,5 +1,7 @@
 package ch.bfh.project1.kanu.view;
 
+import ch.bfh.project1.kanu.controller.LoginController;
+
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
@@ -12,8 +14,6 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-
-import ch.bfh.project1.kanu.controller.LoginController;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -32,7 +32,6 @@ public class LoginView implements ViewTemplate {
 	private TextField email = new TextField("E-Mail Adresse");
 	private PasswordField passwort = new PasswordField("Passwort");
 	private Button loginButton = new Button("Anmelden");
-	private StrukturView strukturView;
 
 	// Controller
 	private LoginController loginController;
@@ -45,7 +44,6 @@ public class LoginView implements ViewTemplate {
 	 */
 	public LoginView(LoginController loginController, StrukturView strukturView) {
 		this.loginController = loginController;
-		this.strukturView = strukturView;
 	}
 
 	/**
@@ -89,6 +87,7 @@ public class LoginView implements ViewTemplate {
 	private void setEventOnLogin() {
 		this.loginButton.setClickShortcut(KeyCode.ENTER);
 		this.loginButton.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -3024525327492473410L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {

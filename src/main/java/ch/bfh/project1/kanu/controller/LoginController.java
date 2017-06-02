@@ -1,9 +1,8 @@
 package ch.bfh.project1.kanu.controller;
 
-import com.vaadin.server.VaadinSession;
-
 import ch.bfh.project1.kanu.model.Benutzer;
-import ch.bfh.project1.kanu.view.LoginView;
+
+import com.vaadin.server.VaadinSession;
 
 /**
  * Die Klasse BenutzerprofilController beinhaltet die Logik der Klasse
@@ -18,7 +17,6 @@ import ch.bfh.project1.kanu.view.LoginView;
 public class LoginController {
 
 	// Membervariablen
-	private LoginView loginView;
 	private DBController dbController;
 	private Benutzer aktuellerBenutzer;
 

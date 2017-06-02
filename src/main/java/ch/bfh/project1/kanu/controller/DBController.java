@@ -816,8 +816,7 @@ public class DBController {
 	 * muss die ID kleiner als 1 sein, ansonsten wird ein bestehender Club
 	 * upgedatet (sofern vorhanden, sonst werden die Daten verworfen)
 	 * 
-	 * @param club
-	 *            Das Club Objekt
+	 * @param club Das Club Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
 	public boolean speichereClub(Club club)
@@ -1126,29 +1125,6 @@ public class DBController {
 		}
 		return clubs;
 	}
-
-	/**
-	 * Liste mit allen Fahrer vom Club Sollte ein Fahrer für mehrere Kategorien
-	 * im gleichen Rennen angemeldet sein, kommt dieser Fahrer mehrfach vor!
-	 * 
-	 * @param clubID Die ID des Clubs
-	 * @return Eine Liste mit Fahrer. 
-	 */
-//	public List<FahrerResultat> ladeFahreranmeldungslisteClub(int clubID) // TODO_3 Rennen ID
-//	{
-//		ArrayList<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
-//		fahrer.addAll(selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_CLUB_ID },
-//				new Integer[] { clubID }));
-//		// Nur Fahrer hinzufügen, welche noch nicht vorhanden sind
-//		/* 
-//		 * for(Fahrer f : selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID))
-//		 * //TODO_2 löschen? { boolean vorhanden = false; for(FahrerResultat x :
-//		 * fahrer) { if(x.getFahrer().getFahrerID() == f.getFahrerID()) {
-//		 * vorhanden = true; break; } } if(!vorhanden) fahrer.add(new
-//		 * FahrerResultat(f, null, null, null, null, null)); }
-//		 */
-//		return fahrer;
-//	}
 
 	/**
 	 * Lädt die Startliste eines Rennens und gibt eine Liste von FahrerRennen

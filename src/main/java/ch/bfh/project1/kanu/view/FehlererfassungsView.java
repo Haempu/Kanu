@@ -3,6 +3,12 @@ package ch.bfh.project1.kanu.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.bfh.project1.kanu.controller.FehlererfassungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
+import ch.bfh.project1.kanu.model.Strafzeit;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -18,12 +24,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.FehlererfassungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.model.Strafzeit;
 
 /**
  * Hier kann der Torrichter die Fehler für die einzelnen Tore und Fahrer
@@ -53,8 +53,8 @@ public class FehlererfassungsView implements ViewTemplate {
 	private Window popup;
 
 	// Membervariablen
-	private List<Rennen> rennliste;
-	private List<AltersKategorie> altersKategorieliste;
+	//private List<Rennen> rennliste;
+	//private List<AltersKategorie> altersKategorieliste;
 	private NativeSelect dropDownRennen = new NativeSelect(NAME_RENNEN);
 	private NativeSelect dropDownAlterskategorie = new NativeSelect(NAME_KATEGORIE);
 	private List<Integer> bearbeiteteToreLauf1 = new ArrayList<>();
@@ -93,9 +93,6 @@ public class FehlererfassungsView implements ViewTemplate {
 		this.fahrerSuche.setInputPrompt("Suchen");
 		this.fahrerSuche.setStyleName("search");
 
-		this.rennliste = new ArrayList<Rennen>();
-		this.altersKategorieliste = new ArrayList<AltersKategorie>();
-
 		auswahlErzeugen(); // DropDowns Rennen und Alterskategorie abfüllen
 
 		// Tabellen initliasieren
@@ -104,7 +101,7 @@ public class FehlererfassungsView implements ViewTemplate {
 		this.tabelleFahrer.addContainerProperty(COLUMN_NAME, String.class, null);
 		this.tabelleFahrer.addContainerProperty(COLUMN_CLUB, String.class, null);
 		this.tabelleFahrer.addContainerProperty(COLUMN_BEARBEITEN, Button.class, null);
-		this.tabelleFahrer.setWidth(100L, Component.UNITS_PERCENTAGE);
+		this.tabelleFahrer.setWidth("100%");
 
 		this.popup = new Window("Fehler erfassen");
 		this.popup.center();
@@ -189,12 +186,12 @@ public class FehlererfassungsView implements ViewTemplate {
 	 * @param aktKategorieID
 	 *            - aktuell ausgewählte Kategorie
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand"
 	private void generiereTabelleTeilnehmer(Rennen rennen, Integer aktKategorieID) {
 		// Tabelle und Layout zuerst leeren
 		this.tabelleLayout.removeAllComponents();
 		this.tabelleFahrer.removeAllItems();
 
-		final int anzTore = rennen.getAnzTore();
 		List<FahrerResultat> angemeldeteFahrer;
 
 		if (this.fahrerSuche.getValue() == null || this.fahrerSuche.getValue().equals("")) {
@@ -318,10 +315,11 @@ public class FehlererfassungsView implements ViewTemplate {
 	 *            - 1 oder 2
 	 * @return - Tabelle mit allen Toren für die Fehlererfassung
 	 */
+	@SuppressWarnings("unchecked") //Cast cecked "von Hand"
 	private Table generiereTabelleFehlererfassung(Integer fahrerID, int lauf) {
 		Table tabelle = new Table();
 		tabelle.setImmediate(true);
-		tabelle.setWidth(100L, Component.UNITS_PERCENTAGE);
+		tabelle.setWidth("100%");
 
 		tabelle.addContainerProperty(COLUMN_TOR, Integer.class, null);
 		tabelle.addContainerProperty(COLUMN_BERUEHRT, CheckBox.class, null);

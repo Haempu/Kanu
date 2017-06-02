@@ -5,7 +5,6 @@ import java.util.List;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.model.Strafzeit;
-import ch.bfh.project1.kanu.view.FehlererfassungsView;
 
 /**
  * Die Klasse FehlererfassungsController beinhaltet die Logik der Klasse
@@ -19,7 +18,6 @@ import ch.bfh.project1.kanu.view.FehlererfassungsView;
 
 public class FehlererfassungsController {
 	private DBController dbController;
-	private FehlererfassungsView fehlererfassungsview;
 
 	/**
 	 * Konstruktor: FehlererfassungsController

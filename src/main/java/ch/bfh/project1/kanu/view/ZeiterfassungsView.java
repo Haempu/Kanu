@@ -2,6 +2,13 @@ package ch.bfh.project1.kanu.view;
 
 import java.util.List;
 
+import ch.bfh.project1.kanu.controller.ValidierungsController;
+import ch.bfh.project1.kanu.controller.ZeiterfassungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Fahrer;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -14,13 +21,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.ValidierungsController;
-import ch.bfh.project1.kanu.controller.ZeiterfassungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Fahrer;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * Hier kann der Zeitnehmer die Laufzeit für den Fahrer eingeben und bearbeiten.
@@ -100,7 +100,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 		this.table.addContainerProperty(COLUMN_ORT, String.class, null);
 		this.table.addContainerProperty(COLUMN_BUTTON, Button.class, null);
 
-		this.table.setWidth(100L, Component.UNITS_PERCENTAGE);
+		this.table.setWidth("100%");
 
 		// Die folgenden Felder können nicht bearbeitet werden
 		this.startnummerText.setEnabled(false);
@@ -189,6 +189,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 	/**
 	 * Funktion füllt die Tabelle mit allen Fahrer des Clubs ab.
 	 */
+	@SuppressWarnings("unchecked") //Cast ckecked "von Hand"
 	private void tabelleAbfuellen(Integer rennenID, Integer kategorieID) {
 		// Alle Tabellen einträge löschen
 		this.tableLayout.removeAllComponents();
@@ -290,7 +291,7 @@ public class ZeiterfassungsView implements ViewTemplate {
 				row.getItemProperty(COLUMN_BUTTON).setValue(zeitErfassen);
 
 				this.table.setPageLength(fahrer.size());
-				this.table.setWidth(100L, Component.UNITS_PERCENTAGE);
+				this.table.setWidth("100%");
 				this.tableLayout.addComponent(this.table);
 			}
 		} else {

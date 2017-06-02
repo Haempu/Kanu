@@ -1,14 +1,15 @@
 package ch.bfh.project1.kanu.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-
-import com.vaadin.ui.ListSelect;
 
 import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.view.StartlistenView;
+
+import com.vaadin.ui.ListSelect;
 
 /**
  * Die Klasse StartlistenController beinhaltet die Logik der Klasse
@@ -22,7 +23,6 @@ import ch.bfh.project1.kanu.view.StartlistenView;
 
 public class StartlistenController {
 	private DBController db;
-	private StartlistenView startlistenView;
 
 	/**
 	 * Konstrukter: StartlistenController
@@ -112,7 +112,9 @@ public class StartlistenController {
 	 */
 	public boolean generiereStartliste(List<ListSelect> block, Rennen rennen)
 	{
-		int zeit = rennen.getDatumVon().getHours() * 60 + rennen.getDatumVon().getMinutes(); //TODO mit Calendar arbeiten!
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime(rennen.getDatumVon());
+		int zeit = cal.get(Calendar.HOUR) * 60 + cal.get(Calendar.MINUTE);
 		int i = 0;
 		boolean success = true;
 		for(ListSelect ls : block)

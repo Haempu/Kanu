@@ -59,17 +59,17 @@ public class PDFController {
 	
 	// Zellengrössen
 	private static float[] ZELLENGROESSE_RANGLISTE = {5, 3, 17, 10, 8, 8, 8, 8, 8, 8, 8, 8};
-	private static float[] ZELLENGROESSE_STARTLISTE = {3, 20, 7, 20, 10, 10, 10, 10, 10};
+	//private static float[] ZELLENGROESSE_STARTLISTE = {3, 20, 7, 20, 10, 10, 10, 10, 10};
 	//private static float[] ZELLENGROESSE_RECHNUNG_TITEL = {40, 20, 40};
 	private static float[] ZELLENGROESSE_RECHNUNG = {5, 5, 50, 20, 20};
 	
 	// Tabellenheaderinhalt
 	private static String[] INHALT_RANGLISTE = {"Rang", "Nr.", "Name", "Club", "Zeit", "Fehler", "Total", "Zeit", "Fehler", "Total", "Total", "Differenz"};
-	private static String[] INHALT_STARTLISTE = {"Nr.", "Name", "Club", "Wohnort", "Block", "1. Lauf", "", "2. Lauf", ""}; // Leerstrings weil die Anzahl der Objekte im Array die Anzahl Tabellenspalten bestimmt
+	//private static String[] INHALT_STARTLISTE = {"Nr.", "Name", "Club", "Wohnort", "Block", "1. Lauf", "", "2. Lauf", ""}; // Leerstrings weil die Anzahl der Objekte im Array die Anzahl Tabellenspalten bestimmt
 	
 	// Tabellenoffset
 	private static float OFFSET_RANGLISTE = SCHRIFT_GR_TABELLENHEADER + 2 * TABELLENPADDING;
-	private static float OFFSET_STARTLISTE = SCHRIFT_GR_TABELLENHEADER + 2 * TABELLENPADDING;
+	//private static float OFFSET_STARTLISTE = SCHRIFT_GR_TABELLENHEADER + 2 * TABELLENPADDING;
 	
 	// Dokumentheader
 	private static int HEADER_STARTZEILE = 0;
@@ -138,7 +138,7 @@ public class PDFController {
 	public static String generierePdfRangliste(String pfad, Rangliste rangliste) throws IOException, DocumentException {
 		// Neues File generieren
 		pfad = "Rangliste.pdf";
-		File file = new File(pfad);
+		//File file = new File(pfad);
 		//file.getParentFile().mkdirs();
 		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, INHALT_EINZUG_OBEN + OFFSET_RANGLISTE, INHALT_EINZUG_UNTEN);
 		PdfWriter writer = PdfWriter.getInstance(dokument, new FileOutputStream(pfad));
@@ -174,7 +174,7 @@ public class PDFController {
 			}
 			// Einzelne Zeilen abfüllen
 			SimpleDateFormat sdfMin = new SimpleDateFormat("mm:ss.S");
-			SimpleDateFormat sdfSek = new SimpleDateFormat("ss.S");
+			//SimpleDateFormat sdfSek = new SimpleDateFormat("ss.S");
 			PdfPCell zelle = new PdfPCell();
 			zelle.setPhrase(new Phrase(""+rang, FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
@@ -209,7 +209,7 @@ public class PDFController {
 			zelle.setPhrase(new Phrase(renderMilli(fr.getZeitTotal()), FONT_TABELLENINHALT_FETT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(renderMilli((fr.getZeitTotal() - resultate.get(tabellenerster).getZeitTotal())), FONT_TABELLENINHALT)); //TODO Rendert falsch bei negativen Zahlen
+			zelle.setPhrase(new Phrase(renderMilli((fr.getZeitTotal() - resultate.get(tabellenerster).getZeitTotal())), FONT_TABELLENINHALT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
 			rang++;
@@ -255,7 +255,7 @@ public class PDFController {
 		String tabellentitel = "";
 		Paragraph paragTabellenname = null;
 		PdfPTable tabelle = null;
-		boolean neueTabelle = true;
+		//boolean neueTabelle = true;
 		int anzZeilen = 0;
 		int gesamtsumme = 0;
 		// Für jede Tabelle...

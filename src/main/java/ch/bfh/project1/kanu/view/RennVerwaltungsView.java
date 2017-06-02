@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import ch.bfh.project1.kanu.controller.RennverwaltungsController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.Club;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.datefield.Resolution;
@@ -24,11 +29,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-import ch.bfh.project1.kanu.controller.RennverwaltungsController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.Club;
-import ch.bfh.project1.kanu.model.Rennen;
-
 /**
  * Hier können Rennen verwaltet sowie neue hinzugefügt werden.
  * 
@@ -43,7 +43,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 	private boolean init = false; // Ist die View initialisiert
 
 	// UI Komponenten
-	private UI ui;
 	private FormLayout rennenLayout = new FormLayout();
 	private Window popUpWindow;
 	private Label titel = new Label("Rennen Verwaltung");
@@ -76,7 +75,6 @@ public class RennVerwaltungsView implements ViewTemplate {
 	 * @param ui
 	 */
 	public RennVerwaltungsView(UI ui) {
-		this.ui = ui;
 	}
 
 	/**

@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.itextpdf.text.DocumentException;
-
-import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Club;
 import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.view.RechnungsView;
+
+import com.itextpdf.text.DocumentException;
 
 /**
  * Die Klasse RechnungsController beinhaltet die Logik der Klasse RecnungsView.
@@ -22,7 +20,6 @@ import ch.bfh.project1.kanu.view.RechnungsView;
 
 public class RechnungsController {
 	private DBController dbController;
-	private RechnungsView rechnungsView;
 
 	public RechnungsController() {
 		this.dbController = DBController.getInstance();
@@ -45,8 +42,8 @@ public class RechnungsController {
 	public String rechnungErstellen(Club club, Integer rennenID) {
 		// Lade alle zu einem Rennen angemeldeten Fahrer einres Clubs
 		List<FahrerResultat> fahrer = this.dbController.ladeAngemeldetenFahrerByClub(club.getClubID(), rennenID);
-		AltersKategorie aktuelleKat = null;
-		List<AltersKategorie> angemeldeteKategorien = new ArrayList<AltersKategorie>();
+		//AltersKategorie aktuelleKat = null;
+		//List<AltersKategorie> angemeldeteKategorien = new ArrayList<AltersKategorie>();
 		List<List<String>> alleFahrer = new ArrayList<List<String>>();
 		// Jede Zeile der Späteren Tabelle auf der Rechnung muss aus einer Liste von Strings bestehen. Sämtliche Zeilen in eine Liste abfüllen und dem PDFController übergeben.
 		for (int i = 0; i < fahrer.size(); i++) {

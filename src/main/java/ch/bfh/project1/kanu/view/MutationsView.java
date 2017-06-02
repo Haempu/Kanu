@@ -3,6 +3,11 @@ package ch.bfh.project1.kanu.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.bfh.project1.kanu.controller.MutationsController;
+import ch.bfh.project1.kanu.controller.ValidierungsController;
+import ch.bfh.project1.kanu.model.Club;
+import ch.bfh.project1.kanu.model.Fahrer;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -14,11 +19,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
-
-import ch.bfh.project1.kanu.controller.MutationsController;
-import ch.bfh.project1.kanu.controller.ValidierungsController;
-import ch.bfh.project1.kanu.model.Club;
-import ch.bfh.project1.kanu.model.Fahrer;
 
 /**
  * Der Benutzer kann hier die Daten der Fahrer bearbeiten.
@@ -91,7 +91,7 @@ public class MutationsView implements ViewTemplate {
 		this.table.addContainerProperty(COLUMN_BUTTON, Button.class, null);
 		this.table.addContainerProperty(COLUMN_LOESCHEN, Button.class, null);
 
-		this.table.setWidth(100L, Component.UNITS_PERCENTAGE);
+		this.table.setWidth("100%");
 		this.table.setImmediate(true);
 		this.fahrerVerwaltungsLayout.setImmediate(true);
 
@@ -156,6 +156,7 @@ public class MutationsView implements ViewTemplate {
 	/**
 	 * Funktion füllt die Tabelle mit allen Fahrern ab.
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand"
 	private void tabelleAbfuellen() {
 		ArrayList<Fahrer> fahrer;
 		this.table.removeAllItems();
@@ -202,6 +203,7 @@ public class MutationsView implements ViewTemplate {
 	 * @param neuerFahrer
 	 * @param bearbeiten
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand"
 	private void fahrerSpeichernEvent(Button speichern, Item row, Fahrer f, boolean neuerFahrer) {
 		// Speichern Event hinzufügen
 		speichern.addClickListener(event -> {

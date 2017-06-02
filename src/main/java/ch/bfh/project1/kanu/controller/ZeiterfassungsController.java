@@ -9,7 +9,6 @@ import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.view.ZeiterfassungsView;
 
 /**
  * Die Klasse ZeiterfassungsController beinhaltet die Logik der Klasse
@@ -24,7 +23,6 @@ import ch.bfh.project1.kanu.view.ZeiterfassungsView;
 public class ZeiterfassungsController {
 	// Membervariablen
 	private DBController dbController;
-	private ZeiterfassungsView zeiterfassungsView;
 
 	// Konstanten
 	private static final SimpleDateFormat DF = new SimpleDateFormat("mm:ss.SS");

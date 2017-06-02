@@ -7,7 +7,6 @@ import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.Fahrer;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.view.FahreranmeldungsView;
 
 /**
  * Die Klasse FahreranmeldungsController beinhaltet die Logik der Klasse
@@ -23,7 +22,6 @@ public class FahreranmeldungsController {
 
 	// Membervariablen
 	private DBController dbController;
-	private FahreranmeldungsView fahreranmeldungsView;
 
 	/**
 	 * Konstruktor: FahreranmeldungsController

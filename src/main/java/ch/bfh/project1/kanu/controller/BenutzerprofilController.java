@@ -1,7 +1,6 @@
 package ch.bfh.project1.kanu.controller;
 
 import ch.bfh.project1.kanu.model.Benutzer;
-import ch.bfh.project1.kanu.view.BenutzerprofilView;
 
 /**
  * Die Klasse BenutzerprofilController beinhaltet die Logik der Klasse
@@ -17,7 +16,6 @@ public class BenutzerprofilController {
 
 	// Membervariablen
 	private DBController dbController;
-	private BenutzerprofilView benutzerProfilView;
 
 	/**
 	 * Konstruktor: BenutzerprofilController

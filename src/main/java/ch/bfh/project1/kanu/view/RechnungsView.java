@@ -2,6 +2,12 @@ package ch.bfh.project1.kanu.view;
 
 import java.util.ArrayList;
 
+import ch.bfh.project1.kanu.controller.RechnungsController;
+import ch.bfh.project1.kanu.model.Club;
+import ch.bfh.project1.kanu.util.KanuFileDownloader;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -10,12 +16,6 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-
-import ch.bfh.project1.kanu.controller.RechnungsController;
-import ch.bfh.project1.kanu.model.Club;
-import ch.bfh.project1.kanu.util.KanuFileDownloader;
-import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
-import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -58,7 +58,7 @@ public class RechnungsView implements ViewTemplate {
 		tabelleAbfuellen();
 
 		this.allePDFgenerieren.addClickListener(event -> {
-			for (Club club : this.clubs) {
+			for (@SuppressWarnings("unused") Club club : this.clubs) {
 				// TODO: rennenID
 				// this.rController.rechnungErstellen(club);
 			}
@@ -83,6 +83,7 @@ public class RechnungsView implements ViewTemplate {
 	/**
 	 * Funktion füllt die Tabelle mit allen Clubs ab.
 	 */
+	@SuppressWarnings("unchecked") //Cast checked "von Hand"
 	private void tabelleAbfuellen() {
 		this.clubs = this.rController.ladeAngemeldeteClubs();
 
