@@ -279,7 +279,7 @@ public class DBController {
 	public <T> List<Strafzeit> selectStrafzeitBy(Table_Strafzeit[] column, T[] value) 
 	{
 		String where = makeWhere(column, value);
-		String selectStmt = "SELECT * FROM strafzeiten " + where; // TODO
+		String selectStmt = "SELECT * FROM strafzeiten " + where;
 		List<Strafzeit> strafzeiten = new ArrayList<Strafzeit>();
 
 		for (Row row : executeSelect(selectStmt)) {
@@ -326,10 +326,8 @@ public class DBController {
 	/**
 	 * Liest die Fahrer inkl. Club aus der Datenbank raus.
 	 * 
-	 * @param column
-	 *            Spalte, in der gesucht werden soll
-	 * @param value
-	 *            Wert, nach dem gesucht werden soll
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
 	 * @return Liste der Fahrer, die die Suchkriterien erfüllen
 	 */
 	public <T> List<Fahrer> selectFahrerBy(Table_Fahrer column, T value) 
@@ -345,7 +343,8 @@ public class DBController {
 			selectStmt = "SELECT * FROM fahrer JOIN club USING(club_id) WHERE name LIKE '%" + value + "%' OR "
 					+ "vorname LIKE '%" + value + "%' OR jahrgang LIKE '%" + value + "%'";
 		List<Fahrer> fahrer = new ArrayList<Fahrer>();
-		for (Row row : executeSelect(selectStmt)) {
+		for (Row row : executeSelect(selectStmt))
+		{
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
 			Integer idFahrer = (Integer) row.getRow().get(1).getKey();
 			String name = (String) row.getRow().get(2).getKey();
@@ -366,10 +365,8 @@ public class DBController {
 	/**
 	 * Liest die angemeldeten Fahrer zu einem Rennen aus
 	 * 
-	 * @param column
-	 *            Array von Spalten, in denen gesucht werden soll
-	 * @param value
-	 *            Array von Werten, nach denen gesucht werden soll
+	 * @param column Array von Spalten, in denen gesucht werden soll
+	 * @param value Array von Werten, nach denen gesucht werden soll
 	 * @return
 	 */
 	public <T> List<FahrerResultat> selectStartlisteBy(Table_FahrerRennen[] column, T[] value) 
@@ -429,10 +426,8 @@ public class DBController {
 	/**
 	 * Liest die Rennen aus der Datenbank
 	 * 
-	 * @param column
-	 *            Spalte, in der gesucht werden soll
-	 * @param value
-	 *            Wert, nach dem gesucht werden soll
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
 	 * @return
 	 */
 	public <T> List<Rennen> selectRennenBy(Table_Rennen column, T value) 
@@ -476,10 +471,8 @@ public class DBController {
 	/**
 	 * Liest die Benutzer aus der Datenbank
 	 * 
-	 * @param column
-	 *            Spalte, in der gesucht werden soll
-	 * @param value
-	 *            Wert, nach dem gesucht werden soll
+	 * @param column Spalte, in der gesucht werden soll
+	 * @param value Wert, nach dem gesucht werden soll
 	 * @return
 	 */
 	public <T> List<Benutzer> selectBenutzerBy(Table_Benutzer column, T value) 
@@ -492,7 +485,8 @@ public class DBController {
 		if (column.equals(Table_Club.CLOUMN_ALL))
 			selectStmt = "SELECT * FROM benutzer LEFT JOIN club USING(club_id)";
 		List<Benutzer> benutzer = new ArrayList<Benutzer>();
-		for (Row row : executeSelect(selectStmt)) {
+		for (Row row : executeSelect(selectStmt))
+		{
 			Integer idClub = (Integer) row.getRow().get(0).getKey();
 			Integer idBenutzer = (Integer) row.getRow().get(1).getKey();
 			// String benutzername = (String) row.getRow().get(2).getKey();
@@ -511,10 +505,8 @@ public class DBController {
 	/**
 	 * Liest die Kategorien aus der Datenbank
 	 * 
-	 * @param column
-	 *            Die Spalte, in der gesucht werden soll
-	 * @param value
-	 *            Der Wert, nach dem gesucht werden soll
+	 * @param column Die Spalte, in der gesucht werden soll
+	 * @param value Der Wert, nach dem gesucht werden soll
 	 * @return Eine Liste mit den Kategorien
 	 */
 	public <T> List<AltersKategorie> selectKategorieBy(Table_Kategorien column, T value) 
@@ -527,7 +519,8 @@ public class DBController {
 		if (column.equals(Table_Kategorien.COLUMN_ALL))
 			selectStmt = "SELECT * FROM kategorien;";
 		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
-		for (Row row : executeSelect(selectStmt)) {
+		for (Row row : executeSelect(selectStmt))
+		{
 			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
 			String name = (String) row.getRow().get(1).getKey();
 			Integer gebuehr = (Integer) row.getRow().get(2).getKey();
@@ -539,8 +532,7 @@ public class DBController {
 	/**
 	 * Liest für ein Rennen die zugelassenen Kategorien aus
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return eine Liste der zugelassenen Kategorien
 	 */
 	public <T> List<AltersKategorie> selectKategorieRennenBy(Integer rennenID) 
@@ -551,7 +543,8 @@ public class DBController {
 		if (rennenID != null)
 			selectStmt += " = '" + rennenID + "'";
 		List<AltersKategorie> kategorie = new ArrayList<AltersKategorie>();
-		for (Row row : executeSelect(selectStmt)) {
+		for (Row row : executeSelect(selectStmt))
+		{
 			Integer kategorieID = (Integer) row.getRow().get(0).getKey();
 			String name = (String) row.getRow().get(1).getKey();
 			Integer gebuehr = (Integer) row.getRow().get(3).getKey();
@@ -560,6 +553,12 @@ public class DBController {
 		return kategorie;
 	}
 
+	/**
+	 * Liest die Rangliste aus der Datenbank. Die Rangliste ist nur nach Kategorie sortiert!
+	 * @param column Spalten, in denen gesucht werden soll
+	 * @param value Werte, nach denen gesucht werden soll
+	 * @return Eine Liste mit FahrerResultaten
+	 */
 	public <T> List<FahrerResultat> selectRanglisteBy(Table_Rangliste[] column, T[] value) 
 	{
 		String selectStmt;
@@ -589,7 +588,8 @@ public class DBController {
 				+ "NATURAL JOIN fahrer_rennen WHERE t.lauf = 2 OR t.lauf IS NULL) as b USING(fahrer_id, rennen_id, kategorie_id) JOIN "
 				+ "fahrer as f USING(fahrer_id) JOIN club as c USING(club_id) JOIN kategorien AS k USING(kategorie_id) " + where + " ORDER BY kategorie_id;";
 		List<FahrerResultat> resultat = new ArrayList<FahrerResultat>();
-		for (Row row : executeSelect(selectStmt)) {
+		for (Row row : executeSelect(selectStmt))
+		{
 			java.math.BigDecimal zeit1 = row.getRow().get(0).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(0).getKey();
 			java.math.BigDecimal zeit2 = row.getRow().get(1).getKey() == null ? java.math.BigDecimal.ZERO : (java.math.BigDecimal) row.getRow().get(1).getKey();
 			Integer idFahrer = (Integer) row.getRow().get(2).getKey();
@@ -630,9 +630,11 @@ public class DBController {
 	private <T> String makeWhere(Table_Rangliste[] column, T[] value) 
 	{
 		String where = "WHERE ";
-		for (int x = 0; x < column.length; x++) {
-			if (value.length > x) {
-				if (x > 0)
+		for(int x = 0; x < column.length; x++)
+		{
+			if(value.length > x) 
+			{
+				if(x > 0)
 					where += " AND ";
 				where += column[x].getValue();
 				if (value[x] != null)
@@ -647,12 +649,14 @@ public class DBController {
 	private <T> String makeWhere(Table_FahrerRennen[] column, T[] value) 
 	{
 		String where = "WHERE ";
-		for (int x = 0; x < column.length; x++) {
-			if (value.length > x) {
-				if (x > 0)
+		for(int x = 0; x < column.length; x++)
+		{
+			if(value.length > x)
+			{
+				if(x > 0)
 					where += " AND ";
 				where += column[x].getValue();
-				if (value[x] != null)
+				if(value[x] != null)
 					where += " = " + value[x];
 				else
 					where += " IS NULL";
@@ -664,12 +668,14 @@ public class DBController {
 	private <T> String makeWhere(Table_Strafzeit[] column, T[] value) 
 	{
 		String where = "WHERE ";
-		for (int x = 0; x < column.length; x++) {
-			if (value.length > x) {
-				if (x > 0)
+		for(int x = 0; x < column.length; x++)
+		{
+			if(value.length > x) 
+			{
+				if(x > 0)
 					where += " AND ";
 				where += column[x].getValue();
-				if (value[x] != null)
+				if(value[x] != null)
 					where += " = " + value[x];
 				else
 					where += " IS NULL";
@@ -783,20 +789,21 @@ public class DBController {
 	 * 
 	 * @return Die Clubs als Liste
 	 */
-	public List<Club> ladeClubs() {
+	public List<Club> ladeClubs()
+	{
 		return selectClubBy(Table_Club.CLOUMN_ALL, null);
 	}
 
 	/**
 	 * Liest einen Club nach ID aus der Datenbank aus
 	 * 
-	 * @param clubID
-	 *            Die ID des Clubs
+	 * @param clubID Die ID des Clubs
 	 * @return Das Club Objekt; null wenns keinen Club mit der ID gibt
 	 */
-	public Club ladeClubByID(Integer clubID) {
+	public Club ladeClubByID(Integer clubID)
+	{
 		List<Club> clubs = selectClubBy(Table_Club.COLUMN_ID, clubID);
-		if (clubs.size() > 0)
+		if(clubs.size() > 0)
 			return clubs.get(0);
 		else
 			return null; // TODO_1 abklären
@@ -811,9 +818,10 @@ public class DBController {
 	 *            Das Club Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean speichereClub(Club club) {
+	public boolean speichereClub(Club club)
+	{
 		ExecuteResult res;
-		if (club.getClubID() < 1)
+		if(club.getClubID() < 1)
 			res = executeUpdate(
 					"INSERT INTO club (kennung, name) VALUES ('" + club.getKennung() + "', '" + club.getName() + "');");
 		else
@@ -827,13 +835,12 @@ public class DBController {
 	 * UPDATE und INSERT querys, werden nur letztgenannte unterstützt
 	 * (respektive es wird schlicht nichts zurückgegeben).
 	 * 
-	 * @param query
-	 *            Das SQL Query als solches, muss mit einem ";" abgeschlossen
-	 *            werden
+	 * @param query Das SQL Query als solches, muss mit einem ";" abgeschlossen  werden
 	 * @return true wenn das Query erfolgreich ausgeführt wurde, false sonst
 	 */
-	public boolean runQuery(String query) {
-		if (query.matches("(?i)DROP.*")) // DROP wird nicht erlaubt!
+	public boolean runQuery(String query)
+	{
+		if(query.matches("(?i)DROP.*")) // DROP wird nicht erlaubt!
 			return false;
 		ExecuteResult res = executeUpdate(query);
 		return res.isSuccess();
@@ -843,11 +850,11 @@ public class DBController {
 	 * Liest alle Fahrer eines Clubs aus der Datenbank und gibt sie als Liste
 	 * zurück
 	 * 
-	 * @param clubID
-	 *            ID des Clubs
+	 * @param clubID ID des Clubs
 	 * @return Liste der Fahrer
 	 */
-	public List<Fahrer> fahrerlisteClub(Integer clubID) {
+	public List<Fahrer> fahrerlisteClub(Integer clubID)
+	{
 		return selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID);
 	}
 
@@ -855,15 +862,13 @@ public class DBController {
 	 * Meldet einen Fahrer für ein Rennen in der gewünschten Alters- sowie
 	 * Bootskategorie an.
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param Kategorie
-	 *            Die Alterskategorie
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param Kategorie Die Alterskategorie
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer altersKategorie) {
+	public boolean fahrerAnmelden(Integer fahrerID, Integer rennenID, Integer altersKategorie)
+	{
 		ExecuteResult res = executeUpdate("INSERT INTO fahrer_rennen (fahrer_id, rennen_id, kategorie_id) VALUES ("
 				+ fahrerID + ", " + rennenID + ", " + altersKategorie + ");");
 		return res.isSuccess();
@@ -872,30 +877,26 @@ public class DBController {
 	/**
 	 * Meldet einen Fahrer von einem Rennen ab (alle Kategorien!)
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean fahrerAbmelden(Integer fahrerID, Integer rennenID) {
-		ExecuteResult res = executeUpdate(
-				"DELETE FROM fahrer_rennen WHERE fahrer_id = " + fahrerID + " AND rennen_id = " + rennenID + ";");
+	public boolean fahrerAbmelden(Integer fahrerID, Integer rennenID)
+	{
+		ExecuteResult res = executeUpdate("DELETE FROM fahrer_rennen WHERE fahrer_id = " + fahrerID + " AND rennen_id = " + rennenID + ";");
 		return res.isSuccess();
 	}
 
 	/**
 	 * Meldet einen Fahrer von einem Rennen ab (eine Kategorie und Bootsklasse)
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param KategorieID
-	 *            Die ID der Kategorie
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param KategorieID Die ID der Kategorie
 	 * @return true wenn abgemeldet, false sonst
 	 */
-	public boolean fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer alterskategorieID) {
+	public boolean fahrerAbmelden(Integer fahrerID, Integer rennenID, Integer alterskategorieID)
+	{
 		ExecuteResult res = executeUpdate("DELETE FROM fahrer_rennen WHERE fahrer_id = " + fahrerID
 				+ " AND rennen_id = " + rennenID + " AND kategorie_id = " + alterskategorieID + ";");
 		return res.isSuccess();
@@ -904,13 +905,13 @@ public class DBController {
 	/**
 	 * Liest zu einer gegebenen ID den Fahrer aus der Datenbank
 	 * 
-	 * @param fahrerID
-	 *            Die ID des gewünschten Fahrers
+	 * @param fahrerID Die ID des gewünschten Fahrers
 	 * @return Das Fahrer Objekt, null wenn Fahrer nicht vorhanden
 	 */
-	public Fahrer ladeFahrer(Integer fahrerID) {
+	public Fahrer ladeFahrer(Integer fahrerID)
+	{
 		List<Fahrer> fahrer = selectFahrerBy(Table_Fahrer.COLUMN_ID, fahrerID);
-		if (fahrer.size() > 0)
+		if(fahrer.size() > 0)
 			return fahrer.get(0);
 		else
 			return null; // TODO_1 abzuklären
@@ -922,11 +923,11 @@ public class DBController {
 	 * bestehender Fahrer upgedatet (sofern vorhanden, sonst werden die Daten
 	 * verworfen)
 	 * 
-	 * @param fahrer
-	 *            Der Fahrer mit den Infos
+	 * @param fahrer Der Fahrer mit den Infos
 	 * @return boolean true wenn erfolgreich, false sonst
 	 */
-	public boolean speichereFahrer(Fahrer fahrer) {
+	public boolean speichereFahrer(Fahrer fahrer)
+	{
 		return speichereFahrerIntern(fahrer) > 0;
 	}
 
@@ -934,11 +935,11 @@ public class DBController {
 	 * Speichert einen neuen Fahrer in der Datenbank und gibt die ID des Fahrers
 	 * zurück.
 	 * 
-	 * @param fahrer
-	 *            Der Fahrer
+	 * @param fahrer Der Fahrer
 	 * @return Die ID des Fahrers, sofern gespeichert, -1 sonst
 	 */
-	public Integer speichereNeuenFahrer(Fahrer fahrer) {
+	public Integer speichereNeuenFahrer(Fahrer fahrer)
+	{
 		fahrer.setFahrerID(0);
 		return speichereFahrerIntern(fahrer);
 	}
@@ -953,16 +954,16 @@ public class DBController {
 	{
 		ExecuteResult res;
 		Integer id = -1;
-		if (fahrer.getFahrerID() < 1 || fahrer.getFahrerID() == null) 
+		if(fahrer.getFahrerID() < 1 || fahrer.getFahrerID() == null) //Wenn ID nicht vorhanden, neuen Fahrer erstellen
 		{
 			res = executeUpdate("INSERT INTO fahrer (club_id, name, vorname, jahrgang, telnr, strasse, plz, ort) "
 					+ "VALUES (" + fahrer.getClub().getClubID() + ", '" + fahrer.getName() + "', '"
 					+ fahrer.getVorname() + "', " + fahrer.getJahrgang() + ", '" + fahrer.getTelNr() + "', '"
 					+ fahrer.getStrasse() + "', " + fahrer.getPlz() + ", '" + fahrer.getOrt() + "');");
-			if (res.isSuccess())
+			if(res.isSuccess())
 				id = res.getGeneratedIDs().get(0);
 		} 
-		else 
+		else //Sonst einen bestehenden updaten
 		{
 			res = executeUpdate("UPDATE fahrer SET club_id = " + fahrer.getClub().getClubID() + ", name = '"
 					+ fahrer.getName() + "', vorname = '" + fahrer.getVorname() + "', jahrgang = "
@@ -978,8 +979,7 @@ public class DBController {
 	/**
 	 * Löscht einen Fahrer aus der Datenbank
 	 * 
-	 * @param fahrerID
-	 *            Die ID des zu löschenden Fahrers
+	 * @param fahrerID Die ID des zu löschenden Fahrers
 	 * @return true wenn erfolgreich, false sonst
 	 */
 	public boolean fahrerLoeschen(Integer fahrerID) 
@@ -991,16 +991,17 @@ public class DBController {
 	/**
 	 * Speichert einen Fahrer inklusive Rennergebnis.
 	 * 
-	 * @param fahrer
-	 *            Das Fahrer Objekt
-	 * @param resultat
-	 *            Das FahrerResultat Objekt
+	 * @param fahrer Das Fahrer Objekt
+	 * @param resultat Das FahrerResultat Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
 	public boolean speichereFahrer(Fahrer fahrer, FahrerResultat resultat) 
 	{
 		ExecuteResult res;
-		resultat.setZeitErsterLauf(dateZuMilli(resultat.getZeitErsterLauf()));
+		if(resultat.getZeitErsterLauf() != null)
+			resultat.setZeitErsterLauf(dateZuMilli(resultat.getZeitErsterLauf()));
+		if(resultat.getZeitZweiterLauf() != null)
+			resultat.setZeitZweiterLauf(dateZuMilli(resultat.getZeitZweiterLauf()));
 		res = executeUpdate("INSERT INTO fahrer_rennen (fahrer_id, rennen_id, kategorie_id, startplatz, zeit1, zeit2)"
 				+ " VALUES (" + fahrer.getFahrerID() + ", " + resultat.getRennen().getRennenID() + ", "
 				+ resultat.getKategorie().getAltersKategorieID() + ", " + resultat.getStartnummer() + ", "
@@ -1020,7 +1021,6 @@ public class DBController {
 		SimpleDateFormat df = new SimpleDateFormat("mm:ss.S");
 		Date date = new Date(zahl);
 		String zeit = df.format(date);
-		System.out.println(zeit);
 		Pattern p = Pattern.compile("(\\d+):(\\d+)\\.(\\d+)");
 		Matcher m = p.matcher(zeit);
 		m.matches();
@@ -1057,7 +1057,7 @@ public class DBController {
 	public Benutzer ladeBenutzer(Integer benutzerID) 
 	{
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_ID, benutzerID);
-		if (benutzer.size() > 0)
+		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else
 			return null; // TODO_1 abzuklären
@@ -1069,9 +1069,10 @@ public class DBController {
 	 * @param emailAdresse
 	 * @return
 	 */
-	public Benutzer ladeBenutzerMitEmail(String emailAdresse) {
+	public Benutzer ladeBenutzerMitEmail(String emailAdresse)
+	{
 		List<Benutzer> benutzer = selectBenutzerBy(Table_Benutzer.COLUMN_EMAIL, emailAdresse);
-		if (benutzer.size() > 0)
+		if(benutzer.size() > 0)
 			return benutzer.get(0);
 		else
 			return null; // TODO_1 abzuklären
@@ -1082,8 +1083,7 @@ public class DBController {
 	 * Benutzer angelegt, ansonsten ein bestehender geupdatet. Ist kein Benutzer
 	 * mit der ID vorhanden, werden die Daten verworfen.
 	 * 
-	 * @param benutzer
-	 *            Das Benutzer Objekt
+	 * @param benutzer Das Benutzer Objekt
 	 * @return true wenn erfolg, false sonst
 	 */
 	public boolean speichereBenutzer(Benutzer benutzer) 
@@ -1106,8 +1106,7 @@ public class DBController {
 	/**
 	 * Gibt alle Clubs für ein gegebenes Rennen zurück
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return Eine Liste von Clubs
 	 */
 	public List<Club> ladeAngemeldeteClubs(Integer rennenID)
@@ -1133,30 +1132,31 @@ public class DBController {
 	 * @param clubID Die ID des Clubs
 	 * @return Eine Liste mit Fahrer. 
 	 */
-	public List<FahrerResultat> ladeFahreranmeldungslisteClub(int clubID) { // TODO_3 Rennen ID
-		ArrayList<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
-		fahrer.addAll(selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_CLUB_ID },
-				new Integer[] { clubID }));
-		// Nur Fahrer hinzufügen, welche noch nicht vorhanden sind
-		/* 
-		 * for(Fahrer f : selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID))
-		 * //TODO_2 löschen? { boolean vorhanden = false; for(FahrerResultat x :
-		 * fahrer) { if(x.getFahrer().getFahrerID() == f.getFahrerID()) {
-		 * vorhanden = true; break; } } if(!vorhanden) fahrer.add(new
-		 * FahrerResultat(f, null, null, null, null, null)); }
-		 */
-		return fahrer;
-	}
+//	public List<FahrerResultat> ladeFahreranmeldungslisteClub(int clubID) // TODO_3 Rennen ID
+//	{
+//		ArrayList<FahrerResultat> fahrer = new ArrayList<FahrerResultat>();
+//		fahrer.addAll(selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_CLUB_ID },
+//				new Integer[] { clubID }));
+//		// Nur Fahrer hinzufügen, welche noch nicht vorhanden sind
+//		/* 
+//		 * for(Fahrer f : selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID))
+//		 * //TODO_2 löschen? { boolean vorhanden = false; for(FahrerResultat x :
+//		 * fahrer) { if(x.getFahrer().getFahrerID() == f.getFahrerID()) {
+//		 * vorhanden = true; break; } } if(!vorhanden) fahrer.add(new
+//		 * FahrerResultat(f, null, null, null, null, null)); }
+//		 */
+//		return fahrer;
+//	}
 
 	/**
 	 * Lädt die Startliste eines Rennens und gibt eine Liste von FahrerRennen
 	 * Objekten zurück
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return Eine Liste von Fahrern
 	 */
-	public List<FahrerResultat> ladeStartliste(Integer rennenID) {
+	public List<FahrerResultat> ladeStartliste(Integer rennenID)
+	{
 		return selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_RENNEN_ID },
 				new Integer[] { rennenID });
 	}
@@ -1164,32 +1164,27 @@ public class DBController {
 	/**
 	 * Liest zu einer bestimmten Kategorie von einem Rennen die Startliste aus
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
-	 * @param kategorieID
-	 *            Die ID der Kategorie
-	 * @param bootID
-	 *            Die ID der Bootsklasse
+	 * @param rennenID Die ID des Rennens
+	 * @param kategorieID Die ID der Kategorie
+	 * @param bootID Die ID der Bootsklasse
 	 * @return Eine Liste von Fahrern
 	 */
-	public List<FahrerResultat> ladeStartliste(Integer rennenID, Integer kategorieID) {
-		return selectStartlisteBy(
-				new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_RENNEN_ID, Table_FahrerRennen.COLUMN_KATEGORIE },
+	public List<FahrerResultat> ladeStartliste(Integer rennenID, Integer kategorieID)
+	{
+		return selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_RENNEN_ID, Table_FahrerRennen.COLUMN_KATEGORIE },
 				new Integer[] { rennenID, kategorieID });
 	}
 
 	/**
 	 * Lädt die Startliste mit der Suche aus der Datenbank
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
-	 * @param kategorieID
-	 *            Die Kategorie ID
-	 * @param suche
-	 *            Der String, nach dem gesucht werden soll
+	 * @param rennenID Die ID des Rennens
+	 * @param kategorieID Die Kategorie ID
+	 * @param suche Der String, nach dem gesucht werden soll
 	 * @return
 	 */
-	public List<FahrerResultat> ladeStartlisteMitSuche(Integer rennenID, Integer kategorieID, String suche) {
+	public List<FahrerResultat> ladeStartlisteMitSuche(Integer rennenID, Integer kategorieID, String suche)
+	{
 		return selectStartlisteBy(new Table_FahrerRennen[] { Table_FahrerRennen.COLUMN_FTS },
 				new String[] { rennenID + "", kategorieID + "", suche });
 	}
@@ -1197,11 +1192,11 @@ public class DBController {
 	/**
 	 * Speichert den Startplatz und die Startzeit eines Fahrer zu einem Rennen
 	 * 
-	 * @param fahrer
-	 *            Das Objekt mit dem Fahrer
+	 * @param fahrer Das Objekt mit dem Fahrer
 	 * @return true wenn ok, false sonst
 	 */
-	public boolean speichereStartplatz(FahrerResultat fahrer) {
+	public boolean speichereStartplatz(FahrerResultat fahrer)
+	{
 		String s1 = fahrer.getStartzeitEins() == null ? "startzeit1" : "'" + fahrer.getStartzeitEins() + "'";
 		String s2 = fahrer.getStartzeitZwei() == null ? "startzeit2" : "'" + fahrer.getStartzeitZwei() + "'";
 		String sp = fahrer.getStartnummer() == 0 ? "startplatz" : fahrer.getStartnummer() + "";
@@ -1216,24 +1211,17 @@ public class DBController {
 	 * Erfasst eine Strafzeit zu einem Fahrer und Rennen. Überschreibt eine
 	 * bereits vorhandene Strafzeit zu einem Tor!
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param kategorieID
-	 *            Die ID der Kategorie
-	 * @param lauf
-	 *            1 für 1. Lauf, 2 für 2. Lauf
-	 * @param tornummer
-	 *            Die Tornummer
-	 * @param strafzeit
-	 *            Die Strafzeit in Sekunden
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die ID der Kategorie
+	 * @param lauf 1 für 1. Lauf, 2 für 2. Lauf
+	 * @param tornummer Die Tornummer
+	 * @param strafzeit Die Strafzeit in Sekunden
 	 * @return true wenn gespeichert, false sonst
 	 */
-	public boolean fehlerErfassen(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf,
-			Integer tornummer, Integer strafzeit) {
-		ExecuteResult res = executeUpdate(
-				"INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES " + "("
+	public boolean fehlerErfassen(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tornummer, Integer strafzeit)
+	{
+		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES " + "("
 						+ fahrerID + ", " + rennenID + ", " + kategorieID + ", " + lauf + ", " + tornummer + ", "
 						+ strafzeit + ") ON DUPLICATE KEY UPDATE strafzeit = " + strafzeit + ";");
 		return res.isSuccess();
@@ -1242,20 +1230,15 @@ public class DBController {
 	/**
 	 * Löscht eine Strafzeit wieder
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @param rennenID
-	 *            Die Rennen ID
-	 * @param kategorieID
-	 *            Die ID der Kategorie
-	 * @param lauf
-	 *            1 für 1. Lauf, 2 für 2. Lauf
-	 * @param tornummer
-	 *            Die Tornummer
+	 * @param fahrerID Die Fahrer ID
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die ID der Kategorie
+	 * @param lauf 1 für 1. Lauf, 2 für 2. Lauf
+	 * @param tornummer Die Tornummer
 	 * @return true wenn gelöscht, false sonst
 	 */
-	public boolean fehlerLoeschen(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf,
-			Integer tornummer) {
+	public boolean fehlerLoeschen(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tornummer)
+	{
 		ExecuteResult res = executeUpdate("DELETE FROM strafzeiten WHERE fahrer_id = " + fahrerID + " AND"
 				+ " rennen_id = " + rennenID + " AND tor_nr = " + tornummer + " AND kategorie_id = " + kategorieID
 				+ " AND lauf = " + lauf + ";");
@@ -1267,17 +1250,31 @@ public class DBController {
 	 * 
 	 * @return Eine Liste mit allen Fahrern
 	 */
-	public List<Fahrer> ladeFahrermutationslisteAlle() {
+	public List<Fahrer> ladeFahrermutationslisteAlle() 
+	{
 		return selectFahrerBy(Table_Fahrer.CLOUMN_ALL, null);
 	}
 
-	public List<Fahrer> ladeFahrermutationslisteAlleMitSuche(String suche) {
+	/**
+	 * Lädt Fahrer aus der Datenbank, die mit dem Suchstring matchen. Es werden dabei die Spalten "name", "vorname" und
+	 * "jahrgang" durchsucht
+	 * @param suche Der Suchstring
+	 * @return Eine Liste mit Fahrern, die den Suchkriterien entsprechen
+	 */
+	public List<Fahrer> ladeFahrermutationslisteAlleMitSuche(String suche) 
+	{
 		return selectFahrerBy(Table_Fahrer.COLUMN_FTS, suche);
 	}
 
-	public List<FahrerResultat> ladeAngemeldetenFahrerByClub(Integer clubID, Integer rennenID) {
-		return selectRanglisteBy(
-				new Table_Rangliste[] { Table_Rangliste.COLUMN_CLUB_ID, Table_Rangliste.COLUMN_RENNEN_ID },
+	/**
+	 * Gibt die Fahrer eines bestimmten Clubs zu einem Rennen aus
+	 * @param clubID Die ID des Clubs
+	 * @param rennenID Die ID des Rennens
+	 * @return Eine Liste mit FahrerResultaten
+	 */
+	public List<FahrerResultat> ladeAngemeldetenFahrerByClub(Integer clubID, Integer rennenID) 
+	{
+		return selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_CLUB_ID, Table_Rangliste.COLUMN_RENNEN_ID },
 				new Integer[] { clubID, rennenID });
 	}
 
@@ -1288,32 +1285,33 @@ public class DBController {
 	 * @return
 	 */
 	@Deprecated
-	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) { // TODO_2
-																		// löschen,
-																		// doppelt
+	public List<Fahrer> ladeFahrermutationslisteClub(Integer clubID) //TODO_2 doppelt
+	{
 		return selectFahrerBy(Table_Fahrer.COLUMN_CLUB_ID, clubID);
 	}
 
 	/**
 	 * Liest zu einem Fahrer alle(!) Resultate aus
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
+	 * @param fahrerID Die Fahrer ID
 	 * @return Eine Liste von FahrerResultaten
 	 */
-	public List<FahrerResultat> ladeFahrerresultat(Integer fahrerID) {
+	public List<FahrerResultat> ladeFahrerresultat(Integer fahrerID)
+	{
 		return selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_FAHRER_ID },
 				new Integer[] { fahrerID });
 	}
 
 	/**
-	 * Liest zu einem Fahrer alle(!) Resultate aus
+	 * Liest zu einem Fahrer das Resultat eines bestimmten Rennens und Kategorie aus.
 	 * 
-	 * @param fahrerID
-	 *            Die Fahrer ID
-	 * @return Eine Liste von FahrerResultaten
+	 * @param fahrerID Die Fahrer ID
+	 * @param katID Die ID der Kategorie
+	 * @param rennenID Die ID des Rennens
+	 * @return Ein FahrerResultat
 	 */
-	public FahrerResultat ladeFahrerresultatByKategorie(Integer fahrerID, Integer katID, Integer rennenID) {
+	public FahrerResultat ladeFahrerresultatByKategorie(Integer fahrerID, Integer katID, Integer rennenID) 
+	{
 		return selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_FAHRER_ID,
 				Table_Rangliste.COLUMN_KATEGORIE, Table_Rangliste.COLUMN_RENNEN_ID },
 				new Integer[] { fahrerID, katID, rennenID }).get(0);
@@ -1325,7 +1323,8 @@ public class DBController {
 	 * @param fahrer
 	 */
 	@Deprecated
-	public void speichereFahrerBearbeitenAlle(Fahrer fahrer) {
+	public void speichereFahrerBearbeitenAlle(Fahrer fahrer)
+	{
 		speichereFahrer(fahrer);
 	}
 
@@ -1335,7 +1334,8 @@ public class DBController {
 	 * @param fahrer
 	 */
 	@Deprecated
-	public void speichereFahrerBearbeitenClub(Fahrer fahrer) {
+	public void speichereFahrerBearbeitenClub(Fahrer fahrer)
+	{
 		speichereFahrer(fahrer);
 	}
 
@@ -1344,20 +1344,21 @@ public class DBController {
 	 * 
 	 * @return Eine Liste mit Rennen
 	 */
-	public List<Rennen> ladeRennen() {
+	public List<Rennen> ladeRennen()
+	{
 		return selectRennenBy(Table_Rennen.COLUMN_ALL, null);
 	}
 
 	/**
 	 * Liest ein Rennen aus der Datenbank
 	 * 
-	 * @param rennenID
-	 *            Die ID des Rennens
+	 * @param rennenID Die ID des Rennens
 	 * @return Das Rennen
 	 */
-	public Rennen ladeRennen(Integer rennenID) {
+	public Rennen ladeRennen(Integer rennenID)
+	{
 		List<Rennen> rennen = selectRennenBy(Table_Rennen.COLUMN_ID, rennenID);
-		if (rennen.size() > 0)
+		if(rennen.size() > 0)
 			return rennen.get(0);
 		else
 			return null; // TODO_1 abzuklären
@@ -1369,29 +1370,31 @@ public class DBController {
 	 * bestehendes Rennen geupdatet. Ist die ID nicht vorhanden, werden die
 	 * Daten verworfen.
 	 * 
-	 * @param rennen
-	 *            Das Rennen Objekt
+	 * @param rennen Das Rennen Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
-	public boolean speichereRennen(Rennen rennen) {
+	public boolean speichereRennen(Rennen rennen)
+	{
 		ExecuteResult res;
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.setTime(rennen.getDatumVon());
 		String zeit = String.format("%02d:%02d:00", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-		System.out.println(zeit);
-		if (rennen.getRennenID() < 1) {
+		if(rennen.getRennenID() < 1) //Wenn eine ID tiefer als 1 ist, wird ein neues Rennen angelegt
+		{
 			res = executeUpdate("INSERT INTO rennen (name, titel, club_id, datum, datum_bis, zeit, ort, anz_tore, anz_posten) VALUES " + "('"
 					+ rennen.getName() + "', '" + rennen.getTitel() + "', '" + rennen.getVeranstalter().getClubID() + "', FROM_UNIXTIME(" + rennen.getDatumVon().getTime() / 1000 + "), "
 					+ "FROM_UNIXTIME(" + rennen.getDatumBis().getTime() / 1000 + "), '" + zeit + "', " + "'" + rennen.getOrt() + "', " + rennen.getAnzTore() + ", " + rennen.getAnzPosten()
 					+ ");");
-			if (res.isSuccess())
+			if(res.isSuccess())
 				rennen.setRennenID(res.generatedIDs.get(0));
-		} else {
+		}
+		else //ansonsten eins geupdatet
+		{
 			res = executeUpdate("UPDATE rennen SET name = '" + rennen.getName() + "', titel = '" + rennen.getTitel() +"', datum = FROM_UNIXTIME("
 					+ rennen.getDatumVon().getTime() / 1000 + "), " + "zeit = '" + zeit + "', ort = '" + rennen.getOrt()
 					+ "', anz_tore = " + rennen.getAnzTore() + ", " + "anz_posten = " + rennen.getAnzPosten() + ", datum_bis = FROM_UNIXTIME("
 					+ rennen.getDatumVon().getTime() / 1000 + "), club_id = " + rennen.getVeranstalter().getClubID() + " WHERE rennen_id = " + rennen.getRennenID() + ";");
-			if (res.isSuccess())
+			if(res.isSuccess())
 				res = executeUpdate("DELETE FROM kat_rennen WHERE rennen_id = " + rennen.getRennenID());
 		}
 		String sql = "INSERT INTO kat_rennen (rennen_id, kategorie_id, gebuehr) VALUES ";
@@ -1453,8 +1456,12 @@ public class DBController {
 	 * Gibt die Resultate der Fahrer zu einem Rennen zurück
 	 * 
 	 * @param rennen Das Objekt des Rennens
+<<<<<<< HEAD
 	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen
 	 *         Rennen beinhaltet
+=======
+	 * @return ein Ranglistenobjekt, das die FahrerResultate zum gegebenen Rennen beinhaltet
+>>>>>>> refs/remotes/origin/gestl
 	 */
 	public Rangliste ladeRanglisteRennen(Rennen rennen) 
 	{

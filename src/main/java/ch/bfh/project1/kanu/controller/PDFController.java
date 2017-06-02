@@ -22,6 +22,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
@@ -134,7 +135,7 @@ public class PDFController {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void generierePdfRangliste(String pfad, Rangliste rangliste) throws IOException, DocumentException {
+	public static String generierePdfRangliste(String pfad, Rangliste rangliste) throws IOException, DocumentException {
 		// Neues File generieren
 		pfad = pfad + "Rangliste.pdf";
 		File file = new File(pfad);
@@ -157,7 +158,8 @@ public class PDFController {
 		Paragraph paragTabellenname = null;
 		PdfPTable tabelle = null;
 		List<FahrerResultat> resultate = rangliste.getResultate();
-		for (int i = 0; i < resultate.size() -1; i++) { //Weil letztes Element ein "Dummy" Element ist
+		resultate.add(new FahrerResultat(new AltersKategorie(-2, ""))); //Dummy Element, um Abschluss zu finden
+		for (int i = 0; i < resultate.size() - 1; i++) { //-1 wegen Dummy Element
 			FahrerResultat fr = resultate.get(i);
 			// Neue Tabelle mit Titel wenn Rennkategorie gewechselt hat (daten.get(i).get(0) = Rennkategorie)
 			if (!tabellentitel.equals(fr.getKategorie().getName())) {
@@ -207,7 +209,7 @@ public class PDFController {
 			zelle.setPhrase(new Phrase(renderMilli(fr.getZeitTotal()), FONT_TABELLENINHALT_FETT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(renderMilli((resultate.get(tabellenerster).getZeitTotal() - fr.getZeitTotal())), FONT_TABELLENINHALT));
+			zelle.setPhrase(new Phrase(renderMilli((resultate.get(tabellenerster).getZeitTotal() - fr.getZeitTotal())), FONT_TABELLENINHALT)); //TODO Rendert falsch bei negativen Zahlen
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
 			rang++;
@@ -217,7 +219,8 @@ public class PDFController {
 				dokument.add(paragTabellenname);
 			}
 		}
-	dokument.close();
+		dokument.close();
+		return pfad;
 	}
 	
 	/**
@@ -230,7 +233,7 @@ public class PDFController {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<List<String>> daten) throws IOException, DocumentException {
+	public static String generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<List<String>> daten) throws IOException, DocumentException {
 		// Neues File generieren
 		pfad = pfad + "Abrechnung_" + clubname + ".pdf";
 		File file = new File(pfad);
@@ -333,6 +336,7 @@ public class PDFController {
 		}
 		// Dokument schliessen
 		dokument.close();
+		return pfad;
 	}
 	
 	/**
@@ -439,5 +443,4 @@ public class PDFController {
 	  String string = String.format("%02d:%02d.%d", m, s, hs);
 	  return string;
 	 }
-	
 }

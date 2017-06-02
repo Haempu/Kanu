@@ -12,6 +12,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
@@ -43,10 +44,12 @@ public class StartlistenView implements ViewTemplate {
 	private Rennen rennen;
 	private List<Rennen> lrennen;
 
-	private GridLayout layout = new GridLayout(3, 3);
+	//private GridLayout layout = new GridLayout(3, 3);
 
 	private List<ListSelect> block = new ArrayList<ListSelect>();
 	private ListSelect kategorien = new ListSelect();
+	
+	private int anzBloecke = 1;
 
 	private ClickListener cladd, clrem;
 
@@ -104,9 +107,10 @@ public class StartlistenView implements ViewTemplate {
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		vLayout.removeAllComponents();
+		vLayout.addComponent(titel);
 		if (rennen == null) 
 		{
-			lrennen = sController.ladeAlleRennen();
+			lrennen = sController.ladeAlleRennen(); //Wenn kein Rennen ausgewählt, eine Liste mit Rennen ausgeben
 			zeigeRennen(inhalt);
 		} 
 		else if(rennen.getRennenID() == null)
@@ -117,17 +121,17 @@ public class StartlistenView implements ViewTemplate {
 			List<Integer> kats = new ArrayList<Integer>();
 			List<ListSelect> bloecke = sController.ladeBloecke(rennen.getRennenID(), kats);
 			kategorien.clear();
-			for (AltersKategorie kat : rennen.getKategorien()) 
+			for (AltersKategorie kat : rennen.getKategorien()) //Kategorien ausgeben
 			{
 				kategorien.addItem(kat.getAltersKategorieID());
 				kategorien.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 			}
 			for(Integer k : kats) 
 			{
-				kategorien.removeItem(k);
+				kategorien.removeItem(k); //Bereits gesetzte Kategorien wieder entfernen
 			}
-			int i = 1;
-			for(ListSelect ls : bloecke) 
+			HorizontalLayout hLayout = new HorizontalLayout();
+			for(ListSelect ls : bloecke) //Blöcke aus der Datenbank anzeigen
 			{
 				GridLayout layout = new GridLayout(2, 3);
 				Button tmp = new Button("<<");
@@ -142,12 +146,22 @@ public class StartlistenView implements ViewTemplate {
 				layout.addComponent(tmp2, 1, 1);
 				layout.setComponentAlignment(tmp, Alignment.BOTTOM_CENTER);
 				layout.setComponentAlignment(tmp2, Alignment.TOP_CENTER);
-				Label lblock = new Label("Block " + i);
+				layout.setSpacing(true);
+				Label lblock = new Label("Block " + anzBloecke);
 				lblock.setStyleName("h2");
 				vLayout.addComponent(lblock);
-				vLayout.addComponent(layout);
+				if(anzBloecke == 1) //Beim ersten Block nebenan noch die verbleibenden Kategorien anzeigen
+				{
+					hLayout.addComponent(layout);
+					hLayout.addComponent(kategorien);
+					hLayout.setSpacing(true);
+					vLayout.addComponent(hLayout);
+				}
+				else
+					vLayout.addComponent(layout);
+				anzBloecke++;
 			}
-			if(bloecke.size() == 0)
+			if(bloecke.size() == 0) //Wenn keine Blöcke in der db gefunden wurden, einen neuen anzeigen
 			{
 				ListSelect tmp1 = new ListSelect();
 				tmp1.setMultiSelect(true);
@@ -164,18 +178,19 @@ public class StartlistenView implements ViewTemplate {
 				layout.addComponent(tmp2, 1, 1);
 				layout.setComponentAlignment(tmp, Alignment.BOTTOM_CENTER);
 				layout.setComponentAlignment(tmp2, Alignment.TOP_CENTER);
+				layout.setSpacing(true);
 				Label lblock = new Label("Block 1");
 				lblock.setStyleName("h2");
 				vLayout.addComponent(lblock);
-				vLayout.addComponent(layout);
+				hLayout.addComponent(layout);
+				hLayout.addComponent(kategorien);
+				hLayout.setSpacing(true);
+				vLayout.addComponent(hLayout);
 			}
 
 			// kategorien.setRows(kategorien.size());
-			layout.addComponent(kategorien, 2, 0, 2, layout.getRows() - 1);
-			layout.setComponentAlignment(kategorien, Alignment.MIDDLE_CENTER);
-
+			HorizontalLayout hLayout2 = new HorizontalLayout();
 			Button bneu = new Button("Block hinzufügen");
-			layout.addComponent(bneu, 1, 2);
 
 			bneu.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -192,17 +207,22 @@ public class StartlistenView implements ViewTemplate {
 				sController.speichereBloecke(tmpBlock, rennen);
 				sController.generiereStartliste(tmpBlock, rennen);
 			});
-			layout.addComponent(speichern, 0, i * 2 + 2);
+			hLayout2.addComponent(speichern);
+			hLayout2.addComponent(bneu);
+			vLayout.addComponent(hLayout2);
 
-			layout.setSpacing(true);
+			//layout.setSpacing(true);
 		}
-		vLayout.addComponent(titel);
-		vLayout.addComponent(layout);
+		
 
 		Panel inhaltsPanel = (Panel) inhalt;
 		inhaltsPanel.setContent(vLayout);
 	}
 
+	/**
+	 * Zeigt die verschiedenen Rennen an, zu denen dann die Blöcke und Startlisten konfiguriert werden können
+	 * @param inhalt Das Inhalts Panel
+	 */
 	@SuppressWarnings("unchecked")
 	private void zeigeRennen(Component inhalt)
 	{
@@ -244,46 +264,52 @@ public class StartlistenView implements ViewTemplate {
 			row.getItemProperty("Startliste").setValue(bsl);
 		}
 		trennen.setPageLength(lrennen.size());
-		layout.addComponent(trennen);
+		vLayout.addComponent(trennen);
 	}
 
+	/**
+	 * Zeigt die Startliste an, sofern vorhanden
+	 */
 	@SuppressWarnings("unchecked")
 	private void zeigeStartliste() 
 	{
-		layout.removeAllComponents();
+		vLayout.removeAllComponents();
 		List<FahrerResultat> fahrer = sController.ladeStartliste(rennen.getRennenID());
-		Table sl = new Table();
-		sl.addContainerProperty("#", String.class, null);
-		sl.addContainerProperty("Zeit 1. Lauf", String.class, null);
-		sl.addContainerProperty("Zeit 2. Lauf", String.class, null);
-		sl.addContainerProperty("Name", String.class, null);
+		fahrer.add(new FahrerResultat(new AltersKategorie(-2, "")));
 		int altKat = -1;
-		int kats = 0;
+		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
 		for(FahrerResultat f : fahrer)
 		{
 			if(altKat != f.getKategorie().getAltersKategorieID()) 
 			{
 				altKat = f.getKategorie().getAltersKategorieID();
-				Object id = sl.addItem();
-				Item row = sl.getItem(id);
-				row.getItemProperty("#").setValue("");
-				row.getItemProperty("Zeit 1. Lauf").setValue(f.getKategorie().getName());
-				row.getItemProperty("Zeit 2. Lauf").setValue("");
-				row.getItemProperty("Name").setValue("");
-				kats++;
+				if(res.size() > 0)
+				{
+					Table sl = new Table();
+					sl.addContainerProperty("#", String.class, null);
+					sl.addContainerProperty("Zeit 1. Lauf", String.class, null);
+					sl.addContainerProperty("Zeit 2. Lauf", String.class, null);
+					sl.addContainerProperty("Name", String.class, null);
+					for(FahrerResultat r : res)
+					{
+						Object id = sl.addItem();
+						Item row = sl.getItem(id);
+						row.getItemProperty("#").setValue(r.getStartnummer() + "");
+						row.getItemProperty("Zeit 1. Lauf").setValue(r.getStartzeitEins());
+						row.getItemProperty("Zeit 2. Lauf").setValue(r.getStartzeitZwei());
+						row.getItemProperty("Name").setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
+					}
+					sl.setPageLength(res.size());
+					sl.setWidth("500px");
+					vLayout.addComponent(new Label("Kategorie " + res.get(0).getKategorie().getName()));
+					vLayout.addComponent(sl);
+					res.clear();
+				}
 			}
-			Object id = sl.addItem();
-			Item row = sl.getItem(id);
-			row.getItemProperty("#").setValue(f.getStartnummer() + "");
-			row.getItemProperty("Zeit 1. Lauf").setValue(f.getStartzeitEins());
-			row.getItemProperty("Zeit 2. Lauf").setValue(f.getStartzeitZwei());
-			row.getItemProperty("Name").setValue(f.getFahrer().getVorname() + " " + f.getFahrer().getName()); // TODO
+			res.add(f);
 		}
-		sl.setPageLength(fahrer.size() + kats);
-		if(fahrer.size() == 0)
-			layout.addComponent(new Label("Noch keine Startliste vorhanden"));
-		else
-			layout.addComponent(sl);
+		if(fahrer.size() == 1)
+			vLayout.addComponent(new Label("Noch keine Startliste vorhanden"));
 	}
 
 	private void addBox() 
@@ -297,23 +323,21 @@ public class StartlistenView implements ViewTemplate {
 		brem.addClickListener(clrem);
 		brem.setData(tmp);
 		block.add(tmp);
-		Button tmp2 = (Button) layout.getComponent(0, layout.getRows() - 1);
-		layout.removeComponent(tmp2);
-		Button tmp4 = (Button) layout.getComponent(1, layout.getRows() - 1);
-		layout.removeComponent(tmp4);
-		int rows = layout.getRows();
-		layout.setRows(rows + 2);
-		layout.addComponent(tmp, 0, rows - 1, 0, rows);
-		layout.addComponent(badd, 1, rows - 1);
-		layout.addComponent(brem, 1, rows);
-		layout.addComponent(tmp2, 0, rows + 1);
-		layout.addComponent(tmp4, 1, rows + 1);
-		ListSelect tmp3 = (ListSelect) layout.getComponent(2, 0);
-		layout.removeComponent(tmp3);
-		layout.addComponent(tmp3, 2, 0, 2, layout.getRows() - 1);
-		layout.setComponentAlignment(tmp3, Alignment.MIDDLE_CENTER);
+		GridLayout layout = new GridLayout(3, 3);
+		layout.addComponent(tmp, 0, 0, 0, 1);
+		layout.addComponent(badd, 1, 0);
+		layout.addComponent(brem, 1, 1);
 		layout.setComponentAlignment(badd, Alignment.BOTTOM_CENTER);
 		layout.setComponentAlignment(brem, Alignment.TOP_CENTER);
+		layout.setSpacing(true);
+		Label lblock = new Label("Block " + anzBloecke);
+		lblock.setStyleName("h2");
+		HorizontalLayout htemp = (HorizontalLayout) vLayout.getComponent(vLayout.getComponentCount() - 1);
+		vLayout.removeComponent(htemp);
+		vLayout.addComponent(lblock);
+		anzBloecke++;
+		vLayout.addComponent(layout);
+		vLayout.addComponent(htemp);
 	}
 
 	public Rennen getRennen() {

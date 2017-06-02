@@ -13,6 +13,9 @@ import com.vaadin.ui.Table;
 
 import ch.bfh.project1.kanu.controller.RechnungsController;
 import ch.bfh.project1.kanu.model.Club;
+import ch.bfh.project1.kanu.util.KanuFileDownloader;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -104,10 +107,18 @@ public class RechnungsView implements ViewTemplate {
 					this.rController.rechnungBezahlen(club, false);
 				}
 			});
-			// Generiert ein PDF von der ausgewählten Rechnung
-			pdfGenerieren.addClickListener(event -> {
-				this.rController.rechnungErstellen(club, 2); // TODO: Rennen von View laden nicht einfach Rennen 2
+			
+			KanuFileDownloader kfd = new KanuFileDownloader();
+			kfd.addAdvancedDownloaderListener(new AdvancedDownloaderListener() {
+				
+				@Override
+				public void beforeDownload(DownloaderEvent downloadEvent) {
+					String pfad = rController.rechnungErstellen(club, 2);
+					kfd.setFilePath(pfad);
+				}
 			});
+
+			kfd.extend(pdfGenerieren);
 
 			row.getItemProperty(COLUMN_CLUB).setValue(club.getName());
 			row.getItemProperty(COLUMN_BEZAHLT).setValue(bezahltCheckbox);

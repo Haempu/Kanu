@@ -2,7 +2,7 @@ package ch.bfh.project1.kanu.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 import com.itextpdf.text.DocumentException;
@@ -10,7 +10,7 @@ import com.itextpdf.text.DocumentException;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.view.RanglistenView;
+import ch.bfh.project1.kanu.util.ResultatComparator;
 
 /**
  * Die Klasse RanglistenController beinhaltet die Logik der Klasse
@@ -23,10 +23,7 @@ import ch.bfh.project1.kanu.view.RanglistenView;
  */
 
 public class RanglistenController {
-	private static String DOKUMENTTITEL_STARTLISTE = "Startliste";
-	private static String[] HEADER = { "Rang", "Startnr", "Name", "Club", "1. Lauf", "2. Lauf", "Gesamt" };
 	private DBController dbController;
-	private RanglistenView ranglistenView;
 	
 	public RanglistenController()
 	{
@@ -35,6 +32,7 @@ public class RanglistenController {
 
 	/**
 	 * Gibt die Gesamtrangliste des Rennens zurück.
+	 * Löscht aber alle Fahrer wieder, die noch keinen Lauf absolviert haben!
 	 * 
 	 * @param rennen
 	 *            - ID des Rennens.
@@ -46,26 +44,64 @@ public class RanglistenController {
 		List<FahrerResultat> zuloeschen = new ArrayList<FahrerResultat>();
 		for(FahrerResultat f : rl.getResultate())
 		{
-			
-			Date d = new Date(f.getZeitErsterLauf());
-			if(d.getTime() == 0)
+			if(f.getZeitTotal() == 0) //Wenn kein Lauf absolviert wurde, Fahrer wieder löschen!
 				zuloeschen.add(f);
-			else
-				System.out.println(d.getTime());
 		}
 		rl.getResultate().removeAll(zuloeschen);
 		return rl;
 	}
-
+	
 	/**
-	 * Gibt die Rangliste der Alterskategorie zurück.
-	 * 
-	 * @param altersKategorieID
-	 *            - ID der Alterskategorie.
-	 * @return Rangliste
+	 * Lädt alle Rennen aus der db
+	 * @return
 	 */
-	public Rangliste ladeRanglisteAltersKategorie(Integer altersKategorieID) {
-		return this.dbController.ladeRanglisteAltersKategorie(null, altersKategorieID); //TODO
+	public List<Rennen> ladeRennen()
+	{
+		return dbController.ladeRennen();
+	}
+	
+	/**
+	 * Lädt ein Rennen aus der db
+	 * @param rennenID
+	 * @return
+	 */
+	public Rennen ladeRennen(Integer rennenID)
+	{
+		return dbController.ladeRennen(rennenID);
+	}
+	
+	/**
+	 * Diese Methode sortiert die Rangliste für das PDF Dokument nach Kategorien und innerhalb der Kategorien nach Zeit. 
+	 * @param rangliste Die Rangliste
+	 * @return Eine sortierte Rangliste (neues Objekt, nicht das alte)
+	 */
+	public Rangliste sortiereRangliste(Rangliste rangliste)
+	{
+		int altKat = -1;
+		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
+		List<FahrerResultat> restot = new ArrayList<FahrerResultat>();
+		Rangliste resultat = new Rangliste();
+		resultat.setRennen(rangliste.getRennen());
+		System.out.println(rangliste.getResultate().size());
+		for(FahrerResultat f : rangliste.getResultate())
+		{
+			//Wenn neue Kategorie, die alte Kategorie sortieren und speichern
+			if(altKat != f.getKategorie().getAltersKategorieID()) 
+			{
+				System.out.println(res.size());
+				altKat = f.getKategorie().getAltersKategorieID();
+				//Nur nehmen, wenn auch Fahrer vorhanden sind
+				if(res.size() > 0) 
+				{
+					Collections.sort(res, new ResultatComparator());
+					restot.addAll(res);
+					res.clear();
+				}
+			}
+			res.add(f);
+		}
+		resultat.setResultate(restot);
+		return resultat;
 	}
 
 	/**
@@ -79,16 +115,8 @@ public class RanglistenController {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public void generierePDF(String pfad, Rangliste rangliste) {
-		try {
-			PDFController.generierePdfRangliste(pfad, rangliste);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String generierePDF(Rangliste rangliste) throws IOException, DocumentException {
+		return PDFController.generierePdfRangliste("D:\\Downloads\\", sortiereRangliste(rangliste));
 	}
 
 }

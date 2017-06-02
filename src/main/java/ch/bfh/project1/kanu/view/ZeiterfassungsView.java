@@ -252,7 +252,6 @@ public class ZeiterfassungsView implements ViewTemplate {
 					this.vornameText.setValue(f.getVorname());
 					this.nachnameText.setValue(f.getName());
 					this.clubText.setValue(f.getClub().getName());
-
 					if (fr.getZeitErsterLauf() != null) {
 						this.laufzeitEins
 								.setValue(this.zController.getLaufzeitInFormat(newFahrerResultat.getZeitErsterLauf()));

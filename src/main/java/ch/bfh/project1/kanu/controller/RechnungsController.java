@@ -42,7 +42,7 @@ public class RechnungsController {
 	 * @param club - Club, für welchen die Rechnung erstellt werden soll
 	 * @param rennenID - Rennen, für welches die Rechnung erstellt werden soll
 	 */
-	public void rechnungErstellen(Club club, Integer rennenID) {
+	public String rechnungErstellen(Club club, Integer rennenID) {
 		// Lade alle zu einem Rennen angemeldeten Fahrer einres Clubs
 		List<FahrerResultat> fahrer = this.dbController.ladeAngemeldetenFahrerByClub(club.getClubID(), rennenID);
 		AltersKategorie aktuelleKat = null;
@@ -57,8 +57,9 @@ public class RechnungsController {
 			zeile.add(Integer.toString(fahrer.get(i).getKategorie().getGebuehr()));
 			alleFahrer.add(zeile);
 		}
+		String pfad = "";
 		try {
-			PDFController.generierePdfRechnung("C:/Daten/Patrik/", this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
+			pfad = PDFController.generierePdfRechnung("C:/Daten/Patrik/", this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,6 +67,7 @@ public class RechnungsController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return pfad;
 	}
 
 	/**
