@@ -54,7 +54,7 @@ public class RanglistenView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
-	@SuppressWarnings("unchecked") //Nicht schön, aber gelbe markierungen eben auch nicht --> Die Casts wurden "von Hand" gechecked...
+	@SuppressWarnings("unchecked") //Nicht schön, aber gelbe Markierungen eben auch nicht --> Die Casts wurden "von Hand" gechecked...
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		if (rennen == null)
@@ -68,6 +68,7 @@ public class RanglistenView implements ViewTemplate {
 			ns.addItem(r.getRennenID());
 			ns.setItemCaption(r.getRennenID(), r.getName());
 		}
+		ns.setNullSelectionAllowed(false);
 		ns.select(rennen.getRennenID());
 		ns.addValueChangeListener(event -> {
 			if(ns.getValue() == null)
@@ -145,7 +146,7 @@ public class RanglistenView implements ViewTemplate {
 						row.getItemProperty(Tabelle.FEHLER2).setValue(r.getStrafzeit2() + "");
 						row.getItemProperty(Tabelle.TOTAL2).setValue(renderMilli(r.getGesamtzeit2()) + "");
 						row.getItemProperty(Tabelle.TOTAL).setValue(renderMilli(r.getZeitTotal()));
-						row.getItemProperty(Tabelle.DIFF).setValue(renderMilli(zeitErster - r.getZeitTotal()));
+						row.getItemProperty(Tabelle.DIFF).setValue(renderMilli(r.getZeitTotal() - zeitErster));
 						i++;
 					}
 					trangliste.setPageLength(res.size());
@@ -155,6 +156,12 @@ public class RanglistenView implements ViewTemplate {
 				}
 			}
 			res.add(f); //Zwischenspeicher der Fahrer der Kategorie
+		}
+		
+		if(rangliste.getResultate().size() == 1) //1 wegen Dummy Element
+		{
+			Label lfehler = new Label("Zu diesem Rennen gibt es noch keine Rangliste");
+			layout.addComponent(lfehler);
 		}
 
 		Panel inhaltsPanel = (Panel) inhalt;

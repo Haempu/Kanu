@@ -209,7 +209,7 @@ public class PDFController {
 			zelle.setPhrase(new Phrase(renderMilli(fr.getZeitTotal()), FONT_TABELLENINHALT_FETT));
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
-			zelle.setPhrase(new Phrase(renderMilli((resultate.get(tabellenerster).getZeitTotal() - fr.getZeitTotal())), FONT_TABELLENINHALT)); //TODO Rendert falsch bei negativen Zahlen
+			zelle.setPhrase(new Phrase(renderMilli((fr.getZeitTotal() - resultate.get(tabellenerster).getZeitTotal())), FONT_TABELLENINHALT)); //TODO Rendert falsch bei negativen Zahlen
 			zelle.setBorder(Rectangle.NO_BORDER);
 			tabelle.addCell(zelle);
 			rang++;
