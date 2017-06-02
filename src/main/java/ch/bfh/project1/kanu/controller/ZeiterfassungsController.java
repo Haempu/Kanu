@@ -81,9 +81,16 @@ public class ZeiterfassungsController {
 	 * @return
 	 */
 	public List<FahrerResultat> ladeAngemeldeteFahrerMitKategorie(Integer rennenID, Integer kategorieID) {
-		return this.dbController.ladeStartliste(rennenID, kategorieID);
+		return this.dbController.ladeFahrerResultatKategorie(rennenID, kategorieID);
 	}
 
+	/**
+	 * Liest einen Fahrer inkl. Resultat aus der Datenbank
+	 * @param fahrerID Die Fahrer ID
+	 * @param kategorieID Die Kategorie ID
+	 * @param rennenID Die ID des Rennens
+	 * @return Ein FahrerResultat
+	 */
 	public FahrerResultat ladeAngemeldetenFahrer(Integer fahrerID, Integer kategorieID, Integer rennenID) {
 		return this.dbController.ladeFahrerresultatByKategorie(fahrerID, kategorieID, rennenID);
 	}

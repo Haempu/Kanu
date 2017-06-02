@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.itextpdf.text.DocumentException;
-
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
 import ch.bfh.project1.kanu.util.ResultatComparator;
+
+import com.itextpdf.text.DocumentException;
 
 /**
  * Die Klasse RanglistenController beinhaltet die Logik der Klasse
@@ -82,13 +82,11 @@ public class RanglistenController {
 		List<FahrerResultat> restot = new ArrayList<FahrerResultat>();
 		Rangliste resultat = new Rangliste();
 		resultat.setRennen(rangliste.getRennen());
-		System.out.println(rangliste.getResultate().size());
 		for(FahrerResultat f : rangliste.getResultate())
 		{
 			//Wenn neue Kategorie, die alte Kategorie sortieren und speichern
 			if(altKat != f.getKategorie().getAltersKategorieID()) 
 			{
-				System.out.println(res.size());
 				altKat = f.getKategorie().getAltersKategorieID();
 				//Nur nehmen, wenn auch Fahrer vorhanden sind
 				if(res.size() > 0) 

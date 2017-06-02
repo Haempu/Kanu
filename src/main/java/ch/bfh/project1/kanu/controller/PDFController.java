@@ -7,6 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rangliste;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -21,11 +26,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rangliste;
-import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * Die Klasse "GenerierePDF" generiert aus einer Liste eine PDF-Datei. Dies
@@ -137,9 +137,9 @@ public class PDFController {
 	 */
 	public static String generierePdfRangliste(String pfad, Rangliste rangliste) throws IOException, DocumentException {
 		// Neues File generieren
-		pfad = pfad + "Rangliste.pdf";
+		pfad = "Rangliste.pdf";
 		File file = new File(pfad);
-		file.getParentFile().mkdirs();
+		//file.getParentFile().mkdirs();
 		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, INHALT_EINZUG_OBEN + OFFSET_RANGLISTE, INHALT_EINZUG_UNTEN);
 		PdfWriter writer = PdfWriter.getInstance(dokument, new FileOutputStream(pfad));
 		// Dokumentheader definieren
@@ -235,7 +235,7 @@ public class PDFController {
 	 */
 	public static String generierePdfRechnung(String pfad, Rennen rennen, String clubname, List<List<String>> daten) throws IOException, DocumentException {
 		// Neues File generieren
-		pfad = pfad + "Abrechnung_" + clubname + ".pdf";
+		pfad = "Abrechnung_" + clubname + ".pdf";
 		File file = new File(pfad);
 		file.getParentFile().mkdirs();
 		Document dokument = new Document(PageSize.A4, EINZUG_LINKS, EINZUG_RECHTS, INHALT_EINZUG_OBEN + OFFSET_RANGLISTE, INHALT_EINZUG_UNTEN);

@@ -579,7 +579,7 @@ public class DBController {
 		// Gibt die Zeiten beider Läufe aus
 		String where = makeWhere(column, value);
 		selectStmt = "SELECT IFNULL(ges_zeit1, 0), IFNULL(ges_zeit2, 0), fahrer_id, rennen_id, kategorie_id, f.name, vorname, c.club_name, "
-				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0), gebuehr FROM (SELECT IFNULL(zeit1, 0) + IFNULL(t.strafzeit * 1000, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
+				+ "c.club_id, IFNULL(zeit1, 0), IFNULL(zeit2, 0), IFNULL(sz1, 0), IFNULL(sz2, 0), k.name, IFNULL(startplatz, 0), gebuehr, ort, jahrgang FROM (SELECT IFNULL(zeit1, 0) + IFNULL(t.strafzeit * 1000, 0) AS ges_zeit1, zeit1, startplatz, IFNULL(t.strafzeit, 0) AS sz1, fahrer_id, rennen_id, kategorie_id "
 				+ "FROM (SELECT fahrer_id, rennen_id, kategorie_id, lauf, SUM(strafzeit) AS strafzeit FROM fahrer_rennen "
 				+ "LEFT JOIN strafzeiten USING(fahrer_id, rennen_id, kategorie_id) GROUP BY fahrer_id, rennen_id, kategorie_id, lauf) as t NATURAL JOIN "
 				+ "fahrer_rennen WHERE t.lauf = 1 OR t.lauf IS NULL) as z LEFT JOIN (SELECT IFNULL(zeit2, 0) + IFNULL(t.strafzeit * 1000, 0) AS ges_zeit2, zeit2, IFNULL(t.strafzeit, 0) AS sz2, fahrer_id, rennen_id, "
@@ -606,8 +606,10 @@ public class DBController {
 			String kategorie = (String) row.getRow().get(13).getKey();
 			Integer sp = ((Long) row.getRow().get(14).getKey()).intValue();
 			Integer gebuehr = (Integer) row.getRow().get(15).getKey();
+			String ort = (String) row.getRow().get(16).getKey();
+			Integer jahrgang = (Integer) row.getRow().get(17).getKey();
 			Club club = new Club(clubID, "", clubname);
-			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, 0, "", "", 0, "");
+			Fahrer fahrer = new Fahrer(idFahrer, club, name, vorname, jahrgang, "", "", 0, ort);
 			Rennen rennen = new Rennen();
 			rennen.setRennenID(rennenID);
 			Integer z1 = zeit1.intValue();
@@ -1300,6 +1302,18 @@ public class DBController {
 	{
 		return selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_FAHRER_ID },
 				new Integer[] { fahrerID });
+	}
+	
+	/**
+	 * Liest zu einer Kategorie die Rangliste aus
+	 * @param rennenID Die Rennen ID
+	 * @param kategorieID Die Kategorie ID
+	 * @return Eine Liste mit Resultaten
+	 */
+	public List<FahrerResultat> ladeFahrerResultatKategorie(Integer rennenID, Integer kategorieID)
+	{
+		return selectRanglisteBy(new Table_Rangliste[] { Table_Rangliste.COLUMN_RENNEN_ID, Table_Rangliste.COLUMN_KATEGORIE },
+				new Integer[] { rennenID, kategorieID });
 	}
 
 	/**
