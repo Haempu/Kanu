@@ -115,7 +115,7 @@ public class RanglistenView implements ViewTemplate {
 					// Tabelle anzeigen
 					Collections.sort(res, new ResultatComparator());
 					Table trangliste = new Table();
-					trangliste.setWidth("100%");
+					//trangliste.setWidth("100%");
 					trangliste.addContainerProperty(Tabelle.RANG, String.class, null);
 					trangliste.addContainerProperty(Tabelle.NAME, String.class, null);
 					trangliste.addContainerProperty(Tabelle.CLUB, String.class, null);
@@ -127,6 +127,17 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.addContainerProperty(Tabelle.TOTAL2, String.class, null);
 					trangliste.addContainerProperty(Tabelle.TOTAL, String.class, null);
 					trangliste.addContainerProperty(Tabelle.DIFF, String.class, null);
+					trangliste.setColumnWidth(Tabelle.RANG, 50);
+					trangliste.setColumnWidth(Tabelle.NAME, 210);
+					trangliste.setColumnWidth(Tabelle.CLUB, 300);
+					trangliste.setColumnWidth(Tabelle.ZEIT1, 70);
+					trangliste.setColumnWidth(Tabelle.FEHLER1, 60);
+					trangliste.setColumnWidth(Tabelle.TOTAL1, 70);
+					trangliste.setColumnWidth(Tabelle.ZEIT2, 70);
+					trangliste.setColumnWidth(Tabelle.FEHLER2, 60);
+					trangliste.setColumnWidth(Tabelle.TOTAL2, 70);
+					trangliste.setColumnWidth(Tabelle.DIFF, 70);
+					trangliste.setColumnWidth(Tabelle.TOTAL, 70);
 					int i = 1;
 					int zeitErster = res.get(0).getZeitTotal();
 					for(FahrerResultat r : res) //Die einzelnen Fahrer zur Tabelle hinzufügen

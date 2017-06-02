@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import ch.bfh.project1.kanu.controller.StartlistenController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rennen;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,11 +24,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-
-import ch.bfh.project1.kanu.controller.StartlistenController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rennen;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -227,19 +227,19 @@ public class StartlistenView implements ViewTemplate {
 	private void zeigeRennen(Component inhalt)
 	{
 		Table trennen = new Table();
-		trennen.addContainerProperty("Name", String.class, null);
-		trennen.addContainerProperty("Ort", String.class, null);
-		trennen.addContainerProperty("Datum", String.class, null);
-		trennen.addContainerProperty("Blöcke", Button.class, null);
-		trennen.addContainerProperty("Startliste", Button.class, null);
+		trennen.addContainerProperty(TabelleRennen.NAME, String.class, null);
+		trennen.addContainerProperty(TabelleRennen.ORT, String.class, null);
+		trennen.addContainerProperty(TabelleRennen.DATUM, String.class, null);
+		trennen.addContainerProperty(TabelleRennen.BLOECKE, Button.class, null);
+		trennen.addContainerProperty(TabelleRennen.STARTLISTE, Button.class, null);
 		for (Rennen r : lrennen) 
 		{
 			Object id = trennen.addItem();
 			Item row = trennen.getItem(id);
-			row.getItemProperty("Name").setValue(r.getName());
-			row.getItemProperty("Ort").setValue(r.getOrt());
+			row.getItemProperty(TabelleRennen.NAME).setValue(r.getName());
+			row.getItemProperty(TabelleRennen.ORT).setValue(r.getOrt());
 			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-			row.getItemProperty("Datum").setValue(sdf.format(r.getDatumVon()));
+			row.getItemProperty(TabelleRennen.DATUM).setValue(sdf.format(r.getDatumVon()));
 			Button bbearbeiten = new Button("Blöcke");
 			bbearbeiten.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -250,7 +250,7 @@ public class StartlistenView implements ViewTemplate {
 					viewAnzeigen(inhalt);
 				}
 			});
-			row.getItemProperty("Blöcke").setValue(bbearbeiten);
+			row.getItemProperty(TabelleRennen.BLOECKE).setValue(bbearbeiten);
 			Button bsl = new Button("Startliste");
 			bsl.addClickListener(new ClickListener() {
 				private static final long serialVersionUID = 1L;
@@ -261,7 +261,7 @@ public class StartlistenView implements ViewTemplate {
 					zeigeStartliste();
 				}
 			});
-			row.getItemProperty("Startliste").setValue(bsl);
+			row.getItemProperty(TabelleRennen.STARTLISTE).setValue(bsl);
 		}
 		trennen.setPageLength(lrennen.size());
 		vLayout.addComponent(trennen);
@@ -286,21 +286,24 @@ public class StartlistenView implements ViewTemplate {
 				if(res.size() > 0)
 				{
 					Table sl = new Table();
-					sl.addContainerProperty("#", String.class, null);
-					sl.addContainerProperty("Zeit 1. Lauf", String.class, null);
-					sl.addContainerProperty("Zeit 2. Lauf", String.class, null);
-					sl.addContainerProperty("Name", String.class, null);
+					sl.addContainerProperty(Startliste.PLATZ, String.class, null);
+					sl.addContainerProperty(Startliste.ZEIT1, String.class, null);
+					sl.addContainerProperty(Startliste.ZEIT2, String.class, null);
+					sl.addContainerProperty(Startliste.NAME, String.class, null);
+					sl.setColumnWidth(Startliste.PLATZ, 50);
+					sl.setColumnWidth(Startliste.ZEIT1, 120);
+					sl.setColumnWidth(Startliste.ZEIT2, 120);
+					sl.setColumnWidth(Startliste.NAME, 210);
 					for(FahrerResultat r : res)
 					{
 						Object id = sl.addItem();
 						Item row = sl.getItem(id);
-						row.getItemProperty("#").setValue(r.getStartnummer() + "");
-						row.getItemProperty("Zeit 1. Lauf").setValue(r.getStartzeitEins());
-						row.getItemProperty("Zeit 2. Lauf").setValue(r.getStartzeitZwei());
-						row.getItemProperty("Name").setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
+						row.getItemProperty(Startliste.PLATZ).setValue(r.getStartnummer() + "");
+						row.getItemProperty(Startliste.ZEIT1).setValue(r.getStartzeitEins());
+						row.getItemProperty(Startliste.ZEIT2).setValue(r.getStartzeitZwei());
+						row.getItemProperty(Startliste.NAME).setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
 					}
 					sl.setPageLength(res.size());
-					sl.setWidth("500px");
 					vLayout.addComponent(new Label("Kategorie " + res.get(0).getKategorie().getName()));
 					vLayout.addComponent(sl);
 					res.clear();
@@ -356,5 +359,53 @@ public class StartlistenView implements ViewTemplate {
 	@Override
 	public boolean istInitialisiert() {
 		return this.init;
+	}
+	
+	/**
+	 * Enum für die Tabellenspalten Überschriften
+	 * @author Lukas
+	 *
+	 */
+	public enum Startliste {
+		PLATZ("#"), NAME("Name"), ZEIT1("Zeit 1. Lauf"), ZEIT2("Zeit 2. Lauf");
+
+		private final String column;
+
+		Startliste(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+		
+		@Override
+		public String toString() {
+			return column;
+		}
+	}
+	
+	/**
+	 * Enum für die Tabellenspalten Überschriften
+	 * @author Lukas
+	 *
+	 */
+	public enum TabelleRennen {
+		NAME("Name"), ORT("Ort"), DATUM("Datum"), BLOECKE("Blöcke"), STARTLISTE("Startliste");
+
+		private final String column;
+
+		TabelleRennen(String column) {
+			this.column = column;
+		}
+
+		public String getValue() {
+			return column;
+		}
+		
+		@Override
+		public String toString() {
+			return column;
+		}
 	}
 }
