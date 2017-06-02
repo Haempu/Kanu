@@ -21,7 +21,6 @@ import ch.bfh.project1.kanu.view.RechnungsView;
  */
 
 public class RechnungsController {
-	// private static String[] HEADER {""};
 	private DBController dbController;
 	private RechnungsView rechnungsView;
 
@@ -30,20 +29,26 @@ public class RechnungsController {
 	}
 
 	/**
-	 * Lädt alle Klubs
+	 * Funktion lädt alle Clubs.
+	 * 
 	 */
 	public ArrayList<Club> ladeAngemeldeteClubs() {
 		return (ArrayList<Club>) this.dbController.ladeClubs();
 	}
 
+	/**
+	 * Funktion erstellt die Rechnung eines Rennens für einen bestimmten Club.
+	 * 
+	 * @param club - Club, für welchen die Rechnung erstellt werden soll
+	 * @param rennenID - Rennen, für welches die Rechnung erstellt werden soll
+	 */
 	public void rechnungErstellen(Club club, Integer rennenID) {
-
+		// Lade alle zu einem Rennen angemeldeten Fahrer einres Clubs
 		List<FahrerResultat> fahrer = this.dbController.ladeAngemeldetenFahrerByClub(club.getClubID(), rennenID);
-		
 		AltersKategorie aktuelleKat = null;
 		List<AltersKategorie> angemeldeteKategorien = new ArrayList<AltersKategorie>();
 		List<List<String>> alleFahrer = new ArrayList<List<String>>();
-		
+		// Jede Zeile der Späteren Tabelle auf der Rechnung muss aus einer Liste von Strings bestehen. Sämtliche Zeilen in eine Liste abfüllen und dem PDFController übergeben.
 		for (int i = 0; i < fahrer.size(); i++) {
 			List<String> zeile = new ArrayList<>();
 			zeile.add(fahrer.get(i).getKategorie().getName());
@@ -54,7 +59,6 @@ public class RechnungsController {
 		}
 		try {
 			PDFController.generierePdfRechnung("C:/Daten/Patrik/", this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
-//			PDFController.generierePdfRechnung(pfad, this.dbController.ladeRennen(rennenID), club.getName(), alleFahrer);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,32 +68,13 @@ public class RechnungsController {
 		}
 	}
 
-	// TODO: aus DB laden
-	/*
-	 * String pfad = "C:/Daten/Patrik/"; Rennen rennen =
-	 * dbController.getInstance().ladeRennen(2); List<String> tabellenname = new
-	 * ArrayList<String>(); tabellenname.add("K1-Damen Benjamin");
-	 * tabellenname.add("K1-Damen Schüler");
-	 * tabellenname.add("K1-Herren Schüler"); List<List<String>> fahrerliste =
-	 * new ArrayList<>(); List<String> fahrerZeile = new ArrayList<>();
-	 * fahrerZeile.add("76"); fahrerZeile.add("");
-	 * fahrerZeile.add("Huber Wayra"); fahrerZeile.add("20.00CHF");
-	 * fahrerZeile.add(""); fahrerliste.add(fahrerZeile); fahrerZeile.add("78");
-	 * fahrerZeile.add(""); fahrerZeile.add("Huber Nina");
-	 * fahrerZeile.add("20.00CHF"); fahrerZeile.add("");
-	 * fahrerliste.add(fahrerZeile); /*fahrerZeile.add("78");
-	 * fahrerZeile.add(""); fahrerZeile.add("Huber Nina");
-	 * fahrerZeile.add("20.00CHF"); fahrerZeile.add("");
-	 * fahrerliste.add(fahrerZeile); try {
-	 * PDFController.generierePdfRechnung(pfad, rennen, club.getName(),
-	 * tabellenname, fahrerliste); } catch (IOException e) { // TODO
-	 * Auto-generated catch block e.printStackTrace(); } catch
-	 * (DocumentException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); }
+	/**
+	 * Funktion schreibt in die DB, dass ein Club seine Rechnung schon bezahlt hat.
+	 * @param club - Club, welcher die Rechnung bezahlt hat
+	 * @param bezahlt - true wenn bezahlt, sonst false
 	 */
-
 	public void rechnungBezahlen(Club club, boolean bezahlt) {
-
+		// TODO: In DB schreiben
 	}
 
 }

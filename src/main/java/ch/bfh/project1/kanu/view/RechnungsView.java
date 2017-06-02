@@ -22,7 +22,7 @@ import ch.bfh.project1.kanu.model.Club;
  */
 
 public class RechnungsView implements ViewTemplate {
-
+	// Allgemein
 	private boolean init = false;
 
 	// UI Komponenten
@@ -97,7 +97,6 @@ public class RechnungsView implements ViewTemplate {
 			}
 
 			bezahltCheckbox.setImmediate(true);
-
 			bezahltCheckbox.addValueChangeListener(event -> {
 				if (bezahltCheckbox.getValue() == true) {
 					this.rController.rechnungBezahlen(club, true);
@@ -105,7 +104,7 @@ public class RechnungsView implements ViewTemplate {
 					this.rController.rechnungBezahlen(club, false);
 				}
 			});
-
+			// Generiert ein PDF von der ausgewählten Rechnung
 			pdfGenerieren.addClickListener(event -> {
 				this.rController.rechnungErstellen(club, 2); // TODO: Rennen von View laden nicht einfach Rennen 2
 			});

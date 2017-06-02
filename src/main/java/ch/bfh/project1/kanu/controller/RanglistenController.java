@@ -89,33 +89,6 @@ public class RanglistenController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		/*List<String> tabellentitel = new ArrayList<>();
-		List<List<String>> tabelle = new ArrayList<>();
-		List<List<List<String>>> daten = new ArrayList<>();
-
-		// Ebene "Daten"
-		for (int i = 0; i < rangliste.size(); i++) {
-			// Ebene "Tabelle"
-			String bootsklasse = rangliste.get(i).getResultate().get(i).getKategorie().getName();
-			List<String> tabellenzeile = new ArrayList<String>();
-			int groesse = rangliste.get(i).getResultate().size();
-			for (int k = 0; k < groesse; k++) {
-				// Ebene "Zeile"
-				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k) + 1);
-				tabellenzeile.add("TODO: nr");
-				tabellenzeile.add(rangliste.get(i).getResultate().get(k).getFahrer().getVorname()
-						+ rangliste.get(i).getResultate().get(k).getFahrer().getName());
-				tabellenzeile.add(rangliste.get(i).getResultate().get(k).getFahrer().getClub().getName());
-				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k).getZeitErsterLauf());
-				tabellenzeile.add("" + rangliste.get(i).getResultate().get(k).getZeitZweiterLauf());
-				tabellenzeile.add("TODO: Zeit");
-				tabelle.add(tabellenzeile);
-			}
-			daten.add(tabelle);
-		}*/
-		// TODO: Exceptionhandling
-		//PDFController.generierePDF(pfad, rennen, DOKUMENTTITEL_STARTLISTE, tabellentitel, HEADER, daten);
 	}
 
 }

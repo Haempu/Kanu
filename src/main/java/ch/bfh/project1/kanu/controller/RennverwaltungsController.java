@@ -30,7 +30,7 @@ public class RennverwaltungsController {
 	/**
 	 * Gibt die Kategorien zurück.
 	 * 
-	 * @return
+	 * @return - Eine Liste mit Alterskategorien
 	 */
 	public List<AltersKategorie> ladeKategorien() {
 		return db.ladeKategorien();
@@ -39,7 +39,7 @@ public class RennverwaltungsController {
 	/**
 	 * Lädt die Rennen, welche schon erfasst worden sind
 	 * 
-	 * @return Eine Liste mit Rennen
+	 * @return - Eine Liste mit Rennen
 	 */
 	public List<Rennen> ladeRennen() {
 		return db.ladeRennen();
@@ -48,7 +48,7 @@ public class RennverwaltungsController {
 	/**
 	 * Lädt alle Clubs.
 	 * 
-	 * @return
+	 * @return - Eine Liste mit allen Clubs
 	 */
 	public List<Club> ladeClubs() {
 		return db.ladeClubs();
@@ -57,8 +57,7 @@ public class RennverwaltungsController {
 	/**
 	 * Speichert das Rennen in der Datenbank
 	 * 
-	 * @param rennen
-	 *            Das Rennen Objekt
+	 * @param rennen - Das Rennen Objekt
 	 * @return true wenn erfolgreich, false sonst
 	 */
 	public boolean speichereRennen(Rennen rennen) {

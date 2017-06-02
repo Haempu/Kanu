@@ -24,6 +24,9 @@ public class StartlistenController {
 	private DBController db;
 	private StartlistenView startlistenView;
 
+	/**
+	 * Konstrukter: StartlistenController
+	 */
 	public StartlistenController() {
 		db = DBController.getInstance();
 	}
@@ -40,8 +43,8 @@ public class StartlistenController {
 	
 	/**
 	 * Lädt die Startliste zu einem Rennen
-	 * @param rennenID Die ID des Rennens
-	 * @return Eine Liste mit den Fahrern, sortiert nach Startplatz
+	 * @param rennenID - Die ID des Rennens
+	 * @return - Eine Liste mit den Fahrern, sortiert nach Startplatz
 	 */
 	public List<FahrerResultat> ladeStartliste(Integer rennenID)
 	{
@@ -51,8 +54,8 @@ public class StartlistenController {
 	/**
 	 * Speichert die Blöcke in der Datenbank ab. Allfällig bereits gespeicherte Blöcke werden zuerst gelöscht und
 	 * danach durch die aktuelle Anordnung angepasst.
-	 * @param block Eine Liste mit den Blöcken (ListSelects)
-	 * @param rennen Das Rennen
+	 * @param block - Eine Liste mit den Blöcken (ListSelects)
+	 * @param rennen - Aktuell ausgewähltes Rennen
 	 */
 	public void speichereBloecke(List<ListSelect> block, Rennen rennen)
 	{
@@ -69,8 +72,8 @@ public class StartlistenController {
 	
 	/**
 	 * Liest zum gegebenen Rennn die Blöcke aus der db, sofern vorhanden
-	 * @param rennenID
-	 * @return
+	 * @param rennenID - ID des ausgewählten Rennens
+	 * @return - Liste von Blöcken
 	 */
 	public List<ListSelect> ladeBloecke(Integer rennenID, List<Integer> kats)
 	{
@@ -142,8 +145,8 @@ public class StartlistenController {
 	
 	/**
 	 * Entfernt alle Blöcke mit 0 Kategorien aus der Liste
-	 * @param block Die Liste mit den Blöcken
-	 * @return Die bereinigte Liste mit Blöcken
+	 * @param block - Die Liste mit den Blöcken
+	 * @return - Die bereinigte Liste mit Blöcken
 	 */
 	public List<ListSelect> bloeckeVorbereiten(List<ListSelect> block)
 	{
