@@ -1,11 +1,13 @@
 package ch.bfh.project1.kanu.view;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.itextpdf.text.DocumentException;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -20,6 +22,9 @@ import ch.bfh.project1.kanu.model.AltersKategorie;
 import ch.bfh.project1.kanu.model.FahrerResultat;
 import ch.bfh.project1.kanu.model.Rangliste;
 import ch.bfh.project1.kanu.model.Rennen;
+import ch.bfh.project1.kanu.util.KanuFileDownloader;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
 import ch.bfh.project1.kanu.util.ResultatComparator;
 
 /**
@@ -49,13 +54,13 @@ public class RanglistenView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //Nicht schön, aber gelbe markierungen eben auch nicht --> Die Casts wurden "von Hand" gechecked...
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		if (rennen == null)
 			throw new IllegalArgumentException("Kein Rennen angegeben");
 		layout.removeAllComponents();
-		
+		//Dropdown anzeigen, damit Rennen gewechselt werden kann
 		NativeSelect ns = new NativeSelect();
 		List<Rennen> lrennen = rController.ladeRennen();
 		for(Rennen r : lrennen)
@@ -72,24 +77,35 @@ public class RanglistenView implements ViewTemplate {
 		Label titel = new Label("Rangliste");
 		titel.setStyleName("h2");
 		layout.addComponent(titel);
+		
 		Rangliste rangliste = rController.ladeRanglisteRennen(rennen);
+		
 		Button pdf = new Button("PDF generieren");
-		pdf.addClickListener(event -> {
-			try {
-				rController.generierePDF(rangliste);
-			} catch (Exception e) {
-				e.printStackTrace();
+		final KanuFileDownloader kfd = new KanuFileDownloader();
+		kfd.addAdvancedDownloaderListener(new AdvancedDownloaderListener() {
+			
+			@Override
+			public void beforeDownload(DownloaderEvent downloadEvent) {
+				try {
+					String pfad = rController.generierePDF(rangliste);
+					kfd.setFilePath(pfad);
+				} catch (IOException | DocumentException e) {
+					e.printStackTrace();
+				}
 			}
 		});
+		kfd.extend(pdf);
 		layout.addComponent(pdf);
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
 		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, ""))); //Damit auch die letzte Kategorie angezeigt wird
 		for(FahrerResultat f : rangliste.getResultate()) 
 		{
+			//Wenn neue Kategorie, die alte Kategorie anzeigen (in eigener Tabelle)
 			if(altKat != f.getKategorie().getAltersKategorieID()) 
 			{
 				altKat = f.getKategorie().getAltersKategorieID();
+				//Nur anzeigen, wenn auch Fahrer vorhanden sind
 				if(res.size() > 0) 
 				{
 					// Tabelle anzeigen
@@ -108,7 +124,7 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.addContainerProperty(Tabelle.TOTAL, String.class, null);
 					trangliste.addContainerProperty(Tabelle.DIFF, String.class, null);
 					int i = 1;
-					for(FahrerResultat r : res) 
+					for(FahrerResultat r : res) //Die einzelnen Fahrer zur Tabelle hinzufügen
 					{
 						Object id = trangliste.addItem();
 						Item row = trangliste.getItem(id);
@@ -130,10 +146,10 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.setPageLength(res.size());
 					layout.addComponent(new Label("Kategorie " + res.get(0).getKategorie().getName()));
 					layout.addComponent(trangliste);
-					res.clear();
+					res.clear(); //Zwischenspeicher löschen; Fahrer sind schon agezeigt
 				}
 			}
-			res.add(f);
+			res.add(f); //Zwischenspeicher der Fahrer der Kategorie
 		}
 
 		Panel inhaltsPanel = (Panel) inhalt;
@@ -145,6 +161,10 @@ public class RanglistenView implements ViewTemplate {
 		return this.init;
 	}
 
+	/**
+	 * Setzt das Rennen
+	 * @param rennen
+	 */
 	public void setRennen(Rennen rennen) {
 		this.rennen = rennen;
 	}
@@ -163,6 +183,11 @@ public class RanglistenView implements ViewTemplate {
 		return string;
 	}
 	
+	/**
+	 * Enum für die Tabellenspalten Überschriften
+	 * @author Lukas
+	 *
+	 */
 	public enum Tabelle {
 		RANG("#"), NAME("Name"), CLUB("Club"), ZEIT1("Zeit 1. Lauf"), FEHLER1("Fehler"), 
 		TOTAL1("Total"), ZEIT2("Zeit 2. Lauf"), FEHLER2("Fehler"), TOTAL2("Total"), 

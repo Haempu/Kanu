@@ -110,7 +110,7 @@ public class StartlistenView implements ViewTemplate {
 		vLayout.addComponent(titel);
 		if (rennen == null) 
 		{
-			lrennen = sController.ladeAlleRennen();
+			lrennen = sController.ladeAlleRennen(); //Wenn kein Rennen ausgewählt, eine Liste mit Rennen ausgeben
 			zeigeRennen(inhalt);
 		} 
 		else if(rennen.getRennenID() == null)
@@ -121,17 +121,17 @@ public class StartlistenView implements ViewTemplate {
 			List<Integer> kats = new ArrayList<Integer>();
 			List<ListSelect> bloecke = sController.ladeBloecke(rennen.getRennenID(), kats);
 			kategorien.clear();
-			for (AltersKategorie kat : rennen.getKategorien()) 
+			for (AltersKategorie kat : rennen.getKategorien()) //Kategorien ausgeben
 			{
 				kategorien.addItem(kat.getAltersKategorieID());
 				kategorien.setItemCaption(kat.getAltersKategorieID(), kat.getName());
 			}
 			for(Integer k : kats) 
 			{
-				kategorien.removeItem(k);
+				kategorien.removeItem(k); //Bereits gesetzte Kategorien wieder entfernen
 			}
 			HorizontalLayout hLayout = new HorizontalLayout();
-			for(ListSelect ls : bloecke) 
+			for(ListSelect ls : bloecke) //Blöcke aus der Datenbank anzeigen
 			{
 				GridLayout layout = new GridLayout(2, 3);
 				Button tmp = new Button("<<");
@@ -150,7 +150,7 @@ public class StartlistenView implements ViewTemplate {
 				Label lblock = new Label("Block " + anzBloecke);
 				lblock.setStyleName("h2");
 				vLayout.addComponent(lblock);
-				if(anzBloecke == 1)
+				if(anzBloecke == 1) //Beim ersten Block nebenan noch die verbleibenden Kategorien anzeigen
 				{
 					hLayout.addComponent(layout);
 					hLayout.addComponent(kategorien);
@@ -161,7 +161,7 @@ public class StartlistenView implements ViewTemplate {
 					vLayout.addComponent(layout);
 				anzBloecke++;
 			}
-			if(bloecke.size() == 0)
+			if(bloecke.size() == 0) //Wenn keine Blöcke in der db gefunden wurden, einen neuen anzeigen
 			{
 				ListSelect tmp1 = new ListSelect();
 				tmp1.setMultiSelect(true);
@@ -219,6 +219,10 @@ public class StartlistenView implements ViewTemplate {
 		inhaltsPanel.setContent(vLayout);
 	}
 
+	/**
+	 * Zeigt die verschiedenen Rennen an, zu denen dann die Blöcke und Startlisten konfiguriert werden können
+	 * @param inhalt Das Inhalts Panel
+	 */
 	@SuppressWarnings("unchecked")
 	private void zeigeRennen(Component inhalt)
 	{
@@ -263,6 +267,9 @@ public class StartlistenView implements ViewTemplate {
 		vLayout.addComponent(trennen);
 	}
 
+	/**
+	 * Zeigt die Startliste an, sofern vorhanden
+	 */
 	@SuppressWarnings("unchecked")
 	private void zeigeStartliste() 
 	{

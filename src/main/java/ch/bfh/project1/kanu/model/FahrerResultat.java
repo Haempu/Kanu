@@ -24,19 +24,6 @@ public class FahrerResultat {
 	private String startzeitEins;
 	private String startzeitZwei;
 
-	@Deprecated //Wird nirgendwo gebraucht --> löschen!
-	public FahrerResultat(Fahrer fahrer, Integer zeit1, Integer zeit2, Rennen rennen, AltersKategorie kategorie,
-			Integer startnummer, String startzeitEins, String startzeitZwei) {
-		this.fahrer = fahrer;
-		this.zeitErsterLauf = zeit1;
-		this.zeitZweiterLauf = zeit2;
-		this.rennen = rennen;
-		this.kategorie = kategorie;
-		this.startnummer = startnummer;
-		this.setStartzeitEins(startzeitEins);
-		this.setStartzeitZwei(startzeitZwei);
-	}
-
 	public FahrerResultat(Fahrer fahrer, Rennen rennen, AltersKategorie kat, String s1, String s2, Integer sn) {
 		this.fahrer = fahrer;
 		this.rennen = rennen;
@@ -66,10 +53,6 @@ public class FahrerResultat {
 		zeitZweiterLauf = 0;
 	}
 
-	public FahrerResultat() {
-		// TODO Im Moment nicht gebraucht --> löschen?
-	}
-
 	public Fahrer getFahrer() {
 		return fahrer;
 	}
@@ -78,24 +61,44 @@ public class FahrerResultat {
 		this.fahrer = fahrer;
 	}
 
+	/**
+	 * Gibt die Zeit vom ersten Lauf im "Date"-Format
+	 * @return
+	 */
 	public Integer getZeitErsterLauf() {
 		return zeitErsterLauf;
 	}
 
+	/**
+	 * Setzt die Zeit für den ersten Lauf im "Date"-Format
+	 * @param zeitErsterLauf
+	 */
 	public void setZeitErsterLauf(Integer zeitErsterLauf) {
 		this.zeitErsterLauf = zeitErsterLauf;
 	}
 
-	public Integer getZeitZweiterLauf() { //TODO Zeit formatiert für Rangliste geben
+	/**
+	 * Gibt die Zeit vom zweiten Lauf im "Date"-Format
+	 * @return
+	 */
+	public Integer getZeitZweiterLauf() { 
 		return zeitZweiterLauf;
 	}
 	
-	public Integer getZeitTotal() { //TODO formatieren!
+	/**
+	 * Gibt die Gesamtzeit in ms zurück
+	 * @return
+	 */
+	public Integer getZeitTotal() {
 		if(gesamtzeit2 == 0)
 			return gesamtzeit1;
 		return Math.min(gesamtzeit1, gesamtzeit2);
 	}
 	
+	/**
+	 * Util Methode, um die Fahrer zu vergleichen und sortieren (gibt die bessere Zeit in ms zurück).
+	 * @return
+	 */
 	public Integer getZeitCompare()
 	{
 		if(zeitZweiterLauf == 0)
@@ -103,6 +106,10 @@ public class FahrerResultat {
 		return Math.min(zeitErsterLauf + strafzeit1, zeitZweiterLauf + strafzeit2);
 	}
 
+	/**
+	 * Setzt die Zeit des zweiten Laufes im "Date"-Format
+	 * @param zeitZweiterLauf
+	 */
 	public void setZeitZweiterLauf(Integer zeitZweiterLauf) {
 		this.zeitZweiterLauf = zeitZweiterLauf;
 	}
@@ -155,41 +162,73 @@ public class FahrerResultat {
 		this.startzeitZwei = startzeitZwei;
 	}
 
+	/**
+	 * Strafzeit in Sekunden!
+	 * @return
+	 */
 	public Integer getStrafzeit1()
 	{
 		return strafzeit1;
 	}
 
+	/**
+	 * Strafzeit in Sekunden!
+	 * @param strafzeit1
+	 */
 	public void setStrafzeit1(Integer strafzeit1)
 	{
 		this.strafzeit1 = strafzeit1;
 	}
 
+	/**
+	 * Strafzeit in Sekunden
+	 * @return
+	 */
 	public Integer getStrafzeit2()
 	{
 		return strafzeit2;
 	}
 
+	/**
+	 * Strafzeit in Sekunden
+	 * @param strafzeit2
+	 */
 	public void setStrafzeit2(Integer strafzeit2)
 	{
 		this.strafzeit2 = strafzeit2;
 	}
 
+	/**
+	 * Gesamtzeit in ms!
+	 * @return
+	 */
 	public Integer getGesamtzeit2()
 	{
 		return gesamtzeit2;
 	}
 
+	/**
+	 * Gesamtzeit in ms!
+	 * @param gesamtzeit2
+	 */
 	public void setGesamtzeit2(Integer gesamtzeit2)
 	{
 		this.gesamtzeit2 = gesamtzeit2;
 	}
 
+	/**
+	 * Gesamtzeit in ms!
+	 * @return
+	 */
 	public Integer getGesamtzeit1()
 	{
 		return gesamtzeit1;
 	}
 
+	/**
+	 * Gesamtzeit in ms!
+	 * @param gesamtzeit1
+	 */
 	public void setGesamtzeit1(Integer gesamtzeit1)
 	{
 		this.gesamtzeit1 = gesamtzeit1;

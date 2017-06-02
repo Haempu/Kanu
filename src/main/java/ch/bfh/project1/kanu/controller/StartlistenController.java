@@ -28,11 +28,20 @@ public class StartlistenController {
 		db = DBController.getInstance();
 	}
 	
+	/**
+	 * Lädt ein bestimmtes Rennen aus der db
+	 * @param rennenID
+	 * @return
+	 */
 	public Rennen ladeRennen(Integer rennenID)
 	{
 		return db.ladeRennen(rennenID);
 	}
 	
+	/**
+	 * Lädt alle Rennen aus der db
+	 * @return
+	 */
 	public List<Rennen> ladeAlleRennen()
 	{
 		return db.ladeRennen();
@@ -100,7 +109,7 @@ public class StartlistenController {
 	 */
 	public boolean generiereStartliste(List<ListSelect> block, Rennen rennen)
 	{
-		int zeit = rennen.getDatumVon().getHours() * 60 + rennen.getDatumVon().getMinutes();
+		int zeit = rennen.getDatumVon().getHours() * 60 + rennen.getDatumVon().getMinutes(); //TODO mit Calendar arbeiten!
 		int i = 0;
 		boolean success = true;
 		for(ListSelect ls : block)
