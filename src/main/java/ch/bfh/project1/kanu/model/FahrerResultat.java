@@ -96,8 +96,10 @@ public class FahrerResultat {
 	
 	/**
 	 * Util Methode, um die Fahrer zu vergleichen und sortieren (gibt die bessere Zeit in ms zurück).
+	 * getZeitTotal() brauchen!
 	 * @return
 	 */
+	@Deprecated
 	public Integer getZeitCompare()
 	{
 		if(zeitZweiterLauf == 0)

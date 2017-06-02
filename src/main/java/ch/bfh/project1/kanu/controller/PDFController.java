@@ -436,13 +436,13 @@ public class PDFController {
 	 * @return
 	 */
 	private static String renderMilli(Integer zahl)
-	 {
-	  Integer hs = (zahl % 1000) / 100;
-	  Integer s = (zahl / 1000) % 60;
-	  Integer m = zahl / 60000;
-	  String string = String.format("%02d:%02d.%d", Math.abs(m), Math.abs(s), Math.abs(hs));
-	  if(zahl < 0)
-		  string = "-" + string;
-	  return string;
-	 }
+	{
+		Integer hs = (zahl % 1000) / 100;
+		Integer s = (zahl / 1000) % 60;
+		Integer m = zahl / 60000;
+		String string = String.format("%02d:%02d.%d", Math.abs(m), Math.abs(s), Math.abs(hs));
+		if(zahl < 0)
+			string = "-" + string;
+		return string;
+	}
 }
