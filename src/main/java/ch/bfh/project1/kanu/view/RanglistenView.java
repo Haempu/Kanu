@@ -7,16 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import ch.bfh.project1.kanu.controller.RanglistenController;
-import ch.bfh.project1.kanu.model.AltersKategorie;
-import ch.bfh.project1.kanu.model.FahrerResultat;
-import ch.bfh.project1.kanu.model.Rangliste;
-import ch.bfh.project1.kanu.model.Rennen;
-import ch.bfh.project1.kanu.util.KanuFileDownloader;
-import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
-import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
-import ch.bfh.project1.kanu.util.ResultatComparator;
-
 import com.itextpdf.text.DocumentException;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -26,6 +16,16 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+
+import ch.bfh.project1.kanu.controller.RanglistenController;
+import ch.bfh.project1.kanu.model.AltersKategorie;
+import ch.bfh.project1.kanu.model.FahrerResultat;
+import ch.bfh.project1.kanu.model.Rangliste;
+import ch.bfh.project1.kanu.model.Rennen;
+import ch.bfh.project1.kanu.util.KanuFileDownloader;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.AdvancedDownloaderListener;
+import ch.bfh.project1.kanu.util.KanuFileDownloader.DownloaderEvent;
+import ch.bfh.project1.kanu.util.ResultatComparator;
 
 /**
  * @author Aebischer Patrik, Bösiger Elia, Gestach Lukas
@@ -54,40 +54,41 @@ public class RanglistenView implements ViewTemplate {
 	/**
 	 * Die Funktion zeigt die View an.
 	 */
-	@SuppressWarnings("unchecked") //Nicht schön, aber gelbe Markierungen eben auch nicht --> Die Casts wurden "von Hand" gechecked...
+	@SuppressWarnings("unchecked") // Nicht schön, aber gelbe Markierungen eben
+									// auch nicht --> Die Casts wurden "von
+									// Hand" gechecked...
 	@Override
 	public void viewAnzeigen(Component inhalt) {
 		if (rennen == null)
 			throw new IllegalArgumentException("Kein Rennen angegeben");
 		layout.removeAllComponents();
-		//Dropdown anzeigen, damit Rennen gewechselt werden kann
+		// Dropdown anzeigen, damit Rennen gewechselt werden kann
 		NativeSelect ns = new NativeSelect();
 		List<Rennen> lrennen = rController.ladeRennen();
-		for(Rennen r : lrennen)
-		{
+		for (Rennen r : lrennen) {
 			ns.addItem(r.getRennenID());
 			ns.setItemCaption(r.getRennenID(), r.getName());
 		}
 		ns.setNullSelectionAllowed(false);
 		ns.select(rennen.getRennenID());
 		ns.addValueChangeListener(event -> {
-			if(ns.getValue() == null)
+			if (ns.getValue() == null)
 				return;
 			setRennen(rController.ladeRennen((Integer) ns.getValue()));
 			viewAnzeigen(inhalt);
 		});
-		
+
 		Label titel = new Label("Rangliste");
 		titel.setStyleName("h2");
 		layout.setSpacing(true);
 		layout.addComponent(titel);
 		layout.addComponent(ns);
 		Rangliste rangliste = rController.ladeRanglisteRennen(rennen);
-		
+
 		Button pdf = new Button("PDF generieren");
 		final KanuFileDownloader kfd = new KanuFileDownloader();
 		kfd.addAdvancedDownloaderListener(new AdvancedDownloaderListener() {
-			
+
 			@Override
 			public void beforeDownload(DownloaderEvent downloadEvent) {
 				try {
@@ -102,20 +103,24 @@ public class RanglistenView implements ViewTemplate {
 		layout.addComponent(pdf);
 		int altKat = -1;
 		List<FahrerResultat> res = new ArrayList<FahrerResultat>();
-		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, ""))); //Damit auch die letzte Kategorie angezeigt wird
-		for(FahrerResultat f : rangliste.getResultate()) 
-		{
-			//Wenn neue Kategorie, die alte Kategorie anzeigen (in eigener Tabelle)
-			if(altKat != f.getKategorie().getAltersKategorieID()) 
-			{
+		rangliste.getResultate().add(new FahrerResultat(new AltersKategorie(-2, ""))); // Damit
+																						// auch
+																						// die
+																						// letzte
+																						// Kategorie
+																						// angezeigt
+																						// wird
+		for (FahrerResultat f : rangliste.getResultate()) {
+			// Wenn neue Kategorie, die alte Kategorie anzeigen (in eigener
+			// Tabelle)
+			if (altKat != f.getKategorie().getAltersKategorieID()) {
 				altKat = f.getKategorie().getAltersKategorieID();
-				//Nur anzeigen, wenn auch Fahrer vorhanden sind
-				if(res.size() > 0) 
-				{
+				// Nur anzeigen, wenn auch Fahrer vorhanden sind
+				if (res.size() > 0) {
 					// Tabelle anzeigen
 					Collections.sort(res, new ResultatComparator());
 					Table trangliste = new Table();
-					//trangliste.setWidth("100%");
+					// trangliste.setWidth("100%");
 					trangliste.addContainerProperty(Tabelle.RANG, String.class, null);
 					trangliste.addContainerProperty(Tabelle.NAME, String.class, null);
 					trangliste.addContainerProperty(Tabelle.CLUB, String.class, null);
@@ -127,26 +132,28 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.addContainerProperty(Tabelle.TOTAL2, String.class, null);
 					trangliste.addContainerProperty(Tabelle.TOTAL, String.class, null);
 					trangliste.addContainerProperty(Tabelle.DIFF, String.class, null);
-					trangliste.setColumnWidth(Tabelle.RANG, 50);
-					trangliste.setColumnWidth(Tabelle.NAME, 210);
-					trangliste.setColumnWidth(Tabelle.CLUB, 300);
-					trangliste.setColumnWidth(Tabelle.ZEIT1, 70);
-					trangliste.setColumnWidth(Tabelle.FEHLER1, 60);
-					trangliste.setColumnWidth(Tabelle.TOTAL1, 70);
-					trangliste.setColumnWidth(Tabelle.ZEIT2, 70);
-					trangliste.setColumnWidth(Tabelle.FEHLER2, 60);
-					trangliste.setColumnWidth(Tabelle.TOTAL2, 70);
-					trangliste.setColumnWidth(Tabelle.DIFF, 70);
-					trangliste.setColumnWidth(Tabelle.TOTAL, 70);
+					// trangliste.setColumnWidth(Tabelle.RANG, 50);
+					// trangliste.setColumnWidth(Tabelle.NAME, 190);
+					// trangliste.setColumnWidth(Tabelle.CLUB, 250);
+					// trangliste.setColumnWidth(Tabelle.ZEIT1, 70);
+					// trangliste.setColumnWidth(Tabelle.FEHLER1, 60);
+					// trangliste.setColumnWidth(Tabelle.TOTAL1, 70);
+					// trangliste.setColumnWidth(Tabelle.ZEIT2, 70);
+					// trangliste.setColumnWidth(Tabelle.FEHLER2, 60);
+					// trangliste.setColumnWidth(Tabelle.TOTAL2, 70);
+					// trangliste.setColumnWidth(Tabelle.DIFF, 70);
+					// trangliste.setColumnWidth(Tabelle.TOTAL, 70);
 					int i = 1;
 					int zeitErster = res.get(0).getZeitTotal();
-					for(FahrerResultat r : res) //Die einzelnen Fahrer zur Tabelle hinzufügen
+					for (FahrerResultat r : res) // Die einzelnen Fahrer zur
+													// Tabelle hinzufügen
 					{
 						Object id = trangliste.addItem();
 						Item row = trangliste.getItem(id);
 						SimpleDateFormat df = new SimpleDateFormat("mm:ss.S");
 						row.getItemProperty(Tabelle.RANG).setValue(i + "");
-						row.getItemProperty(Tabelle.NAME).setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
+						row.getItemProperty(Tabelle.NAME)
+								.setValue(r.getFahrer().getVorname() + " " + r.getFahrer().getName());
 						row.getItemProperty(Tabelle.CLUB).setValue(r.getFahrer().getClub().getName());
 						Date d = new Date(r.getZeitErsterLauf());
 						row.getItemProperty(Tabelle.ZEIT1).setValue(df.format(d.getTime()) + "");
@@ -163,13 +170,14 @@ public class RanglistenView implements ViewTemplate {
 					trangliste.setPageLength(res.size());
 					layout.addComponent(new Label("Kategorie " + res.get(0).getKategorie().getName()));
 					layout.addComponent(trangliste);
-					res.clear(); //Zwischenspeicher löschen; Fahrer sind schon agezeigt
+					res.clear(); // Zwischenspeicher löschen; Fahrer sind schon
+									// agezeigt
 				}
 			}
-			res.add(f); //Zwischenspeicher der Fahrer der Kategorie
+			res.add(f); // Zwischenspeicher der Fahrer der Kategorie
 		}
-		
-		if(rangliste.getResultate().size() == 1) //1 wegen Dummy Element
+
+		if (rangliste.getResultate().size() == 1) // 1 wegen Dummy Element
 		{
 			Label lfehler = new Label("Zu diesem Rennen gibt es noch keine Rangliste");
 			layout.addComponent(lfehler);
@@ -186,37 +194,39 @@ public class RanglistenView implements ViewTemplate {
 
 	/**
 	 * Setzt das Rennen
+	 * 
 	 * @param rennen
 	 */
 	public void setRennen(Rennen rennen) {
 		this.rennen = rennen;
 	}
-	
+
 	/**
 	 * Wandelt die Millisekunden in ein von Menschen lesbares Format um.
-	 * @param zahl Die Zahl in ms
+	 * 
+	 * @param zahl
+	 *            Die Zahl in ms
 	 * @return Formatierter String im Format mm.ss.S
 	 */
-	private String renderMilli(Integer zahl)
-	{
+	private String renderMilli(Integer zahl) {
 		Integer hs = (zahl % 1000) / 100;
 		Integer s = (zahl / 1000) % 60;
 		Integer m = zahl / 60000;
 		String string = String.format("%02d:%02d.%d", Math.abs(m), Math.abs(s), Math.abs(hs));
-		if(zahl < 0)
+		if (zahl < 0)
 			string = "-" + string;
 		return string;
 	}
-	
+
 	/**
 	 * Enum für die Tabellenspalten Überschriften
+	 * 
 	 * @author Lukas
 	 *
 	 */
 	public enum Tabelle {
-		RANG("#"), NAME("Name"), CLUB("Club"), ZEIT1("Zeit 1. Lauf"), FEHLER1("Fehler"), 
-		TOTAL1("Total"), ZEIT2("Zeit 2. Lauf"), FEHLER2("Fehler"), TOTAL2("Total"), 
-		TOTAL("Total"), DIFF("Diff");
+		RANG("#"), NAME("Name"), CLUB("Club"), ZEIT1("Zeit 1. Lauf"), FEHLER1("Fehler"), TOTAL1("Total"), ZEIT2(
+				"Zeit 2. Lauf"), FEHLER2("Fehler"), TOTAL2("Total"), TOTAL("Total"), DIFF("Diff");
 
 		private final String column;
 
@@ -227,7 +237,7 @@ public class RanglistenView implements ViewTemplate {
 		public String getValue() {
 			return column;
 		}
-		
+
 		@Override
 		public String toString() {
 			return column;
