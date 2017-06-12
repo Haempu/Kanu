@@ -1197,6 +1197,7 @@ public class DBController {
 	 * @param strafzeit Die Strafzeit in Sekunden
 	 * @return true wenn gespeichert, false sonst
 	 */
+	@Deprecated //Duplikat s. Zeile 15xx
 	public boolean fehlerErfassen(Integer fahrerID, Integer rennenID, Integer kategorieID, Integer lauf, Integer tornummer, Integer strafzeit)
 	{
 		ExecuteResult res = executeUpdate("INSERT INTO strafzeiten (fahrer_id, rennen_id, kategorie_id, lauf, tor_nr, strafzeit) VALUES " + "("

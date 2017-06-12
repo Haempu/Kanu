@@ -62,7 +62,7 @@ public class FehlererfassungsController {
 			strafzeit = null;
 		}
 
-		this.dbController.fehlerErfassen(fahrerID, rennenID, kategorieID, lauf, tornummer, strafzeit);
+		this.dbController.speichereStrafzeit(fahrerID, rennenID, kategorieID, lauf, tornummer, strafzeit);
 	}
 
 	/**
