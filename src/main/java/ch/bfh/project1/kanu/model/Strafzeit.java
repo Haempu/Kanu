@@ -13,7 +13,7 @@ package ch.bfh.project1.kanu.model;
 
 public class Strafzeit {
 
-	public static final int STRAFZEIT_BERUEHRT = 5;
+	public static final int STRAFZEIT_BERUEHRT = 2;
 	public static final int STRAFZEIT_VERPASST = 60;
 
 	private Integer torNummer;
@@ -69,7 +69,7 @@ public class Strafzeit {
 	}
 
 	public void setVerpasst(boolean verpasst) {
-		this.strafzeit = verpasst == true ? 60 : 0;
+		this.strafzeit = verpasst == true ? STRAFZEIT_VERPASST : 0;
 		this.verpasst = verpasst;
 	}
 
@@ -78,7 +78,7 @@ public class Strafzeit {
 	}
 
 	public void setBeruehrt(boolean beruehrt) {
-		this.strafzeit = beruehrt == true ? 5 : 0;
+		this.strafzeit = beruehrt == true ? STRAFZEIT_BERUEHRT : 0;
 		this.beruehrt = beruehrt;
 	}
 
